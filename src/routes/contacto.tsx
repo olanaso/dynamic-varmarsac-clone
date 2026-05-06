@@ -19,7 +19,7 @@ function Contacto() {
       <section className="bg-gradient-to-br from-brand-soft to-white py-12">
         <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
           <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">Hablemos</span>
-          <h1 className="mt-3 text-5xl font-extrabold text-brand-blue-dark md:text-6xl">Contáctanos</h1>
+          <h1 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-4xl">Contáctanos</h1>
           <p className="mx-auto mt-4 max-w-xl text-foreground/70">Cuéntanos sobre tu proyecto y te respondemos en menos de 24 horas.</p>
         </div>
       </section>
