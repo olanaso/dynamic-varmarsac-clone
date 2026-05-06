@@ -23,7 +23,7 @@ export function Header() {
             <Link
               key={item.to}
               to={item.to}
-              className="group relative flex items-center gap-1 rounded-md px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-brand-blue"
+              className="group relative flex items-center gap-1 rounded-sm px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-brand-blue"
               activeProps={{ className: "text-brand-blue" }}
               activeOptions={{ exact: item.to === "/" }}
             >
@@ -36,13 +36,13 @@ export function Header() {
 
         <Link
           to="/contacto"
-          className="hidden items-center gap-2 rounded-lg bg-brand-red px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg lg:inline-flex"
+          className="hidden items-center gap-2 rounded-sm bg-brand-red px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg lg:inline-flex"
         >
           <ClipboardList className="h-4 w-4" />
           Solicitar Cotización
         </Link>
 
-        <button onClick={() => setOpen(!open)} className="rounded-md p-2 lg:hidden" aria-label="Menú">
+        <button onClick={() => setOpen(!open)} className="rounded-sm p-2 lg:hidden" aria-label="Menú">
           {open ? <X /> : <Menu />}
         </button>
       </div>
@@ -55,14 +55,14 @@ export function Header() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-4 py-3 text-sm font-medium hover:bg-brand-soft"
+                className="rounded-sm px-4 py-3 text-sm font-medium hover:bg-brand-soft"
                 activeProps={{ className: "text-brand-blue bg-brand-soft" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
                 {item.label}
               </Link>
             ))}
-            <Link to="/contacto" onClick={() => setOpen(false)} className="mt-2 rounded-lg bg-brand-red px-5 py-3 text-center text-sm font-semibold text-white">
+            <Link to="/contacto" onClick={() => setOpen(false)} className="mt-2 rounded-sm bg-brand-red px-5 py-3 text-center text-sm font-semibold text-white">
               Solicitar Cotización
             </Link>
           </nav>

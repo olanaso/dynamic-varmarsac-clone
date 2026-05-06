@@ -27,7 +27,7 @@ function Nosotros() {
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <h2 className="text-3xl font-extrabold text-brand-blue-dark md:text-4xl">Quiénes somos</h2>
-            <div className="mt-3 h-1 w-20 rounded-full bg-brand-red" />
+            <div className="mt-3 h-1 w-20 rounded-sm bg-brand-red" />
             <p className="mt-6 text-foreground/75 leading-relaxed">
               VARMAR Contratistas Generales es una empresa peruana especializada en obras civiles,
               servicios generales y proyectos integrales. Trabajamos con altos estándares de calidad,
@@ -44,8 +44,8 @@ function Nosotros() {
               { icon: Award, t: "Calidad", d: "Estándares certificados y procesos auditados." },
               { icon: Users, t: "Equipo", d: "Profesionales comprometidos y certificados." },
             ].map((c) => (
-              <div key={c.t} className="rounded-2xl bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-1">
-                <div className="grid h-12 w-12 place-items-center rounded-xl bg-brand-blue text-white"><c.icon /></div>
+              <div key={c.t} className="rounded-sm bg-white p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-1">
+                <div className="grid h-12 w-12 place-items-center rounded-sm bg-brand-blue text-white"><c.icon /></div>
                 <h3 className="mt-4 font-bold text-brand-blue-dark">{c.t}</h3>
                 <p className="mt-1 text-sm text-foreground/70">{c.d}</p>
               </div>

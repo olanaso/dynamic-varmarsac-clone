@@ -1,7 +1,7 @@
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-blue text-white font-bold text-sm shadow-md">
+      <div className="flex h-11 w-11 items-center justify-center rounded-sm bg-brand-blue text-white font-bold text-sm shadow-md">
         CGV
       </div>
       <div className="leading-none">

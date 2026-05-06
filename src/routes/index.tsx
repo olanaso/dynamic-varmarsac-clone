@@ -32,48 +32,8 @@ const features = [
 function Index() {
   return (
     <>
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:px-8 lg:grid-cols-2 lg:py-24">
-          <div className="animate-fade-up">
-            <span className="inline-block text-sm font-bold uppercase tracking-widest text-brand-blue">Contratistas Generales</span>
-            <h1 className="mt-4 text-5xl font-extrabold leading-[1.05] text-brand-blue-dark md:text-6xl lg:text-7xl">
-              Construimos<br />
-              <span className="text-brand-blue">proyectos con</span><br />
-              <span className="text-brand-red">calidad y confianza</span>
-            </h1>
-            <div className="mt-5 h-1 w-24 rounded-full bg-brand-red" />
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/70 md:text-lg">
-              En VARMAR Contratistas Generales desarrollamos soluciones integrales en obras civiles
-              y servicios generales, garantizando seguridad, eficiencia y cumplimiento en cada etapa del proyecto.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/servicios" className="group inline-flex items-center gap-2 rounded-xl bg-brand-red px-7 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5">
-                <Wrench className="h-4 w-4" /> Ver Servicios
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-              <Link to="/contacto" className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-blue bg-white px-7 py-4 text-sm font-bold text-brand-blue transition-all hover:bg-brand-blue hover:text-white">
-                <Phone className="h-4 w-4" /> Contáctanos
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative animate-fade-up">
-            <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-brand-blue/20 to-brand-red/10 blur-2xl" />
-            <HeroSlider />
-            <div className="absolute -bottom-6 -left-6 z-10 hidden rounded-2xl bg-white p-5 shadow-[var(--shadow-card)] md:block animate-float">
-              <div className="flex items-center gap-3">
-                <div className="grid h-12 w-12 place-items-center rounded-xl bg-brand-blue text-white"><CheckCircle2 /></div>
-                <div>
-                  <div className="text-2xl font-extrabold text-brand-blue-dark">+15</div>
-                  <div className="text-xs text-foreground/60">Años de experiencia</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* HERO FULLSCREEN SLIDER */}
+      <HeroSlider />
 
       {/* SERVICES CARDS */}
       <section className="mx-auto -mt-10 max-w-7xl px-4 md:px-8">
