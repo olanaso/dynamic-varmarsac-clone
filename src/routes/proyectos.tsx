@@ -27,10 +27,10 @@ const list = [
 function Proyectos() {
   return (
     <>
-      <section className="bg-gradient-to-br from-brand-soft to-white py-20">
+      <section className="bg-gradient-to-br from-brand-soft to-white py-12">
         <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
           <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">Portafolio</span>
-          <h1 className="mt-3 text-5xl font-extrabold text-brand-blue-dark md:text-6xl">Nuestros Proyectos</h1>
+          <h1 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-4xl">Nuestros Proyectos</h1>
         </div>
       </section>
 
