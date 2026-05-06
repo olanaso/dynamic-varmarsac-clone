@@ -46,7 +46,7 @@ export function HeroSlider() {
   const go = (d: number) => setI((p) => (p + d + slides.length) % slides.length);
 
   return (
-    <section className="relative h-[calc(100vh-5rem)] min-h-[560px] w-full overflow-hidden">
+    <section className="relative h-[calc(100svh-4.5rem)] min-h-[480px] w-full overflow-hidden">
       {slides.map((s, idx) => (
         <div
           key={idx}
@@ -58,32 +58,32 @@ export function HeroSlider() {
             alt={s.title}
             className={`h-full w-full object-cover transition-transform duration-[8000ms] ease-out ${idx === i ? "scale-110" : "scale-100"}`}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
           <div className="absolute inset-0 flex items-center">
-            <div className="mx-auto w-full max-w-7xl px-6 md:px-10">
+            <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-10">
               <div className={`max-w-2xl transition-all duration-1000 ${idx === i ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
-                <span className="inline-block bg-brand-red px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-white">
+                <span className="inline-block bg-brand-red px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white sm:text-[11px]">
                   {s.eyebrow}
                 </span>
-                <h1 className="mt-6 text-5xl font-extrabold uppercase leading-[1.02] text-white md:text-7xl">
+                <h1 className="mt-4 text-3xl font-extrabold uppercase leading-[1.05] text-white sm:mt-6 sm:text-5xl md:text-6xl lg:text-7xl">
                   {s.title}
                   <br />
                   <span className="text-brand-red">{s.accent}</span>
                 </h1>
-                <p className="mt-6 max-w-xl text-base text-white/85 md:text-lg">{s.desc}</p>
-                <div className="mt-8 flex flex-wrap gap-3">
+                <p className="mt-4 max-w-xl text-sm text-white/85 sm:mt-6 sm:text-base md:text-lg">{s.desc}</p>
+                <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
                   <Link
                     to="/servicios"
-                    className="group inline-flex items-center gap-2 bg-brand-red px-7 py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
+                    className="group inline-flex items-center gap-2 bg-brand-red px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)] sm:px-7 sm:py-4 sm:text-sm"
                   >
                     Ver Servicios
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link
                     to="/contacto"
-                    className="inline-flex items-center gap-2 border-2 border-white px-7 py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-white hover:text-black"
+                    className="inline-flex items-center gap-2 border-2 border-white px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white hover:text-black sm:px-7 sm:py-4 sm:text-sm"
                   >
                     <Phone className="h-4 w-4" /> Contáctanos
                   </Link>
