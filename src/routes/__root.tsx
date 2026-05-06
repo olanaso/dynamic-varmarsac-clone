@@ -18,7 +18,7 @@ function NotFoundComponent() {
         <h1 className="text-7xl font-bold text-brand-blue">404</h1>
         <h2 className="mt-4 text-xl font-semibold">Página no encontrada</h2>
         <p className="mt-2 text-sm text-muted-foreground">La página que buscas no existe.</p>
-        <Link to="/" className="mt-6 inline-flex rounded-md bg-brand-blue px-5 py-2.5 text-sm font-medium text-white hover:opacity-90">Ir al inicio</Link>
+        <Link to="/" className="mt-6 inline-flex rounded-sm bg-brand-blue px-5 py-2.5 text-sm font-medium text-white hover:opacity-90">Ir al inicio</Link>
       </div>
     </div>
   );
@@ -33,8 +33,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <h1 className="text-xl font-semibold">Algo salió mal</h1>
         <p className="mt-2 text-sm text-muted-foreground">Intenta nuevamente o vuelve al inicio.</p>
         <div className="mt-6 flex justify-center gap-2">
-          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-md bg-brand-blue px-4 py-2 text-sm font-medium text-white">Reintentar</button>
-          <a href="/" className="rounded-md border px-4 py-2 text-sm font-medium">Inicio</a>
+          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-sm bg-brand-blue px-4 py-2 text-sm font-medium text-white">Reintentar</button>
+          <a href="/" className="rounded-sm border px-4 py-2 text-sm font-medium">Inicio</a>
         </div>
       </div>
     </div>
