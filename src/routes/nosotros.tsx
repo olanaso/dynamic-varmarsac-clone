@@ -15,7 +15,7 @@ export const Route = createFileRoute("/nosotros")({
 function Nosotros() {
   return (
     <>
-      <section className="relative bg-brand-blue-dark py-20 text-white">
+      <section className="relative bg-brand-blue-dark py-12 text-white">
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${hero})`, backgroundSize: "cover" }} />
         <div className="relative mx-auto max-w-7xl px-4 md:px-8">
           <span className="text-sm font-bold uppercase tracking-widest text-brand-red">Sobre nosotros</span>

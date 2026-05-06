@@ -26,7 +26,7 @@ const items = [
 function Servicios() {
   return (
     <>
-      <section className="bg-gradient-to-br from-brand-soft to-white py-20">
+      <section className="bg-gradient-to-br from-brand-soft to-white py-12">
         <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
           <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">Lo que hacemos</span>
           <h1 className="mt-3 text-5xl font-extrabold text-brand-blue-dark md:text-6xl">Nuestros Servicios</h1>
