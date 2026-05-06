@@ -3,13 +3,13 @@ import { useState } from "react";
 import { Menu, X, ClipboardList, ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
 
-const nav = [
+const nav: { to: "/" | "/nosotros" | "/servicios" | "/proyectos" | "/contacto"; label: string; hasDropdown?: boolean }[] = [
   { to: "/", label: "Inicio" },
   { to: "/nosotros", label: "Nosotros" },
   { to: "/servicios", label: "Servicios", hasDropdown: true },
   { to: "/proyectos", label: "Proyectos" },
   { to: "/contacto", label: "Contacto" },
-] as const;
+];
 
 export function Header() {
   const [open, setOpen] = useState(false);
