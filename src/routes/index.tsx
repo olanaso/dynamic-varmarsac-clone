@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Wrench, Phone, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, CheckCircle2, Sparkles } from "lucide-react";
 import hero from "@/assets/hero-construction.jpg";
+import { HeroSlider } from "@/components/HeroSlider";
 import obras from "@/assets/obras-civiles.jpg";
 import servicios from "@/assets/servicios-generales.jpg";
 import proyectos from "@/assets/proyectos-integrales.jpg";
@@ -60,11 +61,8 @@ function Index() {
 
           <div className="relative animate-fade-up">
             <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-brand-blue/20 to-brand-red/10 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] shadow-[var(--shadow-glow)]">
-              <img src={hero} alt="Equipo VARMAR en obra" className="aspect-[4/3] w-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue-dark/30 via-transparent to-transparent" />
-            </div>
-            <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-white p-5 shadow-[var(--shadow-card)] md:block animate-float">
+            <HeroSlider />
+            <div className="absolute -bottom-6 -left-6 z-10 hidden rounded-2xl bg-white p-5 shadow-[var(--shadow-card)] md:block animate-float">
               <div className="flex items-center gap-3">
                 <div className="grid h-12 w-12 place-items-center rounded-xl bg-brand-blue text-white"><CheckCircle2 /></div>
                 <div>
