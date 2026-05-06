@@ -46,7 +46,7 @@ function Index() {
             >
               <div className="grid grid-cols-[1fr_auto] items-stretch">
                 <div className="p-6">
-                  <div className="grid h-12 w-12 place-items-center rounded-full bg-brand-blue text-white shadow-md">
+                  <div className="grid h-12 w-12 place-items-center rounded-full bg-brand-blue/10 text-brand-blue">
                     <s.icon className="h-5 w-5" />
                   </div>
                   <h3 className="mt-4 text-lg font-bold text-brand-blue-dark">{s.title}</h3>
