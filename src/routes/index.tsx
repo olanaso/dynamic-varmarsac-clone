@@ -272,15 +272,13 @@ function Index() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden bg-brand-blue-dark py-20 text-white">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(${hero})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-dark via-brand-blue-dark/95 to-brand-blue-dark/70" />
+      <section className="py-16 md:py-20 bg-slate-100">
         <div className="relative mx-auto max-w-5xl px-4 text-center md:px-8">
-          <h2 className="text-3xl font-extrabold md:text-5xl">¿Listo para iniciar tu próximo proyecto?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-white/80">
+          <h2 className="text-3xl font-extrabold md:text-5xl text-brand-blue-dark">¿Listo para iniciar tu próximo proyecto?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-foreground/70">
             Conversemos sobre tus necesidades y diseñemos juntos la mejor solución para tu empresa.
           </p>
-          <Link to="/contacto" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-red px-8 py-4 text-sm font-bold shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5">
+          <Link to="/contacto" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-red px-8 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5">
             Solicitar Cotización <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
