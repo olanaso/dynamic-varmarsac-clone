@@ -37,7 +37,7 @@ function FlotaPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-dark via-brand-blue-dark/90 to-brand-blue-dark/60" />
         <div className="relative mx-auto max-w-7xl px-4 md:px-8">
           <span className="text-sm font-bold uppercase tracking-widest text-sky-400">VARMAR</span>
-          <h1 className="mt-3 text-4xl font-extrabold md:text-6xl">
+          <h1 className="mt-3 text-4xl font-extrabold text-white md:text-6xl">
             Nuestra <span className="text-sky-400">Flota</span>
           </h1>
           <p className="mt-4 max-w-2xl text-white/80">
