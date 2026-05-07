@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Wrench, Phone, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, CheckCircle2, Sparkles } from "lucide-react";
+import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote } from "lucide-react";
 import hero from "@/assets/hero-construction.jpg";
 import { HeroSlider } from "@/components/HeroSlider";
 import obras from "@/assets/obras-civiles.jpg";
 import servicios from "@/assets/servicios-generales.jpg";
 import proyectos from "@/assets/proyectos-integrales.jpg";
+import aboutFleet from "@/assets/about-fleet.jpg";
+import manager from "@/assets/manager.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,8 +37,63 @@ function Index() {
       {/* HERO FULLSCREEN SLIDER */}
       <HeroSlider />
 
+      {/* ABOUT US */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-white via-white to-brand-soft">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:px-8 md:py-20 lg:grid-cols-2">
+          <div>
+            <h2 className="text-4xl font-extrabold leading-tight text-brand-blue-dark md:text-5xl lg:text-[3.25rem]">
+              VARMAR <span className="text-brand-blue">Contratistas Generales</span>
+            </h2>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/70">
+              Somos una empresa líder en obras civiles y servicios generales, brindando
+              soluciones efectivas e integrales a empresas de los sectores industrial,
+              minero y de construcción. Innovamos cada proceso con seguridad, calidad
+              y compromiso, creciendo junto a nuestros clientes en todo el Perú.
+            </p>
+            <p className="mt-5 text-sm font-bold uppercase tracking-wider text-brand-blue-dark">
+              " Más de <span className="text-brand-red">15 años de experiencia</span> nos avalan,
+              gracias a todos nuestros clientes <span className="text-brand-red">vamos por más</span> "
+            </p>
+
+            {/* Testimonial card */}
+            <div className="mt-8 flex items-stretch gap-4 rounded-sm bg-brand-blue-dark p-5 text-white shadow-[var(--shadow-card)]">
+              <Quote className="h-6 w-6 shrink-0 text-brand-blue" />
+              <div className="flex-1">
+                <p className="text-sm leading-relaxed">
+                  Priorizamos la seguridad, el compromiso y la garantía para ofrecer un
+                  servicio insuperable.
+                </p>
+                <div className="mt-3">
+                  <div className="text-sm font-bold">Ing. Jorge Vargas</div>
+                  <div className="text-xs text-white/70">Gerente General</div>
+                </div>
+              </div>
+              <img
+                src={manager}
+                alt="Gerente General"
+                width={512}
+                height={512}
+                loading="lazy"
+                className="h-20 w-20 shrink-0 rounded-full border-2 border-brand-blue object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="relative">
+            <img
+              src={aboutFleet}
+              alt="Flota VARMAR"
+              width={1280}
+              height={640}
+              loading="lazy"
+              className="w-full object-contain"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* SERVICES CARDS */}
-      <section className="mx-auto -mt-10 max-w-7xl px-4 md:px-8">
+      <section className="mx-auto max-w-7xl px-4 pt-4 md:px-8">
         <div className="grid gap-6 md:grid-cols-3">
           {services.map((s, i) => (
             <article
