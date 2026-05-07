@@ -71,8 +71,8 @@ export function Header() {
               <Link
                 key={item.to}
                 to={item.to}
-                className="relative px-7 py-4 text-xs font-bold uppercase tracking-wider text-foreground/75 transition-colors hover:text-brand-red"
-                activeProps={{ className: "bg-brand-red text-white hover:text-white" }}
+                className="relative px-7 py-4 text-xs font-bold uppercase tracking-wider text-foreground/75 transition-colors hover:text-sky-500"
+                activeProps={{ className: "bg-sky-500 text-white hover:text-white" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
                 {item.label}
@@ -93,7 +93,7 @@ export function Header() {
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className="border-t border-border px-5 py-3 text-xs font-bold uppercase tracking-wider text-foreground/80"
-                activeProps={{ className: "bg-brand-red text-white" }}
+                activeProps={{ className: "bg-sky-500 text-white" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
                 {item.label}
