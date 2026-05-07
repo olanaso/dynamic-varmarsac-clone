@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram } from "lucide-react";
-import { Logo } from "./Logo";
+import logoWhite from "@/assets/logo-white.png";
 
 export function Footer() {
   return (
     <footer className="bg-brand-blue-dark text-white/90">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-2 md:px-8 lg:grid-cols-4">
         <div>
-          <div className="rounded-sm bg-white/95 p-3 inline-block"><Logo /></div>
+          <img src={logoWhite} alt="VARMAR Contratistas Generales" className="h-14 w-auto md:h-16" />
           <p className="mt-4 text-sm leading-relaxed text-white/70">
             Soluciones integrales en obras civiles y servicios generales con calidad, seguridad y confianza.
           </p>
