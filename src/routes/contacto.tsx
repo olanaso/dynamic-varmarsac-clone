@@ -28,9 +28,11 @@ function Contacto() {
         <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr]">
           <div className="space-y-4">
             {[
-              { icon: MapPin, t: "Dirección", d: "Av. Industrial 123, Lima — Perú" },
-              { icon: Phone, t: "Teléfono", d: "+51 999 888 777" },
-              { icon: Mail, t: "Email", d: "contacto@varmar.com" },
+              { icon: MapPin, t: "Apurímac", d: "Las Bambas - Barrio Manantiales S/N" },
+              { icon: MapPin, t: "Cusco", d: "Villa Unión Huancaro C-8 (Detrás del mercado de Huancaro)" },
+              { icon: Phone, t: "Celulares", d: "950-396818 / 932-128706" },
+              { icon: Phone, t: "Teléfono", d: "084-284833" },
+              { icon: Mail, t: "Email", d: "info@varmarsac.com" },
             ].map((c) => (
               <div key={c.t} className="flex items-start gap-4 rounded-sm bg-white p-6 shadow-[var(--shadow-card)]">
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-sm bg-brand-blue text-white"><c.icon /></div>
