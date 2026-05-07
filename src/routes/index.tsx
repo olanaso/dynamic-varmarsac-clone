@@ -206,6 +206,44 @@ function Index() {
       {/* CLIENTS */}
       <ClientsCarousel />
 
+      {/* NUESTRA FLOTA */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
+          <h2 className="text-4xl font-extrabold text-brand-blue-dark md:text-5xl">
+            Nuestra <span className="text-sky-500">Flota</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm font-semibold italic text-foreground/70">
+            "Más de 10 años de experiencia avalan nuestro trabajo"
+          </p>
+
+          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+            {[
+              { img: s1, label: "Camioneta 4x4" },
+              { img: s2, label: "Doble Cabina" },
+              { img: s3, label: "Minivan" },
+              { img: s4, label: "Mini Bus" },
+              { img: truck, label: "Bus" },
+              { img: aboutFleet, label: "Bus Turismo" },
+            ].map((u) => (
+              <div key={u.label} className="group flex flex-col items-center">
+                <div className="aspect-[4/3] w-full overflow-hidden rounded-sm bg-brand-soft">
+                  <img src={u.img} alt={u.label} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                </div>
+                <span className="mt-2 text-xs font-bold uppercase tracking-wider text-brand-blue-dark">{u.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <Link
+            to="/flota"
+            className="mt-10 inline-flex items-center gap-2 rounded-sm bg-sky-500 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-sky-600"
+          >
+            Ver Nuestra Flota <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="mt-12 h-3 w-full bg-brand-blue-dark" />
+      </section>
+
       {/* STATS */}
       <section className="bg-brand-soft py-20">
         <div className="mx-auto max-w-7xl px-4 md:px-8">
