@@ -9,10 +9,12 @@ import proyectos from "@/assets/proyectos-integrales.jpg";
 import aboutFleet from "@/assets/about-fleet.jpg";
 import manager from "@/assets/manager.jpg";
 import truck from "@/assets/truck.jpg";
-import s1 from "@/assets/slide-1.png";
-import s2 from "@/assets/slide-2.png";
-import s3 from "@/assets/slide-3.png";
-import s4 from "@/assets/slide-4.png";
+import s1 from "@/assets/flota-1.png";
+import s2 from "@/assets/flota-2.png";
+import s3 from "@/assets/flota-3.png";
+import s4 from "@/assets/flota-4.png";
+import s5 from "@/assets/flota-5.png";
+import s6 from "@/assets/flota-6.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -219,28 +221,53 @@ function Index() {
           <p className="mx-auto mt-4 max-w-2xl text-sm font-semibold italic text-foreground/70">
             "Más de 10 años de experiencia avalan nuestro trabajo"
           </p>
+        </div>
 
-          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        {/* Marquee infinito */}
+        <div
+          className="group relative mt-10 overflow-hidden"
+          style={{
+            maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          }}
+        >
+          <div className="flex w-max animate-marquee gap-6 group-hover:[animation-play-state:paused]">
             {[
-              { img: s1, label: "Camioneta 4x4" },
-              { img: s2, label: "Doble Cabina" },
-              { img: s3, label: "Minivan" },
+              { img: s1, label: "Flota Corporativa" },
+              { img: s2, label: "Camioneta 4x4" },
+              { img: s3, label: "Minivan Turismo" },
               { img: s4, label: "Mini Bus" },
-              { img: truck, label: "Bus" },
-              { img: aboutFleet, label: "Bus Turismo" },
-            ].map((u) => (
-              <div key={u.label} className="group flex flex-col items-center">
-                <div className="aspect-[4/3] w-full overflow-hidden rounded-sm bg-brand-soft">
-                  <img src={u.img} alt={u.label} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              { img: s5, label: "Doble Cabina" },
+              { img: s6, label: "4x4 Todo Terreno" },
+            ].concat([
+              { img: s1, label: "Flota Corporativa" },
+              { img: s2, label: "Camioneta 4x4" },
+              { img: s3, label: "Minivan Turismo" },
+              { img: s4, label: "Mini Bus" },
+              { img: s5, label: "Doble Cabina" },
+              { img: s6, label: "4x4 Todo Terreno" },
+            ]).map((u, i) => (
+              <div key={i} className="group/card w-[280px] shrink-0 sm:w-[340px]">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-white shadow-md">
+                  <img
+                    src={u.img}
+                    alt={u.label}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-blue-dark/90 to-transparent p-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-white">{u.label}</span>
+                  </div>
                 </div>
-                <span className="mt-2 text-xs font-bold uppercase tracking-wider text-brand-blue-dark">{u.label}</span>
               </div>
             ))}
           </div>
+        </div>
 
+        <div className="mt-10 text-center">
           <Link
             to="/flota"
-            className="mt-10 inline-flex items-center gap-2 rounded-sm bg-sky-500 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-sky-600"
+            className="inline-flex items-center gap-2 rounded-sm bg-sky-500 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-sky-600"
           >
             Ver Nuestra Flota <ArrowRight className="h-4 w-4" />
           </Link>
