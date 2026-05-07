@@ -43,9 +43,9 @@ export function Footer() {
         <div>
           <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">Contacto</h4>
           <ul className="space-y-3 text-sm text-white/80">
-            <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /> Av. Industrial 123, Lima — Perú</li>
-            <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /> +51 999 888 777</li>
-            <li className="flex gap-3"><Mail className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /> contacto@varmar.com</li>
+            <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /><span>Av. Industrial 123, Lima — Perú</span></li>
+            <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /><span>+51 999 888 777</span></li>
+            <li className="flex gap-3"><Mail className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /><span>contacto@varmar.com</span></li>
           </ul>
         </div>
       </div>
