@@ -43,9 +43,12 @@ export function Footer() {
         <div>
           <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">Encuéntranos aquí...</h4>
           <ul className="space-y-3 text-sm text-white/80">
-            <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /><span>Cusco - Villa Unión Huancaro C-8</span></li>
-            <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /><span>Cel: 950-396818 / 932-128706</span></li>
-            <li className="flex gap-3"><Mail className="h-4 w-4 mt-0.5 text-brand-red shrink-0" /><span>contacto@varmar.com</span></li>
+            <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-sky-400 shrink-0" /><span>Apurímac - Las Bambas - Barrio Manantiales S/N</span></li>
+            <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-sky-400 shrink-0" /><span>Cusco - Villa Unión Huancaro C-8 (Detrás del mercado de Huancaro)</span></li>
+            <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-sky-400 shrink-0" /><span>Cel: 950-396818 / 932-128706</span></li>
+            <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-sky-400 shrink-0" /><span>Telf: 084-284833</span></li>
+            <li className="flex gap-3"><Mail className="h-4 w-4 mt-0.5 text-sky-400 shrink-0" /><span>info@varmarsac.com</span></li>
+            <li className="pt-1 text-xs font-bold uppercase tracking-wider text-white">Varmar S.A.C.</li>
           </ul>
         </div>
       </div>

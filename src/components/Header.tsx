@@ -30,13 +30,13 @@ export function Header() {
 
           <div className="flex flex-col items-center gap-3 md:flex-row md:gap-6">
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-foreground/80">
-              <a href="mailto:contacto@varmar.com" className="flex items-center gap-2 hover:text-brand-red">
+              <a href="mailto:info@varmarsac.com" className="flex items-center gap-2 hover:text-brand-red">
                 <Mail className="h-4 w-4 text-brand-red" />
-                contacto@varmar.com
+                info@varmarsac.com
               </a>
-              <a href="tel:+51900000000" className="flex items-center gap-2 hover:text-brand-red">
+              <a href="tel:+51950396818" className="flex items-center gap-2 hover:text-brand-red">
                 <Phone className="h-4 w-4 text-brand-red" />
-                +51 900 000 000
+                950-396818 / 084-284833
               </a>
             </div>
 
