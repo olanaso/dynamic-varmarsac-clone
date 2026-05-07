@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, ArrowRight, Phone } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import s1 from "@/assets/slide-1.png";
 import s2 from "@/assets/slide-2.png";
 import s3 from "@/assets/slide-3.png";
@@ -9,31 +9,23 @@ import s4 from "@/assets/slide-4.png";
 const slides = [
   {
     img: s1,
-    eyebrow: "Contratistas Generales",
-    title: "Construimos con calidad",
-    accent: "y confianza",
-    desc: "Soluciones integrales en obras civiles y servicios generales.",
+    tags: ["OBRAS CIVILES", "INFRAESTRUCTURA", "EDIFICACIONES", "INDUSTRIA"],
+    title: "Construimos con calidad y confianza en obras civiles y proyectos integrales.",
   },
   {
     img: s2,
-    eyebrow: "Operaciones",
-    title: "Equipos en cualquier",
-    accent: "terreno",
-    desc: "Flota preparada para zonas exigentes y condiciones extremas.",
+    tags: ["MINERÍA", "ENERGÍA", "TRANSPORTE", "LOGÍSTICA"],
+    title: "Equipos y personal preparados para los terrenos más exigentes del Perú.",
   },
   {
     img: s3,
-    eyebrow: "Movilidad",
-    title: "Transporte seguro",
-    accent: "para tu proyecto",
-    desc: "Personal y carga con cobertura nacional.",
+    tags: ["MANTENIMIENTO", "MONTAJE", "SERVICIOS", "OPERACIONES"],
+    title: "Soluciones eficientes en servicios generales para diferentes sectores.",
   },
   {
     img: s4,
-    eyebrow: "Cobertura",
-    title: "Donde el proyecto",
-    accent: "lo requiera",
-    desc: "Operamos en todo el Perú con eficiencia y cumplimiento.",
+    tags: ["GESTIÓN", "EJECUCIÓN", "SUPERVISIÓN", "CALIDAD"],
+    title: "Gestionamos proyectos integrales con resultados confiables y sostenibles.",
   },
 ];
 
@@ -46,7 +38,7 @@ export function HeroSlider() {
   const go = (d: number) => setI((p) => (p + d + slides.length) % slides.length);
 
   return (
-    <section className="relative h-[calc(100svh-4.5rem)] min-h-[480px] w-full overflow-hidden">
+    <section className="relative h-[calc(100svh-9rem)] min-h-[460px] w-full overflow-hidden bg-black">
       {slides.map((s, idx) => (
         <div
           key={idx}
@@ -55,37 +47,37 @@ export function HeroSlider() {
         >
           <img
             src={s.img}
-            alt={s.title}
+            alt=""
             className={`h-full w-full object-cover transition-transform duration-[8000ms] ease-out ${idx === i ? "scale-110" : "scale-100"}`}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/15" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
 
           <div className="absolute inset-0 flex items-center">
-            <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-10">
+            <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12">
               <div className={`max-w-2xl transition-all duration-1000 ${idx === i ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
-                <span className="inline-block bg-brand-red px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white sm:text-[11px]">
-                  {s.eyebrow}
-                </span>
-                <h1 className="mt-4 text-3xl font-extrabold uppercase leading-[1.05] text-white sm:mt-6 sm:text-5xl md:text-6xl lg:text-7xl">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold uppercase tracking-wider text-white sm:text-xs">
+                  {s.tags.map((t, k) => (
+                    <span key={t} className="flex items-center gap-3">
+                      {t}
+                      {k < s.tags.length - 1 && <span className="text-white/50">|</span>}
+                    </span>
+                  ))}
+                </div>
+                <h1 className="mt-5 text-3xl font-extrabold leading-[1.15] text-white sm:mt-6 sm:text-4xl md:text-5xl lg:text-[3.25rem]">
                   {s.title}
-                  <br />
-                  <span className="text-brand-red">{s.accent}</span>
                 </h1>
-                <p className="mt-4 max-w-xl text-sm text-white/85 sm:mt-6 sm:text-base md:text-lg">{s.desc}</p>
-                <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
-                  <Link
-                    to="/servicios"
-                    className="group inline-flex items-center gap-2 bg-brand-red px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)] sm:px-7 sm:py-4 sm:text-sm"
-                  >
-                    Ver Servicios
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
+                <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
                   <Link
                     to="/contacto"
-                    className="inline-flex items-center gap-2 border-2 border-white px-5 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white hover:text-black sm:px-7 sm:py-4 sm:text-sm"
+                    className="rounded-sm bg-brand-red px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110"
                   >
-                    <Phone className="h-4 w-4" /> Contáctanos
+                    Contáctenos
+                  </Link>
+                  <Link
+                    to="/proyectos"
+                    className="rounded-sm bg-white/95 px-7 py-3.5 text-sm font-semibold text-foreground shadow-md transition hover:bg-white"
+                  >
+                    Proyectos
                   </Link>
                 </div>
               </div>
@@ -94,33 +86,22 @@ export function HeroSlider() {
         </div>
       ))}
 
-      {/* Slide counter */}
-      <div className="absolute left-6 top-1/2 z-10 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
-        <span className="text-xs font-bold tracking-widest text-white/70">
-          {String(i + 1).padStart(2, "0")}
-        </span>
-        <div className="h-16 w-px bg-white/40" />
-        <span className="text-xs font-bold tracking-widest text-white/70">
-          {String(slides.length).padStart(2, "0")}
-        </span>
-      </div>
-
       <button
         onClick={() => go(-1)}
         aria-label="Anterior"
-        className="absolute left-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center bg-white/15 text-white backdrop-blur transition hover:bg-brand-red md:left-20"
+        className="absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center bg-white/15 text-white backdrop-blur transition hover:bg-brand-red md:left-6"
       >
         <ChevronLeft className="h-6 w-6" />
       </button>
       <button
         onClick={() => go(1)}
         aria-label="Siguiente"
-        className="absolute right-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center bg-white/15 text-white backdrop-blur transition hover:bg-brand-red"
+        className="absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center bg-white/15 text-white backdrop-blur transition hover:bg-brand-red md:right-6"
       >
         <ChevronRight className="h-6 w-6" />
       </button>
 
-      <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
         {slides.map((_, idx) => (
           <button
             key={idx}

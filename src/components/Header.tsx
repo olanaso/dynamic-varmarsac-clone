@@ -1,73 +1,107 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, ClipboardList, ChevronDown } from "lucide-react";
+import { Menu, X, Mail, Phone, Facebook, Linkedin, Instagram, Youtube, Twitter } from "lucide-react";
 import { Logo } from "./Logo";
 
-const nav: { to: "/" | "/nosotros" | "/servicios" | "/proyectos" | "/contacto"; label: string; hasDropdown?: boolean }[] = [
-  { to: "/", label: "Inicio" },
-  { to: "/nosotros", label: "Nosotros" },
-  { to: "/servicios", label: "Servicios", hasDropdown: true },
-  { to: "/proyectos", label: "Proyectos" },
-  { to: "/contacto", label: "Contacto" },
+const nav: { to: "/" | "/nosotros" | "/servicios" | "/proyectos" | "/contacto"; label: string }[] = [
+  { to: "/", label: "INICIO" },
+  { to: "/nosotros", label: "NOSOTROS" },
+  { to: "/servicios", label: "SERVICIOS" },
+  { to: "/proyectos", label: "PROYECTOS" },
+  { to: "/contacto", label: "CONTÁCTENOS" },
+];
+
+const socials = [
+  { Icon: Facebook, href: "#" },
+  { Icon: Linkedin, href: "#" },
+  { Icon: Instagram, href: "#" },
+  { Icon: Youtube, href: "#" },
+  { Icon: Twitter, href: "#" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/85 backdrop-blur-lg">
-      <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-4 md:px-8">
-        <Link to="/"><Logo /></Link>
+    <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
+      {/* Top utility bar */}
+      <div className="border-b border-border/60 bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-3 md:flex-row md:px-8">
+          <Link to="/"><Logo /></Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
-          {nav.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="group relative flex items-center gap-1 rounded-sm px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-brand-blue"
-              activeProps={{ className: "text-brand-blue" }}
-              activeOptions={{ exact: item.to === "/" }}
-            >
-              {item.label}
-              {item.hasDropdown && <ChevronDown className="h-3.5 w-3.5" />}
-              <span className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 bg-brand-blue transition-all duration-300 group-hover:w-2/3" />
-            </Link>
-          ))}
-        </nav>
+          <div className="flex flex-col items-center gap-3 md:flex-row md:gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-foreground/80">
+              <a href="mailto:contacto@varmar.com" className="flex items-center gap-2 hover:text-brand-red">
+                <Mail className="h-4 w-4 text-brand-red" />
+                contacto@varmar.com
+              </a>
+              <a href="tel:+51900000000" className="flex items-center gap-2 hover:text-brand-red">
+                <Phone className="h-4 w-4 text-brand-red" />
+                +51 900 000 000
+              </a>
+            </div>
 
-        <Link
-          to="/contacto"
-          className="hidden items-center gap-2 rounded-sm bg-brand-red px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg lg:inline-flex"
-        >
-          <ClipboardList className="h-4 w-4" />
-          Solicitar Cotización
-        </Link>
-
-        <button onClick={() => setOpen(!open)} className="rounded-sm p-2 lg:hidden" aria-label="Menú">
-          {open ? <X /> : <Menu />}
-        </button>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                {socials.map(({ Icon, href }, i) => (
+                  <a
+                    key={i}
+                    href={href}
+                    className="grid h-7 w-7 place-items-center rounded-full bg-foreground text-white transition hover:bg-brand-red"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </a>
+                ))}
+              </div>
+              <Link
+                to="/contacto"
+                className="rounded-sm bg-brand-red px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:brightness-110"
+              >
+                Cotizar Ahora
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {open && (
-        <div className="border-t border-border bg-background lg:hidden">
-          <nav className="flex flex-col p-4">
+      {/* Main nav bar */}
+      <div className="border-b border-border/60 bg-[#f3f3f3]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8">
+          <nav className="hidden flex-1 items-stretch justify-center lg:flex">
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                onClick={() => setOpen(false)}
-                className="rounded-sm px-4 py-3 text-sm font-medium hover:bg-brand-soft"
-                activeProps={{ className: "text-brand-blue bg-brand-soft" }}
+                className="relative px-7 py-4 text-xs font-bold uppercase tracking-wider text-foreground/75 transition-colors hover:text-brand-red"
+                activeProps={{ className: "bg-brand-red text-white hover:text-white" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
                 {item.label}
               </Link>
             ))}
-            <Link to="/contacto" onClick={() => setOpen(false)} className="mt-2 rounded-sm bg-brand-red px-5 py-3 text-center text-sm font-semibold text-white">
-              Solicitar Cotización
-            </Link>
           </nav>
+
+          <button onClick={() => setOpen(!open)} className="ml-auto rounded-sm p-3 lg:hidden" aria-label="Menú">
+            {open ? <X /> : <Menu />}
+          </button>
         </div>
-      )}
+
+        {open && (
+          <nav className="flex flex-col bg-white lg:hidden">
+            {nav.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setOpen(false)}
+                className="border-t border-border px-5 py-3 text-xs font-bold uppercase tracking-wider text-foreground/80"
+                activeProps={{ className: "bg-brand-red text-white" }}
+                activeOptions={{ exact: item.to === "/" }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        )}
+      </div>
     </header>
   );
 }
