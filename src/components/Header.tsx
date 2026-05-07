@@ -3,10 +3,11 @@ import { useState } from "react";
 import { Menu, X, Mail, Phone, Facebook, Linkedin, Instagram, Youtube, Twitter } from "lucide-react";
 import { Logo } from "./Logo";
 
-const nav: { to: "/" | "/nosotros" | "/servicios" | "/proyectos" | "/contacto"; label: string }[] = [
+const nav: { to: "/" | "/nosotros" | "/servicios" | "/flota" | "/proyectos" | "/contacto"; label: string }[] = [
   { to: "/", label: "INICIO" },
   { to: "/nosotros", label: "NOSOTROS" },
   { to: "/servicios", label: "SERVICIOS" },
+  { to: "/flota", label: "FLOTA" },
   { to: "/proyectos", label: "PROYECTOS" },
   { to: "/contacto", label: "CONTÁCTENOS" },
 ];
