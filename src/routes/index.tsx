@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote } from "lucide-react";
+import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront } from "lucide-react";
 import hero from "@/assets/hero-construction.jpg";
 import { HeroSlider } from "@/components/HeroSlider";
 import { ClientsCarousel } from "@/components/ClientsCarousel";
@@ -8,6 +8,7 @@ import servicios from "@/assets/servicios-generales.jpg";
 import proyectos from "@/assets/proyectos-integrales.jpg";
 import aboutFleet from "@/assets/about-fleet.jpg";
 import manager from "@/assets/manager.jpg";
+import truck from "@/assets/truck.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -113,40 +114,74 @@ function Index() {
 
       {/* SERVICES */}
       <section className="bg-brand-soft py-16 md:py-20">
-        <div className="mx-auto max-w-7xl px-4 md:px-8">
-          <div className="mb-10 text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-red">Servicio de alquiler de vehículos</span>
-            <h2 className="mt-3 text-4xl font-extrabold text-brand-blue-dark md:text-5xl">
+        <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 md:px-8 lg:grid-cols-2">
+          {/* Left: title + checklist */}
+          <div>
+            <h2 className="text-4xl font-extrabold text-brand-blue-dark md:text-5xl">
               Nuestros <span className="text-brand-blue">Servicios</span>
             </h2>
-            <div className="mx-auto mt-4 h-1 w-20 bg-brand-red" />
+            <p className="mt-5 text-base leading-relaxed text-foreground/70">
+              En VARMAR brindamos servicios integrales de obras civiles, mantenimiento
+              industrial y alquiler de unidades vehiculares para los sectores minero,
+              energético y de construcción. Además ofrecemos:
+            </p>
+
+            <ul className="mt-6 space-y-3">
+              {[
+                "Servicio de transporte especializado en camionetas 4x4.",
+                "Servicio de transporte de personal en minivan, mini bus y bus.",
+                "Alquiler de camionetas 4x4.",
+                "Alquiler de autos.",
+                "Servicio de conductor especializado en 4x4.",
+                "Servicio especial de resguardo - autorizados por la SUCAMEC.",
+                "Transporte de carga.",
+              ].map((t) => (
+                <li key={t} className="flex items-start gap-3 text-sm text-foreground/80">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-blue" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-6 text-sm leading-relaxed text-foreground/70">
+              Nos comprometemos a proporcionar servicios de alta calidad y atención
+              personalizada. Confíe en nosotros para todas sus necesidades de transporte
+              y alquiler de vehículos.
+            </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {services.map((s, i) => (
-              <article
-                key={s.title}
-                className="group flex flex-col overflow-hidden rounded-sm bg-white shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[var(--shadow-glow)]"
-                style={{ animation: `fadeUp 0.6s ${i * 0.1}s both` }}
+          {/* Right: tile grid */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            {[
+              { icon: CarFront, label: "Camionetas 4x4" },
+              { icon: Bus, label: "Minivan" },
+              { icon: Bus, label: "Mini Bus y Bus" },
+              { icon: Car, label: "Alquiler de Autos" },
+              { icon: UserCheck, label: "Conductores Especializados" },
+              { icon: ShieldIcon, label: "Resguardo Autorizado" },
+              { icon: Truck, label: "Transporte de Carga" },
+            ].map((it) => (
+              <div
+                key={it.label}
+                className="group flex aspect-square flex-col items-center justify-center gap-2 rounded-sm bg-brand-blue p-4 text-center text-white shadow-md transition hover:-translate-y-1 hover:bg-brand-blue-dark"
               >
-                <div className="border-b-2 border-brand-red bg-white py-3 text-center">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-brand-blue-dark">{s.title}</h3>
-                </div>
-                <div className="relative h-48 overflow-hidden">
-                  <img src={s.img} alt={s.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-blue">{s.subtitle}</h4>
-                  <p className="mt-3 flex-1 text-sm italic leading-relaxed text-foreground/70">{s.desc}</p>
-                  <Link
-                    to="/servicios"
-                    className="mt-5 inline-flex w-fit items-center gap-2 rounded-sm bg-brand-blue px-5 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-brand-red"
-                  >
-                    Leer más <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              </article>
+                <it.icon className="h-10 w-10 transition-transform group-hover:scale-110" strokeWidth={1.5} />
+                <span className="text-[11px] font-bold uppercase leading-tight tracking-wider sm:text-xs">
+                  {it.label}
+                </span>
+              </div>
             ))}
+            {/* truck photo tile */}
+            <div className="col-span-2 aspect-square overflow-hidden rounded-sm shadow-md sm:col-span-2">
+              <img
+                src={truck}
+                alt="Transporte de carga"
+                width={768}
+                height={512}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+              />
+            </div>
           </div>
         </div>
       </section>
