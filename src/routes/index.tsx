@@ -9,6 +9,10 @@ import proyectos from "@/assets/proyectos-integrales.jpg";
 import aboutFleet from "@/assets/about-fleet.jpg";
 import manager from "@/assets/manager.jpg";
 import truck from "@/assets/truck.jpg";
+import s1 from "@/assets/slide-1.png";
+import s2 from "@/assets/slide-2.png";
+import s3 from "@/assets/slide-3.png";
+import s4 from "@/assets/slide-4.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
