@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote } from "lucide-react";
 import hero from "@/assets/hero-construction.jpg";
 import { HeroSlider } from "@/components/HeroSlider";
+import { ClientsCarousel } from "@/components/ClientsCarousel";
 import obras from "@/assets/obras-civiles.jpg";
 import servicios from "@/assets/servicios-generales.jpg";
 import proyectos from "@/assets/proyectos-integrales.jpg";
@@ -166,6 +167,9 @@ function Index() {
           ))}
         </div>
       </section>
+
+      {/* CLIENTS */}
+      <ClientsCarousel />
 
       {/* STATS */}
       <section className="bg-brand-soft py-20">
