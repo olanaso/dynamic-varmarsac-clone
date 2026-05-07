@@ -19,9 +19,27 @@ export const Route = createFileRoute("/")({
 });
 
 const services = [
-  { icon: Building2, title: "Obras Civiles", desc: "Ejecutamos obras civiles con altos estándares de calidad, seguridad y cumplimiento técnico.", img: obras },
-  { icon: Wrench, title: "Servicios Generales", desc: "Brindamos soluciones eficientes en mantenimiento, instalaciones y servicios para diferentes sectores industriales.", img: servicios },
-  { icon: Sparkles, title: "Proyectos Integrales", desc: "Gestionamos y ejecutamos proyectos integrales de principio a fin, asegurando resultados confiables y sostenibles.", img: proyectos },
+  {
+    icon: Building2,
+    title: "Minería y Construcción",
+    subtitle: "Alquiler de camionetas corporativas",
+    desc: "Brindamos la posibilidad de contar con nuestras unidades vehiculares y especializadas, ideales para los proyectos más exigentes en zonas mineras y de construcción a nivel nacional.",
+    img: obras,
+  },
+  {
+    icon: Wrench,
+    title: "Exploración",
+    subtitle: "Alquiler de camionetas corporativas",
+    desc: "Contamos con camionetas corporativas equipadas para acompañar trabajos de exploración en cualquier terreno, garantizando seguridad, eficiencia y respaldo operativo permanente.",
+    img: servicios,
+  },
+  {
+    icon: Sparkles,
+    title: "Turismo",
+    subtitle: "Renta de vehículos para turismo",
+    desc: "Ofrecemos vehículos modernos y cómodos para servicios de turismo, con un equipo profesional que garantiza una experiencia segura, puntual y de la más alta calidad.",
+    img: proyectos,
+  },
 ];
 
 const features = [
@@ -92,32 +110,43 @@ function Index() {
         </div>
       </section>
 
-      {/* SERVICES CARDS */}
-      <section className="mx-auto max-w-7xl px-4 pt-4 md:px-8">
-        <div className="grid gap-6 md:grid-cols-3">
-          {services.map((s, i) => (
-            <article
-              key={s.title}
-              className="group relative overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[var(--shadow-glow)]"
-              style={{ animation: `fadeUp 0.6s ${i * 0.1}s both` }}
-            >
-              <div className="grid grid-cols-[1fr_auto] items-stretch">
-                <div className="p-6">
-                  <div className="grid h-12 w-12 place-items-center rounded-full bg-brand-blue/10 text-brand-blue">
-                    <s.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-bold text-brand-blue-dark">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/70">{s.desc}</p>
-                  <Link to="/servicios" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-blue">
-                    Ver más <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
+      {/* SERVICES */}
+      <section className="bg-brand-soft py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="mb-10 text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-red">Servicio de alquiler de vehículos</span>
+            <h2 className="mt-3 text-4xl font-extrabold text-brand-blue-dark md:text-5xl">
+              Nuestros <span className="text-brand-blue">Servicios</span>
+            </h2>
+            <div className="mx-auto mt-4 h-1 w-20 bg-brand-red" />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {services.map((s, i) => (
+              <article
+                key={s.title}
+                className="group flex flex-col overflow-hidden rounded-sm bg-white shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[var(--shadow-glow)]"
+                style={{ animation: `fadeUp 0.6s ${i * 0.1}s both` }}
+              >
+                <div className="border-b-2 border-brand-red bg-white py-3 text-center">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-brand-blue-dark">{s.title}</h3>
                 </div>
-                <div className="relative w-28 overflow-hidden md:w-36">
+                <div className="relative h-48 overflow-hidden">
                   <img src={s.img} alt={s.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 </div>
-              </div>
-            </article>
-          ))}
+                <div className="flex flex-1 flex-col p-6">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-blue">{s.subtitle}</h4>
+                  <p className="mt-3 flex-1 text-sm italic leading-relaxed text-foreground/70">{s.desc}</p>
+                  <Link
+                    to="/servicios"
+                    className="mt-5 inline-flex w-fit items-center gap-2 rounded-sm bg-brand-blue px-5 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-brand-red"
+                  >
+                    Leer más <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
