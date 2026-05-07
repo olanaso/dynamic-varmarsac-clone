@@ -69,7 +69,7 @@ export function HeroSlider() {
                 <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
                   <Link
                     to="/contacto"
-                    className="rounded-sm bg-brand-red px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110"
+                    className="rounded-sm bg-sky-500 px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-sky-600"
                   >
                     Contáctenos
                   </Link>
