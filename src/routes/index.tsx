@@ -216,7 +216,7 @@ function Index() {
       <ClientsCarousel />
 
       {/* NUESTRA FLOTA */}
-      <section className="bg-slate-200 py-16 md:py-20">
+      <section className="bg-slate-200 py-10 md:py-12">
         <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
           <h2 className="text-4xl font-extrabold text-brand-blue-dark md:text-5xl">
             Nuestra <span className="text-sky-500">Flota</span>
