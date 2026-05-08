@@ -6,6 +6,7 @@ import s3 from "@/assets/serv-3.png";
 import s4 from "@/assets/serv-4.png";
 import s5 from "@/assets/serv-5.png";
 import sFortuner from "@/assets/serv-fortuner.png";
+import sGps from "@/assets/serv-gps.png";
 
 export const Route = createFileRoute("/servicios")({
   head: () => ({
@@ -198,6 +199,19 @@ function Servicios() {
               </article>
             ))}
           </div>
+
+          {/* Captura del sistema de monitoreo GPS */}
+          <figure className="mt-10 overflow-hidden rounded-sm border border-border bg-white shadow-lg">
+            <img
+              src={sGps}
+              alt="Plataforma de monitoreo GPS GoldCar — Seguimiento en tiempo real de la flota VARMAR"
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+            <figcaption className="border-t border-border bg-brand-blue-dark px-5 py-3 text-xs font-semibold uppercase tracking-wider text-white">
+              Plataforma de seguimiento GPS en tiempo real — Flota VARMAR
+            </figcaption>
+          </figure>
         </div>
       </section>
     </>
