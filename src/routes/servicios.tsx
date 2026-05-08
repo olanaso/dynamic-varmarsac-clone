@@ -117,6 +117,89 @@ function Servicios() {
           </div>
         </div>
       </section>
+      {/* RUTA LARGA E INTERPROVINCIALES */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 md:grid-cols-2 md:px-8">
+          <div>
+            <h2 className="text-4xl font-extrabold uppercase leading-tight tracking-tight text-brand-blue-dark md:text-5xl">
+              Ruta Larga e<br />Interprovinciales
+            </h2>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="h-1 w-12 bg-brand-blue" />
+              <span className="h-1 w-24 bg-brand-red" />
+            </div>
+            <p className="mt-6 text-base leading-relaxed text-foreground/80">
+              Ofrecemos el servicio de alquiler de camionetas Fortuner para rutas
+              largas a nivel interprovincial.
+            </p>
+            <ul className="mt-5 space-y-2.5">
+              {[
+                "Cusco - Challhuahuacho - Cusco",
+                "Cusco - Abancay - Cusco",
+                "Cusco - Espinar - Cusco",
+              ].map((r) => (
+                <li key={r} className="flex items-start gap-3 text-sm text-foreground/80 md:text-base">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-blue" />
+                  <span>{r}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="relative overflow-hidden rounded-sm shadow-lg">
+            <img
+              src={sFortuner}
+              alt="Camionetas Fortuner para rutas interprovinciales"
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+            <span className="absolute right-0 top-0 h-full w-2 bg-brand-red" />
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSPORTE DE PASAJEROS */}
+      <section className="bg-brand-soft py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="max-w-3xl">
+            <h2 className="text-4xl font-extrabold uppercase leading-tight tracking-tight text-brand-blue-dark md:text-5xl">
+              Transporte<br />de Pasajeros
+            </h2>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="h-1 w-12 bg-brand-blue" />
+              <span className="h-1 w-24 bg-brand-red" />
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                n: "01",
+                t: "Comodidad y equipamiento",
+                d: "Vehículos completamente acondicionados para la comodidad del pasajero. Nuestras unidades cuentan con asientos reclinables, climatizador y sistema de entretenimiento de video y música.",
+              },
+              {
+                n: "02",
+                t: "Conductores profesionales",
+                d: "Nuestros conductores tienen las competencias, experiencia, educación y formación necesaria para brindar un servicio Seguro y de Calidad.",
+              },
+              {
+                n: "03",
+                t: "Monitoreo GPS 24/7",
+                d: "Cuenta con un sistema de monitoreo GPS para todos los servicios contratados, garantizando trazabilidad y seguridad en ruta.",
+              },
+            ].map((c) => (
+              <article
+                key={c.n}
+                className="rounded-sm bg-white p-7 shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-glow)]"
+              >
+                <div className="text-4xl font-extrabold text-brand-blue">{c.n}</div>
+                <h3 className="mt-3 text-lg font-bold text-brand-blue-dark">{c.t}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-foreground/70">{c.d}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 }
