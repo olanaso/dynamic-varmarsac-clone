@@ -7,26 +7,10 @@ import s3 from "@/assets/slide-3.png";
 import s4 from "@/assets/slide-4.png";
 
 const slides = [
-  {
-    img: s1,
-    tags: ["OBRAS CIVILES", "INFRAESTRUCTURA", "EDIFICACIONES", "INDUSTRIA"],
-    title: "Construimos con calidad y confianza en obras civiles y proyectos integrales.",
-  },
-  {
-    img: s2,
-    tags: ["MINERÍA", "ENERGÍA", "TRANSPORTE", "LOGÍSTICA"],
-    title: "Equipos y personal preparados para los terrenos más exigentes del Perú.",
-  },
-  {
-    img: s3,
-    tags: ["MANTENIMIENTO", "MONTAJE", "SERVICIOS", "OPERACIONES"],
-    title: "Soluciones eficientes en servicios generales para diferentes sectores.",
-  },
-  {
-    img: s4,
-    tags: ["GESTIÓN", "EJECUCIÓN", "SUPERVISIÓN", "CALIDAD"],
-    title: "Gestionamos proyectos integrales con resultados confiables y sostenibles.",
-  },
+  { img: s1, title: "Construimos con calidad y confianza" },
+  { img: s2, title: "Servicios de alquiler y arrendamiento de vehículos" },
+  { img: s3, title: "Soluciones eficientes en servicios generales" },
+  { img: s4, title: "Gestionamos proyectos integrales y confiables" },
 ];
 
 export function HeroSlider() {
@@ -50,37 +34,17 @@ export function HeroSlider() {
             alt=""
             className={`h-full w-full object-cover transition-transform duration-[8000ms] ease-out ${idx === i ? "scale-110" : "scale-100"}`}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
 
-          <div className="absolute inset-0 flex items-center">
-            <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12">
-              <div className={`max-w-2xl transition-all duration-1000 ${idx === i ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-bold uppercase tracking-wider text-white sm:text-xs">
-                  {s.tags.map((t, k) => (
-                    <span key={t} className="flex items-center gap-3">
-                      {t}
-                      {k < s.tags.length - 1 && <span className="text-white/50">|</span>}
-                    </span>
-                  ))}
-                </div>
-                <h1 className="mt-5 text-3xl font-extrabold leading-[1.15] text-white sm:mt-6 sm:text-4xl md:text-5xl lg:text-[3.25rem]">
-                  {s.title}
-                </h1>
-                <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
-                  <Link
-                    to="/contacto"
-                    className="rounded-sm bg-sky-500 px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-sky-600"
-                  >
-                    Contáctenos
-                  </Link>
-                  <Link
-                    to="/proyectos"
-                    className="rounded-sm bg-white/95 px-7 py-3.5 text-sm font-semibold text-foreground shadow-md transition hover:bg-white"
-                  >
-                    Proyectos
-                  </Link>
-                </div>
-              </div>
+          {/* Label box bottom-left */}
+          <div className="absolute bottom-10 left-0 max-w-[85%] sm:bottom-14 sm:max-w-md md:bottom-20 md:max-w-lg">
+            <div
+              className={`bg-brand-blue px-5 py-4 shadow-lg transition-all duration-700 sm:px-7 sm:py-5 ${
+                idx === i ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0"
+              }`}
+            >
+              <h2 className="text-base font-extrabold uppercase leading-snug tracking-wide text-white sm:text-lg md:text-xl">
+                {s.title}...
+              </h2>
             </div>
           </div>
         </div>
