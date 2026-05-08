@@ -84,23 +84,11 @@ export function HeroSlider() {
                   <span className="h-1 w-20 bg-brand-red" />
                 </div>
 
-                {/* Features */}
-                <div className="mt-8 grid grid-cols-3 gap-4 sm:gap-6">
-                  {features.map((f) => (
-                    <div key={f.label} className="flex flex-col items-center text-center sm:items-start sm:text-left">
-                      <f.icon className="h-8 w-8 text-brand-blue sm:h-10 sm:w-10" strokeWidth={1.5} />
-                      <span className="mt-2 whitespace-pre-line text-[10px] font-bold uppercase leading-tight tracking-wider text-brand-blue-dark sm:text-xs">
-                        {f.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
                 {/* CTA */}
                 <div className="mt-8">
                   <Link
                     to="/flota"
-                    className="inline-flex items-center gap-2 border-2 border-brand-red bg-transparent px-7 py-3 text-sm font-bold uppercase tracking-wider text-brand-red transition hover:bg-brand-red hover:text-white"
+                    className="inline-flex items-center gap-2 bg-orange-500 px-7 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-orange-600"
                   >
                     Ver Flota <ArrowRight className="h-4 w-4" />
                   </Link>
