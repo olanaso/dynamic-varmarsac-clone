@@ -15,6 +15,9 @@ import s3 from "@/assets/flota-3.png";
 import s4 from "@/assets/flota-4.png";
 import s5 from "@/assets/flota-5.png";
 import s6 from "@/assets/flota-6.png";
+import cond1 from "@/assets/cond-1.png";
+import cond2 from "@/assets/cond-2.png";
+import cond3 from "@/assets/cond-3.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -293,6 +296,52 @@ function Index() {
                 <div className="text-5xl font-extrabold text-brand-red">{n}</div>
                 <div className="mt-2 text-sm font-medium text-foreground/70">{l}</div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CONDUCTORES HOMOLOGADOS */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="max-w-3xl">
+            <h2 className="text-4xl font-extrabold uppercase leading-tight tracking-tight text-brand-blue-dark md:text-5xl">
+              Conductores<br />Homologados
+            </h2>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="h-1 w-12 bg-brand-blue" />
+              <span className="h-1 w-24 bg-brand-red" />
+            </div>
+            <p className="mt-6 text-base leading-relaxed text-foreground/80">
+              Nuestros conductores cuentan con la documentación FOTOCHECK, evaluación
+              médica SCTR, Vida ley, licencia profesional, cursos y capacitaciones
+              requeridas por los clientes para asegurar la seguridad y calidad en
+              nuestro servicio de todo costo, incluido conductor y maquina.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { img: cond1, label: "Conductor Camioneta 4x4" },
+              { img: cond2, label: "Conductor Mercedes Sprinter" },
+              { img: cond3, label: "Conductor Toyota Hiace" },
+            ].map((c) => (
+              <figure
+                key={c.label}
+                className="group relative aspect-[3/4] overflow-hidden rounded-sm shadow-md"
+              >
+                <img
+                  src={c.img}
+                  alt={c.label}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-blue-dark/95 to-transparent p-4">
+                  <span className="text-xs font-bold uppercase tracking-wider text-white">
+                    {c.label}
+                  </span>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
