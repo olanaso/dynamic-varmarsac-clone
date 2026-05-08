@@ -15,6 +15,9 @@ import s3 from "@/assets/flota-3.png";
 import s4 from "@/assets/flota-4.png";
 import s5 from "@/assets/flota-5.png";
 import s6 from "@/assets/flota-6.png";
+import cond1 from "@/assets/cond-1.png";
+import cond2 from "@/assets/cond-2.png";
+import cond3 from "@/assets/cond-3.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
