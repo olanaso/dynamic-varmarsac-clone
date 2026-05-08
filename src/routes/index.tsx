@@ -298,6 +298,44 @@ function Index() {
         </div>
       </section>
 
+      {/* VALORES */}
+      <section className="bg-brand-blue-dark py-16 md:py-20">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 md:grid-cols-2 md:px-8">
+          <div className="flex flex-col items-center md:items-start">
+            <h2 className="text-5xl font-extrabold uppercase tracking-tight text-white md:text-6xl">Valores</h2>
+            <div className="mt-4 flex items-center gap-2">
+              <span className="h-1 w-10 bg-brand-blue" />
+              <span className="h-1 w-20 bg-brand-red" />
+            </div>
+            <HandshakeIcon className="mt-8 h-40 w-40 text-white md:h-52 md:w-52" strokeWidth={1.2} />
+          </div>
+
+          <ul className="space-y-4">
+            {[
+              "Seguridad",
+              "Calidad",
+              "Compromiso",
+              "Responsabilidad",
+              "Puntualidad",
+              "Trabajo en Equipo",
+            ].map((v, idx) => (
+              <li
+                key={v}
+                className="flex items-center gap-4"
+                style={{ marginLeft: `${idx * 8}px` }}
+              >
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-white bg-white shadow-md">
+                  <span className="h-2 w-2 rounded-full bg-brand-blue-dark" />
+                </span>
+                <div className="flex-1 rounded-sm bg-white/15 px-5 py-3 backdrop-blur-sm">
+                  <span className="text-base font-semibold text-white md:text-lg">{v}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 md:py-20 bg-slate-100">
         <div className="relative mx-auto max-w-5xl px-4 text-center md:px-8">
