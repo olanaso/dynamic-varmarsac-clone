@@ -87,13 +87,7 @@ export function HeroSlider() {
       />
 
       {/* Panel blanco izquierdo */}
-      <div className="relative z-10 flex min-h-[640px] w-full flex-col bg-white/95 backdrop-blur-sm lg:min-h-0 lg:h-full lg:w-[55%]"
-        style={{
-          clipPath: typeof window !== "undefined" && window.innerWidth >= 1024
-            ? "polygon(0 0, 100% 0, 88% 100%, 0 100%)"
-            : undefined,
-        }}
-      >
+      <div className="relative z-10 flex min-h-[640px] w-full flex-col bg-white/95 backdrop-blur-sm lg:min-h-0 lg:h-full lg:w-[55%] lg:[clip-path:polygon(0_0,100%_0,88%_100%,0_100%)]">
         <div className="flex flex-1 flex-col px-6 pt-8 sm:px-10 md:px-14 md:pt-10 lg:pl-[8%] lg:pr-[12%]">
           {/* Logo */}
           <img src={logo} alt="VARMAR S.A.C." className="h-14 w-auto md:h-16 lg:h-20" />
