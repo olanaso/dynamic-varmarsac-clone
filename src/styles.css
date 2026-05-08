@@ -169,20 +169,49 @@
 
 @layer base {
   * { border-color: var(--color-border); -webkit-tap-highlight-color: transparent; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    font-family: "Segoe UI", Arial, Helvetica, "Helvetica Neue", sans-serif;
+    font-size: 16px;
+  }
   body {
     background-color: var(--color-background);
     color: var(--body);
-    font-family: Arial, Helvetica, "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font-family: inherit;
+    font-size: 1rem;       /* 16px */
+    line-height: 1.65;
     font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 {
-    font-family: Arial, Helvetica, "Helvetica Neue", sans-serif;
+
+  /* Unified type scale ----------------------------------------------- */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
     color: var(--foreground);
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin: 0;
   }
+  h1 { font-size: clamp(2rem, 4.2vw, 3rem); line-height: 1.15; }   /* 32–48px */
+  h2 { font-size: clamp(1.625rem, 3vw, 2.25rem); }                 /* 26–36px */
+  h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); }                   /* 20–24px */
+  h4 { font-size: 1.125rem; }                                       /* 18px   */
+  h5 { font-size: 1rem; font-weight: 600; }                         /* 16px   */
+  h6 { font-size: 0.9375rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  p, li, label, dd, dt, blockquote {
+    font-size: 1rem;       /* 16px */
+    line-height: 1.65;
+  }
+  small { font-size: 0.8125rem; line-height: 1.5; }                /* 13px */
+
+  button, input, select, textarea { font-family: inherit; }
+
   img { max-width: 100%; height: auto; }
 }
+
 
