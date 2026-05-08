@@ -275,7 +275,7 @@ function Index() {
             Ver Nuestra Flota <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="mt-12 h-3 w-full bg-brand-blue-dark" />
+        <div className="mt-12 h-px w-full bg-brand-blue-dark/30" />
       </section>
 
       {/* STATS */}
