@@ -65,7 +65,7 @@ export function HeroSlider() {
           {/* Left white panel with content */}
           <div className="absolute inset-y-0 left-0 flex w-full items-center md:w-[55%] lg:w-[48%]">
             <div
-              className={`relative ml-0 h-full w-full bg-white/95 px-6 py-10 backdrop-blur-sm transition-all duration-700 sm:px-10 md:py-12 lg:px-16 ${
+              className={`relative ml-0 h-full w-full bg-white/40 px-6 py-10 backdrop-blur-[2px] transition-all duration-700 sm:px-10 md:py-12 lg:px-16 ${
                 idx === i ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"
               }`}
               style={{ clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%)" }}
