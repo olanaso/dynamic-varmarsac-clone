@@ -63,14 +63,17 @@ export function HeroSlider() {
           />
 
           {/* Left white panel with content */}
-          <div className="absolute inset-y-0 left-0 flex w-full items-center md:w-[55%] lg:w-[48%]">
+          <div className="absolute inset-y-0 left-0 flex w-full items-center md:w-[60%] lg:w-[55%]">
             <div
-              className={`relative ml-0 h-full w-full bg-white/40 px-6 py-10 backdrop-blur-[2px] transition-all duration-700 sm:px-10 md:py-12 lg:px-16 ${
+              className={`relative ml-0 h-full w-full px-6 py-10 transition-all duration-700 sm:px-10 md:py-12 lg:px-16 ${
                 idx === i ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"
               }`}
-              style={{ clipPath: "polygon(0 0, 100% 0, 88% 100%, 0 100%)" }}
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.85) 45%, rgba(255,255,255,0.5) 75%, rgba(255,255,255,0) 100%)",
+              }}
             >
-              <div className="flex h-full max-w-xl flex-col justify-center">
+              <div className="flex h-full max-w-xl flex-col justify-center [text-shadow:0_1px_2px_rgba(255,255,255,0.6)]">
                 <h1 className="text-3xl font-light leading-tight text-brand-blue-dark sm:text-4xl md:text-5xl lg:text-6xl">
                   {s.pre}
                   <br />
