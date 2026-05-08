@@ -6,6 +6,7 @@ import s3 from "@/assets/serv-3.png";
 import s4 from "@/assets/serv-4.png";
 import s5 from "@/assets/serv-5.png";
 import sFortuner from "@/assets/serv-fortuner.png";
+import sGps from "@/assets/serv-gps.png";
 
 export const Route = createFileRoute("/servicios")({
   head: () => ({
