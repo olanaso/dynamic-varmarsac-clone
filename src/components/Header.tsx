@@ -1,16 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Menu, X, Mail, Phone, Facebook, Linkedin, Instagram, Youtube, Twitter } from "lucide-react";
 import { Logo } from "./Logo";
-
-const nav: { to: "/" | "/nosotros" | "/servicios" | "/flota" | "/proyectos" | "/contacto"; label: string }[] = [
-  { to: "/", label: "INICIO" },
-  { to: "/nosotros", label: "NOSOTROS" },
-  { to: "/servicios", label: "SERVICIOS" },
-  { to: "/flota", label: "FLOTA" },
-  { to: "/proyectos", label: "PROYECTOS" },
-  { to: "/contacto", label: "CONTÁCTENOS" },
-];
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const socials = [
   { Icon: Facebook, href: "#" },
@@ -22,6 +15,15 @@ const socials = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
+  const nav: { to: "/" | "/nosotros" | "/servicios" | "/flota" | "/proyectos" | "/contacto"; label: string }[] = [
+    { to: "/", label: t("nav.inicio") },
+    { to: "/nosotros", label: t("nav.nosotros") },
+    { to: "/servicios", label: t("nav.servicios") },
+    { to: "/flota", label: t("nav.flota") },
+    { to: "/proyectos", label: t("nav.proyectos") },
+    { to: "/contacto", label: t("nav.contacto") },
+  ];
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       {/* Top utility bar */}
@@ -53,11 +55,12 @@ export function Header() {
                   </a>
                 ))}
               </div>
+              <LanguageSwitcher />
               <Link
                 to="/contacto"
                 className="rounded-sm bg-brand-red px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:brightness-110"
               >
-                Cotizar Ahora
+                {t("nav.cotizar")}
               </Link>
             </div>
           </div>
