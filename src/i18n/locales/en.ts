@@ -77,6 +77,8 @@ export const en = {
     valuesTitle: "Values",
     values: ["Safety", "Quality", "Commitment", "Responsibility", "Punctuality", "Teamwork"],
     ctaTitle: "Ready to start your next project?",
+    ctaText: "Let's talk about your needs and design the best solution for your company together.",
+    ctaBtn: "Request a Quote",
   },
   flota: {
     kicker: "VARMAR",

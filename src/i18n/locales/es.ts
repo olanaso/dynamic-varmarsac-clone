@@ -77,6 +77,8 @@ export const es = {
     valuesTitle: "Valores",
     values: ["Seguridad", "Calidad", "Compromiso", "Responsabilidad", "Puntualidad", "Trabajo en Equipo"],
     ctaTitle: "¿Listo para iniciar tu próximo proyecto?",
+    ctaText: "Conversemos sobre tus necesidades y diseñemos juntos la mejor solución para tu empresa.",
+    ctaBtn: "Solicitar Cotización",
   },
   flota: {
     kicker: "VARMAR",
