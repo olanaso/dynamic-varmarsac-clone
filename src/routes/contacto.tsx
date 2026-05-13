@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/contacto")({
@@ -14,75 +15,70 @@ export const Route = createFileRoute("/contacto")({
 
 function Contacto() {
   const [sent, setSent] = useState(false);
+  const { t } = useTranslation();
+  const cards = t("contacto.cards", { returnObjects: true }) as { t: string; d: string }[];
+  const services = t("contacto.services", { returnObjects: true }) as string[];
+  const icons = [MapPin, MapPin, Phone, Phone, Mail];
   return (
     <>
       <section className="bg-gradient-to-br from-brand-soft to-white py-12">
         <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
-          <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">Hablemos</span>
-          <h1 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-4xl">Contáctanos</h1>
-          <p className="mx-auto mt-4 max-w-xl text-foreground/70">Cuéntanos sobre tu proyecto y te respondemos en menos de 24 horas.</p>
+          <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">{t("contacto.kicker")}</span>
+          <h1 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-4xl">{t("contacto.title")}</h1>
+          <p className="mx-auto mt-4 max-w-xl text-foreground/70">{t("contacto.intro")}</p>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-20 md:px-8">
         <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr]">
           <div className="space-y-4">
-            {[
-              { icon: MapPin, t: "Apurímac", d: "Las Bambas - Barrio Manantiales S/N" },
-              { icon: MapPin, t: "Cusco", d: "Villa Unión Huancaro C-8 (Detrás del mercado de Huancaro)" },
-              { icon: Phone, t: "Celulares", d: "950-396818 / 932-128706" },
-              { icon: Phone, t: "Teléfono", d: "084-284833" },
-              { icon: Mail, t: "Email", d: "info@varmarsac.com" },
-            ].map((c) => (
-              <div key={c.t} className="flex items-start gap-4 rounded-sm bg-white p-6 shadow-[var(--shadow-card)]">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-sm bg-brand-blue text-white"><c.icon /></div>
-                <div>
-                  <div className="text-sm font-bold text-brand-blue-dark">{c.t}</div>
-                  <div className="mt-1 text-sm text-foreground/70">{c.d}</div>
+            {cards.map((c, i) => {
+              const Icon = icons[i];
+              return (
+                <div key={c.t} className="flex items-start gap-4 rounded-sm bg-white p-6 shadow-[var(--shadow-card)]">
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-sm bg-brand-blue text-white"><Icon /></div>
+                  <div>
+                    <div className="text-sm font-bold text-brand-blue-dark">{c.t}</div>
+                    <div className="mt-1 text-sm text-foreground/70">{c.d}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div className="rounded-sm bg-brand-blue p-6 text-white">
-              <div className="text-sm font-bold uppercase tracking-wider">Horario</div>
-              <div className="mt-2 text-sm text-white/85">Lun – Vie: 8:00 — 18:00</div>
-              <div className="text-sm text-white/85">Sábado: 9:00 — 13:00</div>
+              <div className="text-sm font-bold uppercase tracking-wider">{t("contacto.schedule")}</div>
+              <div className="mt-2 text-sm text-white/85">{t("contacto.sched1")}</div>
+              <div className="text-sm text-white/85">{t("contacto.sched2")}</div>
             </div>
           </div>
 
-          <form
-            onSubmit={(e) => { e.preventDefault(); setSent(true); }}
-            className="rounded-sm bg-white p-8 shadow-[var(--shadow-card)]"
-          >
+          <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="rounded-sm bg-white p-8 shadow-[var(--shadow-card)]">
             {sent ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <CheckCircle2 className="h-16 w-16 text-brand-blue" />
-                <h3 className="mt-4 text-2xl font-bold text-brand-blue-dark">¡Mensaje enviado!</h3>
-                <p className="mt-2 text-foreground/70">Te contactaremos pronto.</p>
+                <h3 className="mt-4 text-2xl font-bold text-brand-blue-dark">{t("contacto.sentTitle")}</h3>
+                <p className="mt-2 text-foreground/70">{t("contacto.sentText")}</p>
               </div>
             ) : (
               <>
-                <h2 className="text-2xl font-bold text-brand-blue-dark">Solicita tu cotización</h2>
+                <h2 className="text-2xl font-bold text-brand-blue-dark">{t("contacto.formTitle")}</h2>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <Field label="Nombre" name="nombre" />
-                  <Field label="Empresa" name="empresa" />
-                  <Field label="Email" name="email" type="email" />
-                  <Field label="Teléfono" name="tel" />
+                  <Field label={t("contacto.fName")} name="nombre" />
+                  <Field label={t("contacto.fCompany")} name="empresa" />
+                  <Field label={t("contacto.fEmail")} name="email" type="email" />
+                  <Field label={t("contacto.fPhone")} name="tel" />
                 </div>
                 <div className="mt-4">
-                  <label className="text-sm font-semibold text-brand-blue-dark">Servicio</label>
+                  <label className="text-sm font-semibold text-brand-blue-dark">{t("contacto.fService")}</label>
                   <select required className="mt-1.5 w-full rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20">
-                    <option>Obras Civiles</option>
-                    <option>Servicios Generales</option>
-                    <option>Proyecto Integral</option>
-                    <option>Otro</option>
+                    {services.map((s) => <option key={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="mt-4">
-                  <label className="text-sm font-semibold text-brand-blue-dark">Mensaje</label>
+                  <label className="text-sm font-semibold text-brand-blue-dark">{t("contacto.fMessage")}</label>
                   <textarea required rows={5} className="mt-1.5 w-full resize-none rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20" />
                 </div>
                 <button type="submit" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand-red px-6 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition hover:-translate-y-0.5">
-                  <Send className="h-4 w-4" /> Enviar mensaje
+                  <Send className="h-4 w-4" /> {t("contacto.send")}
                 </button>
               </>
             )}

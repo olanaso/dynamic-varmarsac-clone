@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { MapPin } from "lucide-react";
 import obras from "@/assets/obras-civiles.jpg";
 import servicios from "@/assets/servicios-generales.jpg";
@@ -15,34 +16,25 @@ export const Route = createFileRoute("/proyectos")({
   component: Proyectos,
 });
 
-const list = [
-  { img: obras, title: "Edificación corporativa", cat: "Obras civiles", loc: "Lima" },
-  { img: proyectos, title: "Nave industrial", cat: "Proyecto integral", loc: "Callao" },
-  { img: servicios, title: "Mantenimiento de planta", cat: "Servicios generales", loc: "Arequipa" },
-  { img: hero, title: "Centro logístico", cat: "Obras civiles", loc: "Lima" },
-  { img: proyectos, title: "Almacén refrigerado", cat: "Proyecto integral", loc: "Trujillo" },
-  { img: servicios, title: "Planta de procesamiento", cat: "Servicios generales", loc: "Ica" },
-];
+const images = [obras, proyectos, servicios, hero, proyectos, servicios];
 
 function Proyectos() {
+  const { t } = useTranslation();
+  const items = t("proyectos.items", { returnObjects: true }) as { title: string; cat: string; loc: string }[];
   return (
     <>
       <section className="bg-gradient-to-br from-brand-soft to-white py-12">
         <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
-          <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">Portafolio</span>
-          <h1 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-4xl">Nuestros Proyectos</h1>
+          <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">{t("proyectos.kicker")}</span>
+          <h1 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-4xl">{t("proyectos.title")}</h1>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((p, i) => (
-            <article
-              key={i}
-              className="group relative h-80 overflow-hidden rounded-sm shadow-[var(--shadow-card)]"
-              style={{ animation: `fadeUp 0.5s ${i * 0.08}s both` }}
-            >
-              <img src={p.img} alt={p.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          {items.map((p, i) => (
+            <article key={i} className="group relative h-80 overflow-hidden rounded-sm shadow-[var(--shadow-card)]" style={{ animation: `fadeUp 0.5s ${i * 0.08}s both` }}>
+              <img src={images[i]} alt={p.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-dark via-brand-blue-dark/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <span className="inline-block rounded-sm bg-brand-red px-3 py-1 text-[10px] font-bold uppercase tracking-wider">{p.cat}</span>
