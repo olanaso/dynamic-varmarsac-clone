@@ -227,8 +227,12 @@ function Index() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-8 lg:grid-cols-2">
           {/* COLUMNA IZQUIERDA */}
           <div>
-            <h2 className="text-6xl font-bold uppercase md:text-8xl lg:text-9xl">Cobertura</h2>
-            <p className="mt-4 text-2xl font-semibold text-foreground/80 md:text-3xl">Operamos en el sur del Perú</p>
+            <h2 className="text-4xl font-extrabold uppercase leading-tight tracking-tight text-brand-blue-dark md:text-5xl">Cobertura</h2>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="h-1 w-12 bg-brand-blue" />
+              <span className="h-1 w-24 bg-brand-red" />
+            </div>
+            <p className="mt-6 text-lg font-semibold text-foreground/80">Operamos en el sur del Perú</p>
             <p className="mt-5 text-lg text-muted-foreground">
               Con sedes estratégicas en Cusco y Apurímac, brindamos servicio a las principales operaciones mineras y destinos turísticos de la región.
             </p>
@@ -294,17 +298,17 @@ function Index() {
           </div>
 
           {/* COLUMNA DERECHA — Mapa */}
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
+          <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-brand-blue/40">
             <img
               src={mapCoverage}
               alt="Mapa de cobertura VARMAR en el sur del Perú"
               width={1024}
-              height={768}
+              height={1366}
               loading="lazy"
-              className="h-full w-full object-contain object-top"
+              className="h-full w-full object-contain object-center transition-transform duration-700 ease-out group-hover:scale-105"
             />
             {/* Overlay flotante */}
-            <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm">
+            <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm transition-all duration-500 group-hover:bg-background group-hover:shadow-lg">
               <span className="text-xs font-bold uppercase tracking-widest text-primary">Apurímac · Cusco</span>
               <p className="mt-1 text-sm font-medium text-foreground/80">
                 Cobertura completa en zonas mineras y rutas turísticas
