@@ -7,6 +7,7 @@ export const en = {
     proyectos: "PROJECTS",
     galeria: "GALLERY",
     contacto: "CONTACT",
+    terminos: "TERMS",
     cotizar: "Get a Quote",
   },
   hero: {
