@@ -21,26 +21,36 @@ import img17 from "@/assets/galeria/img17.jpeg";
 import img18 from "@/assets/galeria/img18.jpeg";
 import img19 from "@/assets/galeria/img19.jpeg";
 
-const images: { src: string; caption: string }[] = [
-  { src: img1, caption: "Operaciones en mina — accesos y plataformas" },
-  { src: img2, caption: "Acceso controlado en operación minera" },
-  { src: img3, caption: "Convoy de camionetas escolta en ruta minera" },
-  { src: img4, caption: "Unidad VARMAR junto a perforadora en tajo" },
-  { src: img5, caption: "Pala eléctrica CAT en mantenimiento de campo" },
-  { src: img6, caption: "Supervisión en mirador de tajo abierto" },
-  { src: img7, caption: "Pala eléctrica P&H — supervisión en campo" },
-  { src: img8, caption: "Camiones mineros en tajo abierto" },
-  { src: img9, caption: "Operador VARMAR junto a camión 240t" },
-  { src: img10, caption: "Camión minero cargado en ruta de acarreo" },
-  { src: img11, caption: "Operación de perforación nocturna" },
-  { src: img12, caption: "Unidad VARMAR junto a perforadoras CAT" },
-  { src: img13, caption: "Perforadora y unidad VARMAR en zona de trabajo" },
-  { src: img14, caption: "Campamento minero — condiciones de altura" },
-  { src: img15, caption: "Perforación exploratoria en clima extremo" },
-  { src: img16, caption: 'Camión 240t — "Podemos, sabemos y queremos trabajar con seguridad"' },
-  { src: img17, caption: "Acarreo de mineral al atardecer" },
-  { src: img18, caption: "Escolta a camión minero en ruta interna" },
-  { src: img19, caption: "Transporte de mineral — vista desde escolta" },
+type Category = "todas" | "operaciones" | "equipos" | "escoltas" | "campamento";
+
+const categories: { id: Category; label: string }[] = [
+  { id: "todas", label: "Todas" },
+  { id: "operaciones", label: "Operaciones Mineras" },
+  { id: "equipos", label: "Equipos y Maquinaria" },
+  { id: "escoltas", label: "Escoltas y Transporte" },
+  { id: "campamento", label: "Campamento" },
+];
+
+const images: { src: string; caption: string; category: Exclude<Category, "todas"> }[] = [
+  { src: img1, caption: "Operaciones en mina — accesos y plataformas", category: "operaciones" },
+  { src: img2, caption: "Acceso controlado en operación minera", category: "operaciones" },
+  { src: img3, caption: "Convoy de camionetas escolta en ruta minera", category: "escoltas" },
+  { src: img4, caption: "Unidad VARMAR junto a perforadora en tajo", category: "equipos" },
+  { src: img5, caption: "Pala eléctrica CAT en mantenimiento de campo", category: "equipos" },
+  { src: img6, caption: "Supervisión en mirador de tajo abierto", category: "operaciones" },
+  { src: img7, caption: "Pala eléctrica P&H — supervisión en campo", category: "equipos" },
+  { src: img8, caption: "Camiones mineros en tajo abierto", category: "equipos" },
+  { src: img9, caption: "Operador VARMAR junto a camión 240t", category: "operaciones" },
+  { src: img10, caption: "Camión minero cargado en ruta de acarreo", category: "escoltas" },
+  { src: img11, caption: "Operación de perforación nocturna", category: "operaciones" },
+  { src: img12, caption: "Unidad VARMAR junto a perforadoras CAT", category: "equipos" },
+  { src: img13, caption: "Perforadora y unidad VARMAR en zona de trabajo", category: "equipos" },
+  { src: img14, caption: "Campamento minero — condiciones de altura", category: "campamento" },
+  { src: img15, caption: "Perforación exploratoria en clima extremo", category: "campamento" },
+  { src: img16, caption: 'Camión 240t — "Podemos, sabemos y queremos trabajar con seguridad"', category: "equipos" },
+  { src: img17, caption: "Acarreo de mineral al atardecer", category: "escoltas" },
+  { src: img18, caption: "Escolta a camión minero en ruta interna", category: "escoltas" },
+  { src: img19, caption: "Transporte de mineral — vista desde escolta", category: "escoltas" },
 ];
 
 export const Route = createFileRoute("/galeria")({
