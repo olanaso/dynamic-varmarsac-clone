@@ -1,16 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Menu, X, Mail, Phone, Facebook, Linkedin, Instagram, Youtube, Twitter } from "lucide-react";
+import { Menu, X, Mail, Phone, Facebook, Linkedin, Instagram, Youtube } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const socials = [
-  { Icon: Facebook, href: "#" },
-  { Icon: Linkedin, href: "#" },
-  { Icon: Instagram, href: "#" },
-  { Icon: Youtube, href: "#" },
-  { Icon: Twitter, href: "#" },
+  { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
+  { Icon: Youtube, href: "https://www.youtube.com/channel/UCwS4WakSZRYAAfROq6LFRGQ?view_as=subscriber", label: "YouTube" },
+  { Icon: Linkedin, href: "#", label: "LinkedIn" },
+  { Icon: Instagram, href: "#", label: "Instagram" },
 ];
 
 export function Header() {
@@ -46,10 +45,13 @@ export function Header() {
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                {socials.map(({ Icon, href }, i) => (
+                {socials.map(({ Icon, href, label }) => (
                   <a
-                    key={i}
+                    key={label}
                     href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
                     className="grid h-7 w-7 place-items-center rounded-full bg-foreground text-white transition hover:bg-brand-red"
                   >
                     <Icon className="h-3.5 w-3.5" />
