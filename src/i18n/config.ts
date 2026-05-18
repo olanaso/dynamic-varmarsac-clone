@@ -1,24 +1,25 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 import { es } from "./locales/es";
 import { en } from "./locales/en";
 
 if (!i18n.isInitialized) {
-  const base = i18n.use(initReactI18next);
-  if (typeof window !== "undefined") base.use(LanguageDetector);
-  base.init({
+  i18n.use(initReactI18next).init({
     resources: { es: { translation: es }, en: { translation: en } },
     fallbackLng: "es",
-    lng: typeof window === "undefined" ? "es" : undefined,
+    lng: "es",
     supportedLngs: ["es", "en"],
+    initImmediate: false,
     interpolation: { escapeValue: false },
-    detection: {
-      order: ["localStorage", "navigator", "htmlTag"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "varmar_lang",
-    },
+    react: { useSuspense: false },
   });
+}
+
+if (typeof window !== "undefined") {
+  const storedLang = localStorage.getItem("varmar_lang");
+  if (storedLang === "es" || storedLang === "en") {
+    i18n.changeLanguage(storedLang);
+  }
 }
 
 // Geo-detection (only first visit, no stored preference)
