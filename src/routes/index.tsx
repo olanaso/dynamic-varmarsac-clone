@@ -298,17 +298,17 @@ function Index() {
           </div>
 
           {/* COLUMNA DERECHA — Mapa */}
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
+          <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-brand-blue/40">
             <img
               src={mapCoverage}
               alt="Mapa de cobertura VARMAR en el sur del Perú"
               width={1024}
-              height={768}
+              height={1366}
               loading="lazy"
-              className="h-full w-full object-contain object-top"
+              className="h-full w-full object-contain object-center transition-transform duration-700 ease-out group-hover:scale-105"
             />
             {/* Overlay flotante */}
-            <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm">
+            <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm transition-all duration-500 group-hover:bg-background group-hover:shadow-lg">
               <span className="text-xs font-bold uppercase tracking-widest text-primary">Apurímac · Cusco</span>
               <p className="mt-1 text-sm font-medium text-foreground/80">
                 Cobertura completa en zonas mineras y rutas turísticas
