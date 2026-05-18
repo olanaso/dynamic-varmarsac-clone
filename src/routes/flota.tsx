@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Info, Users, Settings2, Fuel, Gauge, Check, MessageCircle } from "lucide-react";
+import { Info, Users, Settings2, Fuel, Gauge, Check, MessageCircle, ShoppingCart, Trash2, Plus, Minus, X, RotateCcw } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   Dialog,
   DialogContent,
@@ -68,6 +69,8 @@ function FlotaPage() {
   const [servs, setServs] = useState<Servicio[]>([]);
   const [homo, setHomo] = useState<"todos" | "si" | "no">("todos");
   const [detalle, setDetalle] = useState<Vehiculo | null>(null);
+  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggle = <T,>(arr: T[], v: T): T[] => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
@@ -83,8 +86,35 @@ function FlotaPage() {
     [tipos, servs, homo],
   );
 
+  const addToCart = (id: string) => {
+    setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+    setCartOpen(true);
+  };
+  const setQty = (id: string, q: number) => {
+    setCart((c) => {
+      const next = { ...c };
+      if (q <= 0) delete next[id];
+      else next[id] = q;
+      return next;
+    });
+  };
+  const cartItems = Object.entries(cart)
+    .map(([id, qty]) => ({ v: VEHICULOS.find((x) => x.id === id)!, qty }))
+    .filter((x) => x.v);
+  const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
+  const cartTotal = cartItems.reduce((sum, i) => sum + i.v.diario * i.qty, 0);
+
   const waMsg = (v: Vehiculo) =>
-    `https://wa.me/51999999999?text=${encodeURIComponent(`Hola, quiero cotizar el ${v.nombre} (${v.modelo}).`)}`;
+    `https://wa.me/51950396818?text=${encodeURIComponent(`Hola, quiero cotizar el ${v.nombre} (${v.modelo}).`)}`;
+
+  const sendCartWA = () => {
+    if (!cartItems.length) return;
+    const lines = cartItems.map(
+      (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/ ${i.v.diario * i.qty}/día`,
+    );
+    const text = `Hola, quiero cotizar los siguientes vehículos:\n\n${lines.join("\n")}\n\nTotal referencial diario: S/ ${cartTotal}`;
+    window.open(`https://wa.me/51950396818?text=${encodeURIComponent(text)}`, "_blank");
+  };
 
   return (
     <>
@@ -189,9 +219,9 @@ function FlotaPage() {
                     <button onClick={() => setDetalle(v)} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 py-2.5 text-sm font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
                       <Info className="size-4" /> Detalles
                     </button>
-                    <a href={waMsg(v)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
-                      <MessageCircle className="size-4" /> Cotizar
-                    </a>
+                    <button onClick={() => addToCart(v.id)} className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                      <ShoppingCart className="size-4" /> Cotizar
+                    </button>
                   </div>
                 </div>
               </article>
@@ -246,14 +276,97 @@ function FlotaPage() {
                     <span className="text-2xl font-bold text-primary">S/ {detalle.mensual}</span>
                   </div>
                 </div>
-                <a href={waMsg(detalle)} target="_blank" rel="noreferrer" className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
-                  <MessageCircle className="size-5" /> Cotizar por WhatsApp
-                </a>
+                <button onClick={() => { addToCart(detalle.id); setDetalle(null); }} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                  <ShoppingCart className="size-5" /> Agregar a cotización
+                </button>
               </div>
             </>
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Floating quote button (above WhatsApp) */}
+      <button
+        onClick={() => setCartOpen(true)}
+        aria-label="Ver cotización"
+        className="fixed bottom-24 right-6 z-50 grid h-14 w-14 place-items-center rounded-full bg-brand-red text-white shadow-lg transition-transform hover:scale-110 hover:shadow-xl"
+      >
+        <ShoppingCart className="h-6 w-6" />
+        {cartCount > 0 && (
+          <span className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-sky-500 text-xs font-bold ring-2 ring-white">
+            {cartCount}
+          </span>
+        )}
+      </button>
+
+      {/* Quote side panel */}
+      <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+        <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+          <SheetHeader className="flex flex-row items-center justify-between border-b bg-brand-soft px-5 py-4 space-y-0">
+            <SheetTitle className="flex items-center gap-2 text-base font-bold">
+              <ShoppingCart className="h-5 w-5 text-brand-red" /> Mi Cotización
+            </SheetTitle>
+            {cartItems.length > 0 && (
+              <button onClick={() => setCart({})} className="flex items-center gap-1 text-xs font-semibold text-brand-red hover:opacity-80">
+                <Trash2 className="h-3.5 w-3.5" /> Limpiar
+              </button>
+            )}
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto p-5">
+            {cartItems.length === 0 ? (
+              <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
+                <ShoppingCart className="mb-3 h-12 w-12 opacity-30" />
+                <p className="text-sm">Tu cotización está vacía.</p>
+                <p className="mt-1 text-xs">Agrega vehículos para solicitar una cotización personalizada.</p>
+              </div>
+            ) : (
+              <ul className="space-y-3">
+                {cartItems.map(({ v, qty }) => (
+                  <li key={v.id} className="flex gap-3 rounded-lg border border-border bg-card p-3">
+                    <img src={v.imagen} alt={v.nombre} className="h-16 w-20 shrink-0 rounded object-cover" />
+                    <div className="flex flex-1 flex-col">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-sm font-bold leading-tight">{v.nombre}</p>
+                          <p className="text-[11px] text-muted-foreground">CÓD: {v.id.toUpperCase()}</p>
+                        </div>
+                        <button onClick={() => setQty(v.id, 0)} aria-label="Eliminar" className="text-muted-foreground hover:text-brand-red">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="mt-2 flex items-center justify-between">
+                        <div className="flex items-center rounded-md border border-border">
+                          <button onClick={() => setQty(v.id, qty - 1)} className="grid h-7 w-7 place-items-center hover:bg-muted"><Minus className="h-3 w-3" /></button>
+                          <span className="w-7 text-center text-sm font-semibold">{qty}</span>
+                          <button onClick={() => setQty(v.id, qty + 1)} className="grid h-7 w-7 place-items-center hover:bg-muted"><Plus className="h-3 w-3" /></button>
+                        </div>
+                        <span className="text-sm font-bold text-brand-red">S/ {v.diario * qty}</span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {cartItems.length > 0 && (
+            <div className="border-t bg-white p-5">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total referencial / día</span>
+                <span className="text-xl font-bold">S/ {cartTotal}</span>
+              </div>
+              <button onClick={sendCartWA} className="flex w-full items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                <MessageCircle className="h-4 w-4" /> Enviar Cotización
+              </button>
+              <button onClick={() => setCart({})} className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-brand-red px-4 py-2.5 text-xs font-bold uppercase text-brand-red transition-colors hover:bg-brand-red hover:text-white">
+                <RotateCcw className="h-3.5 w-3.5" /> Reiniciar
+              </button>
+              <p className="mt-3 text-center text-[11px] text-muted-foreground">Cotización referencial — se confirma por WhatsApp.</p>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
