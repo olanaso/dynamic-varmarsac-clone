@@ -7,9 +7,17 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { openWhatsApp } from "@/lib/whatsapp";
 
 const socials = [
-  { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
+  { Icon: Facebook, href: "https://m.facebook.com/varmar.sac", label: "Facebook" },
   { Icon: Youtube, href: "https://www.youtube.com/channel/UCwS4WakSZRYAAfROq6LFRGQ?view_as=subscriber", label: "YouTube" },
 ];
+
+const openExternalLink = (url: string) => {
+  const opened = window.open(url, "_blank", "noopener,noreferrer");
+
+  if (!opened) {
+    window.location.href = url;
+  }
+};
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -51,6 +59,10 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openExternalLink(href);
+                    }}
                     className="grid h-7 w-7 place-items-center rounded-full bg-foreground text-white transition hover:bg-brand-red"
                   >
                     <Icon className="h-3.5 w-3.5" />

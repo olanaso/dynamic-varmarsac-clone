@@ -3,6 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Youtube } from "lucide-react";
 import logoWhite from "@/assets/logo-white.png";
 
+const openExternalLink = (url: string) => {
+  const opened = window.open(url, "_blank", "noopener,noreferrer");
+
+  if (!opened) {
+    window.location.href = url;
+  }
+};
+
 export function Footer() {
   const { t } = useTranslation();
   const servicesList = t("footer.servicesList", { returnObjects: true }) as string[];
@@ -14,12 +22,24 @@ export function Footer() {
           <p className="mt-4 text-sm leading-relaxed text-white/70">{t("footer.intro")}</p>
           <div className="mt-5 flex gap-3">
             {[
-              { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
+              { Icon: Facebook, href: "https://m.facebook.com/varmar.sac", label: "Facebook" },
               { Icon: Youtube, href: "https://www.youtube.com/channel/UCwS4WakSZRYAAfROq6LFRGQ?view_as=subscriber", label: "YouTube" },
               { Icon: Linkedin, href: "#", label: "LinkedIn" },
               { Icon: Instagram, href: "#", label: "Instagram" },
             ].map(({ Icon, href, label }) => (
-              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="grid h-9 w-9 place-items-center rounded-sm bg-white/10 transition hover:bg-brand-red">
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                onClick={(event) => {
+                  if (href === "#") return;
+                  event.preventDefault();
+                  openExternalLink(href);
+                }}
+                className="grid h-9 w-9 place-items-center rounded-sm bg-white/10 transition hover:bg-brand-red"
+              >
                 <Icon className="h-4 w-4" />
               </a>
             ))}
