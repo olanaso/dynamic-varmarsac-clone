@@ -305,7 +305,7 @@ function FlotaPage() {
       {/* Quote side panel */}
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
         <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
-          <SheetHeader className="flex flex-row items-center justify-between border-b border-sky-200 bg-sky-50 px-5 py-4 space-y-0">
+          <SheetHeader className="flex flex-row items-center justify-between border-b border-sky-200 bg-sky-50 px-5 py-4 pr-12 space-y-0">
             <SheetTitle className="flex items-center gap-2 text-base font-bold text-sky-700">
               <ShoppingCart className="h-5 w-5 text-sky-600" /> Mi Cotización
             </SheetTitle>
