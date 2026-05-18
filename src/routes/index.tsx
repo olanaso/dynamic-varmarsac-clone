@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon } from "lucide-react";
+import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon, MapPin } from "lucide-react";
 import { HeroSlider } from "@/components/HeroSlider";
 import { ClientsCarousel } from "@/components/ClientsCarousel";
 import aboutFleet from "@/assets/about-fleet.jpg";
