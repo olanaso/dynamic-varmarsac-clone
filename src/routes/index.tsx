@@ -307,13 +307,6 @@ function Index() {
               loading="lazy"
               className="h-full w-full object-contain object-center transition-transform duration-700 ease-out group-hover:scale-105"
             />
-            {/* Overlay flotante */}
-            <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm transition-all duration-500 group-hover:bg-background group-hover:shadow-lg">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary">Apurímac · Cusco</span>
-              <p className="mt-1 text-sm font-medium text-foreground/80">
-                Cobertura completa en zonas mineras y rutas turísticas
-              </p>
-            </div>
           </div>
         </div>
       </section>
