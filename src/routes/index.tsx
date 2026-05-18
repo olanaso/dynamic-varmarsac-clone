@@ -91,19 +91,37 @@ function Index() {
             <p className="mt-6 text-sm leading-relaxed text-foreground/70">{t("home.servicesOutro")}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          <div className="relative mx-auto aspect-square w-full max-w-[520px]">
+            {/* decorative rings */}
+            <div className="absolute inset-0 rounded-full border border-dashed border-brand-blue/25" />
+            <div className="absolute inset-[14%] rounded-full border border-dashed border-brand-blue/20" />
+            <div className="absolute inset-[32%] rounded-full bg-gradient-to-br from-brand-blue to-sky-400 shadow-[0_20px_50px_-15px_rgba(14,165,233,0.6)]" />
+            <div className="absolute inset-[32%] grid place-items-center text-center text-white">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">VARMAR</div>
+                <div className="mt-1 text-sm font-extrabold uppercase leading-tight md:text-base">
+                  {t("home.servicesTitle1")}<br />{t("home.servicesTitle2")}
+                </div>
+              </div>
+            </div>
+
+            {/* orbiting tiles */}
             {tileKeys.map((k, idx) => {
               const Icon = tileIcons[idx];
+              const angle = (idx / tileKeys.length) * 2 * Math.PI - Math.PI / 2;
+              const radius = 42; // % from center
+              const x = 50 + radius * Math.cos(angle);
+              const y = 50 + radius * Math.sin(angle);
               return (
                 <div
                   key={k}
-                  className="group relative flex aspect-square flex-col items-center justify-center gap-3 overflow-hidden rounded-xl border border-brand-blue/15 bg-white p-4 text-center shadow-[0_4px_18px_-8px_rgba(15,23,42,0.15)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-blue hover:shadow-[0_12px_28px_-10px_rgba(14,165,233,0.45)]"
+                  className="group absolute flex w-[26%] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5"
+                  style={{ left: `${x}%`, top: `${y}%` }}
                 >
-                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-blue to-sky-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="grid h-14 w-14 place-items-center rounded-full bg-brand-soft text-brand-blue-dark transition-all duration-300 group-hover:bg-brand-blue group-hover:text-white group-hover:scale-110">
-                    <Icon className="h-7 w-7" strokeWidth={1.6} />
+                  <span className="grid h-16 w-16 place-items-center rounded-full border border-brand-blue/15 bg-white text-brand-blue-dark shadow-[0_8px_22px_-8px_rgba(15,23,42,0.25)] transition-all duration-300 group-hover:-translate-y-1 group-hover:scale-110 group-hover:border-brand-blue group-hover:bg-brand-blue group-hover:text-white sm:h-[72px] sm:w-[72px]">
+                    <Icon className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={1.6} />
                   </span>
-                  <span className="text-[11px] font-bold uppercase leading-tight tracking-wider text-brand-blue-dark sm:text-xs">
+                  <span className="rounded-full bg-white/90 px-2 py-0.5 text-center text-[9px] font-bold uppercase leading-tight tracking-wider text-brand-blue-dark shadow-sm backdrop-blur sm:text-[10px]">
                     {t(`home.tiles.${k}`)}
                   </span>
                 </div>
