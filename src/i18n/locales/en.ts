@@ -7,7 +7,7 @@ export const en = {
     proyectos: "PROJECTS",
     galeria: "GALLERY",
     contacto: "CONTACT",
-    terminos: "TERMS",
+    terminos: "TERMS AND CONDITIONS",
     cotizar: "Get a Quote",
   },
   hero: {
@@ -177,6 +177,7 @@ export const en = {
     fService: "Service",
     services: ["Civil Works", "General Services", "Integral Project", "Other"],
     fMessage: "Message",
+    termsCheck: "I agree to the",
     send: "Send message",
     sentTitle: "Message sent!",
     sentText: "We'll be in touch shortly.",
