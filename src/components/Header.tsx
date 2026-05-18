@@ -45,10 +45,13 @@ export function Header() {
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                {socials.map(({ Icon, href }, i) => (
+                {socials.map(({ Icon, href, label }) => (
                   <a
-                    key={i}
+                    key={label}
                     href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
                     className="grid h-7 w-7 place-items-center rounded-full bg-foreground text-white transition hover:bg-brand-red"
                   >
                     <Icon className="h-3.5 w-3.5" />
