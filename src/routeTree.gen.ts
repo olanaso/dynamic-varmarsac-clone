@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServiciosRouteImport } from './routes/servicios'
 import { Route as ProyectosRouteImport } from './routes/proyectos'
 import { Route as NosotrosRouteImport } from './routes/nosotros'
+import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as FlotaRouteImport } from './routes/flota'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const ProyectosRoute = ProyectosRouteImport.update({
 const NosotrosRoute = NosotrosRouteImport.update({
   id: '/nosotros',
   path: '/nosotros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FlotaRoute = FlotaRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contacto': typeof ContactoRoute
   '/flota': typeof FlotaRoute
+  '/galeria': typeof GaleriaRoute
   '/nosotros': typeof NosotrosRoute
   '/proyectos': typeof ProyectosRoute
   '/servicios': typeof ServiciosRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contacto': typeof ContactoRoute
   '/flota': typeof FlotaRoute
+  '/galeria': typeof GaleriaRoute
   '/nosotros': typeof NosotrosRoute
   '/proyectos': typeof ProyectosRoute
   '/servicios': typeof ServiciosRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/contacto': typeof ContactoRoute
   '/flota': typeof FlotaRoute
+  '/galeria': typeof GaleriaRoute
   '/nosotros': typeof NosotrosRoute
   '/proyectos': typeof ProyectosRoute
   '/servicios': typeof ServiciosRoute
@@ -78,16 +87,25 @@ export interface FileRouteTypes {
     | '/'
     | '/contacto'
     | '/flota'
+    | '/galeria'
     | '/nosotros'
     | '/proyectos'
     | '/servicios'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contacto' | '/flota' | '/nosotros' | '/proyectos' | '/servicios'
+  to:
+    | '/'
+    | '/contacto'
+    | '/flota'
+    | '/galeria'
+    | '/nosotros'
+    | '/proyectos'
+    | '/servicios'
   id:
     | '__root__'
     | '/'
     | '/contacto'
     | '/flota'
+    | '/galeria'
     | '/nosotros'
     | '/proyectos'
     | '/servicios'
@@ -97,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactoRoute: typeof ContactoRoute
   FlotaRoute: typeof FlotaRoute
+  GaleriaRoute: typeof GaleriaRoute
   NosotrosRoute: typeof NosotrosRoute
   ProyectosRoute: typeof ProyectosRoute
   ServiciosRoute: typeof ServiciosRoute
@@ -123,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/nosotros'
       fullPath: '/nosotros'
       preLoaderRoute: typeof NosotrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/flota': {
@@ -153,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactoRoute: ContactoRoute,
   FlotaRoute: FlotaRoute,
+  GaleriaRoute: GaleriaRoute,
   NosotrosRoute: NosotrosRoute,
   ProyectosRoute: ProyectosRoute,
   ServiciosRoute: ServiciosRoute,
@@ -160,13 +187,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -5,6 +5,7 @@ export const en = {
     servicios: "SERVICES",
     flota: "FLEET",
     proyectos: "PROJECTS",
+    galeria: "GALLERY",
     contacto: "CONTACT",
     cotizar: "Get a Quote",
   },
