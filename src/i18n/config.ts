@@ -15,10 +15,12 @@ if (!i18n.isInitialized) {
 }
 
 if (typeof window !== "undefined") {
-  const storedLang = localStorage.getItem("varmar_lang");
-  if (storedLang === "es" || storedLang === "en") {
-    i18n.changeLanguage(storedLang);
-  }
+  window.setTimeout(() => {
+    const storedLang = localStorage.getItem("varmar_lang");
+    if (storedLang === "es" || storedLang === "en") {
+      i18n.changeLanguage(storedLang);
+    }
+  }, 0);
 }
 
 // Geo-detection (only first visit, no stored preference)
