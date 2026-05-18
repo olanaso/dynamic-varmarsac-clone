@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Info, Users, Settings2, Fuel, Gauge, Check, MessageCircle, ShoppingCart, Trash2, Plus, Minus, X, RotateCcw } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { openWhatsApp } from "@/lib/whatsapp";
 import {
   Dialog,
   DialogContent,
@@ -103,17 +104,19 @@ function FlotaPage() {
     .filter((x) => x.v);
   const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.v.diario * i.qty, 0);
-
-  const waMsg = (v: Vehiculo) =>
-    `https://wa.me/51950396818?text=${encodeURIComponent(`Hola, quiero cotizar el ${v.nombre} (${v.modelo}).`)}`;
+  const quoteLabel = (v: Vehiculo) => {
+    const year = v.modelo.match(/\b20\d{2}\b/)?.[0];
+    const displayName = v.modelo.includes("Prado") ? "Toyota Land Cruiser Prado" : v.nombre;
+    return year ? `${displayName} (${year})` : `${displayName} (${v.modelo})`;
+  };
 
   const sendCartWA = () => {
     if (!cartItems.length) return;
     const lines = cartItems.map(
-      (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/ ${i.v.diario * i.qty}/día`,
+      (i) => `• ${quoteLabel(i.v)} x${i.qty} — S/${i.v.diario * i.qty}/día`,
     );
-    const text = `Hola, quiero cotizar los siguientes vehículos:\n\n${lines.join("\n")}\n\nTotal referencial diario: S/ ${cartTotal}`;
-    window.open(`https://api.whatsapp.com/send/?phone=51950396818&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`, "_blank");
+    const text = `Hola, quiero cotizar los siguientes vehículos según la cotización en la sección flota\n\n${lines.join("\n")}\n\nTotal referencial diario: S/${cartTotal}`;
+    openWhatsApp(text);
   };
 
   return (
@@ -356,7 +359,7 @@ function FlotaPage() {
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total referencial / día</span>
                 <span className="text-xl font-bold">S/ {cartTotal}</span>
               </div>
-              <button onClick={sendCartWA} className="flex w-full items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+              <button onClick={sendCartWA} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-whatsapp px-4 py-3 text-sm font-bold uppercase text-primary-foreground transition-opacity hover:opacity-90">
                 <MessageCircle className="h-4 w-4" /> Enviar Cotización
               </button>
               <button onClick={() => setCart({})} className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-brand-red px-4 py-2.5 text-xs font-bold uppercase text-brand-red transition-colors hover:bg-brand-red hover:text-white">

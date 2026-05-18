@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Menu, X, Mail, Phone, Facebook, Youtube } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const socials = [
   { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
@@ -57,12 +58,13 @@ export function Header() {
                 ))}
               </div>
               <LanguageSwitcher />
-              <Link
-                to="/contacto"
-                className="rounded-sm bg-brand-red px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:brightness-110"
+              <button
+                type="button"
+                onClick={() => openWhatsApp("Hola, quiero cotizar los servicios de VARMAR Contratistas Generales.")}
+                className="cursor-pointer rounded-sm bg-brand-red px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:brightness-110"
               >
                 {t("nav.cotizar")}
-              </Link>
+              </button>
             </div>
           </div>
         </div>

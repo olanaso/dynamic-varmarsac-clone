@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/contacto")({
   head: () => ({
@@ -19,6 +20,13 @@ function Contacto() {
   const cards = t("contacto.cards", { returnObjects: true }) as { t: string; d: string }[];
   const services = t("contacto.services", { returnObjects: true }) as string[];
   const icons = [MapPin, MapPin, Phone, Phone, Mail];
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const message = `Hola, quiero solicitar información sobre los servicios de VARMAR Contratistas Generales.\n\nNombre: ${String(data.get("nombre") ?? "").trim()}\nEmpresa: ${String(data.get("empresa") ?? "").trim()}\nEmail: ${String(data.get("email") ?? "").trim()}\nTeléfono: ${String(data.get("tel") ?? "").trim()}\nServicio: ${String(data.get("servicio") ?? "").trim()}\nMensaje: ${String(data.get("mensaje") ?? "").trim()}`;
+    openWhatsApp(message);
+    setSent(true);
+  };
   return (
     <>
       <section className="bg-gradient-to-br from-brand-soft to-white py-12">
@@ -51,7 +59,7 @@ function Contacto() {
             </div>
           </div>
 
-          <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="rounded-sm bg-white p-8 shadow-[var(--shadow-card)]">
+          <form onSubmit={handleSubmit} className="rounded-sm bg-white p-8 shadow-[var(--shadow-card)]">
             {sent ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <CheckCircle2 className="h-16 w-16 text-brand-blue" />
@@ -69,15 +77,15 @@ function Contacto() {
                 </div>
                 <div className="mt-4">
                   <label className="text-sm font-semibold text-brand-blue-dark">{t("contacto.fService")}</label>
-                  <select required className="mt-1.5 w-full rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20">
+                  <select name="servicio" required className="mt-1.5 w-full rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20">
                     {services.map((s) => <option key={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="mt-4">
                   <label className="text-sm font-semibold text-brand-blue-dark">{t("contacto.fMessage")}</label>
-                  <textarea required rows={5} className="mt-1.5 w-full resize-none rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20" />
+                  <textarea name="mensaje" required rows={5} className="mt-1.5 w-full resize-none rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20" />
                 </div>
-                <button type="submit" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-brand-red px-6 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition hover:-translate-y-0.5">
+                <button type="submit" className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-brand-red px-6 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition hover:-translate-y-0.5">
                   <Send className="h-4 w-4" /> {t("contacto.send")}
                 </button>
               </>

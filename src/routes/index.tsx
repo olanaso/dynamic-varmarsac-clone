@@ -16,6 +16,7 @@ import cond1 from "@/assets/cond-1.png";
 import mapCoverage from "@/assets/map-coverage.png";
 import cond2 from "@/assets/cond-2.png";
 import cond3 from "@/assets/cond-3.png";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -343,9 +344,9 @@ function Index() {
         <div className="relative mx-auto max-w-5xl px-4 text-center md:px-8">
           <h2 className="text-3xl font-extrabold md:text-5xl text-brand-blue-dark">{t("home.ctaTitle")}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-foreground/70">{t("home.ctaText")}</p>
-          <Link to="/contacto" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-red px-8 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5">
+          <button type="button" onClick={() => openWhatsApp("Hola, quiero solicitar una cotización para mi próximo proyecto con VARMAR Contratistas Generales.")} className="mt-8 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-brand-red px-8 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5">
             {t("home.ctaBtn")} <ArrowRight className="h-4 w-4" />
-          </Link>
+          </button>
         </div>
       </section>
     </>
