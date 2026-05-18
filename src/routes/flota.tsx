@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Info, Users, Settings2, Fuel, Gauge, Check, MessageCircle, ShoppingCart, Trash2, Plus, Minus, X, RotateCcw } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { openWhatsApp } from "@/lib/whatsapp";
 import {
   Dialog,
   DialogContent,
@@ -104,16 +105,13 @@ function FlotaPage() {
   const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.v.diario * i.qty, 0);
 
-  const waMsg = (v: Vehiculo) =>
-    `https://wa.me/51950396818?text=${encodeURIComponent(`Hola, quiero cotizar el ${v.nombre} (${v.modelo}).`)}`;
-
   const sendCartWA = () => {
     if (!cartItems.length) return;
     const lines = cartItems.map(
-      (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/ ${i.v.diario * i.qty}/día`,
+      (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/${i.v.diario * i.qty}/día`,
     );
-    const text = `Hola, quiero cotizar los siguientes vehículos:\n\n${lines.join("\n")}\n\nTotal referencial diario: S/ ${cartTotal}`;
-    window.open(`https://api.whatsapp.com/send/?phone=51950396818&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`, "_blank");
+    const text = `Hola, quiero cotizar los siguientes vehículos según la cotización en la sección flota\n\n${lines.join("\n")}\n\nTotal referencial diario: S/${cartTotal}`;
+    openWhatsApp(text);
   };
 
   return (
