@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Youtube } from "lucide-react";
 import logoWhite from "@/assets/logo-white.png";
 
 export function Footer() {
@@ -13,8 +13,13 @@ export function Footer() {
           <img src={logoWhite} alt="VARMAR Contratistas Generales" className="h-14 w-auto md:h-16" />
           <p className="mt-4 text-sm leading-relaxed text-white/70">{t("footer.intro")}</p>
           <div className="mt-5 flex gap-3">
-            {[Facebook, Linkedin, Instagram].map((Icon, i) => (
-              <a key={i} href="#" className="grid h-9 w-9 place-items-center rounded-sm bg-white/10 transition hover:bg-brand-red">
+            {[
+              { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
+              { Icon: Youtube, href: "https://www.youtube.com/channel/UCwS4WakSZRYAAfROq6LFRGQ?view_as=subscriber", label: "YouTube" },
+              { Icon: Linkedin, href: "#", label: "LinkedIn" },
+              { Icon: Instagram, href: "#", label: "Instagram" },
+            ].map(({ Icon, href, label }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="grid h-9 w-9 place-items-center rounded-sm bg-white/10 transition hover:bg-brand-red">
                 <Icon className="h-4 w-4" />
               </a>
             ))}
