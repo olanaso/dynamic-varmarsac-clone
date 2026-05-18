@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import heroBg from "@/assets/about-fleet.jpg";
 import img1 from "@/assets/galeria/img1.jpeg";
 import img2 from "@/assets/galeria/img2.jpeg";
 import img3 from "@/assets/galeria/img3.jpeg";
@@ -75,11 +76,15 @@ function GaleriaPage() {
 
   return (
     <div className="bg-background">
-      <section className="bg-brand-blue-dark py-16 text-white">
-        <div className="mx-auto max-w-7xl px-4 md:px-8">
-          <p className="text-xs font-bold uppercase tracking-widest text-sky-300">VARMAR · Operaciones</p>
-          <h1 className="mt-3 text-4xl font-extrabold uppercase md:text-5xl">Galería</h1>
-          <p className="mt-4 max-w-2xl text-sm text-white/80">
+      <section className="relative bg-brand-blue-dark py-20 text-white">
+        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-dark via-brand-blue-dark/90 to-brand-blue-dark/60" />
+        <div className="relative mx-auto max-w-7xl px-4 md:px-8">
+          <span className="text-sm font-bold uppercase tracking-widest text-sky-400">VARMAR · Operaciones</span>
+          <h1 className="mt-3 text-4xl font-extrabold text-white md:text-6xl">
+            Nuestra <span className="text-sky-400">Galería</span>
+          </h1>
+          <p className="mt-4 max-w-2xl text-white/80">
             Un vistazo a nuestras operaciones en campo: unidades, equipos y proyectos en los sectores minero, energético y de construcción.
           </p>
         </div>
