@@ -8,7 +8,6 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 const socials = [
   { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
   { Icon: Youtube, href: "https://www.youtube.com/channel/UCwS4WakSZRYAAfROq6LFRGQ?view_as=subscriber", label: "YouTube" },
-  { Icon: Instagram, href: "#", label: "Instagram" },
 ];
 
 export function Header() {
