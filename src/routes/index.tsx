@@ -227,9 +227,8 @@ function Index() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-8 lg:grid-cols-2">
           {/* COLUMNA IZQUIERDA */}
           <div>
-            <span className="text-sm font-bold uppercase tracking-widest text-primary">Cobertura</span>
-            <h2 className="mt-3 text-5xl font-bold uppercase md:text-7xl lg:text-8xl">Cobertura</h2>
-            <p className="mt-2 text-xl font-semibold text-foreground/80 md:text-2xl">Operamos en el sur del Perú</p>
+            <h2 className="text-6xl font-bold uppercase md:text-8xl lg:text-9xl">Cobertura</h2>
+            <p className="mt-4 text-2xl font-semibold text-foreground/80 md:text-3xl">Operamos en el sur del Perú</p>
             <p className="mt-5 text-lg text-muted-foreground">
               Con sedes estratégicas en Cusco y Apurímac, brindamos servicio a las principales operaciones mineras y destinos turísticos de la región.
             </p>
@@ -302,7 +301,7 @@ function Index() {
               width={1024}
               height={768}
               loading="lazy"
-              className="h-full w-full object-contain"
+              className="h-full w-full object-contain object-top"
             />
             {/* Overlay flotante */}
             <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm">
