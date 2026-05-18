@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Menu, X, Mail, Phone, Facebook, Linkedin, Instagram, Youtube } from "lucide-react";
+import { Menu, X, Mail, Phone, Facebook, Instagram, Youtube } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
