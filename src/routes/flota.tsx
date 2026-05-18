@@ -188,7 +188,7 @@ function FlotaPage() {
                     <button onClick={() => setDetalle(v)} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 py-2.5 text-sm font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
                       <Info className="size-4" /> Detalles
                     </button>
-                    <a href={waMsg(v)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-1.5 rounded-md bg-[oklch(0.62_0.18_152)] px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                    <a href={waMsg(v)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
                       <MessageCircle className="size-4" /> Cotizar
                     </a>
                   </div>
@@ -245,7 +245,7 @@ function FlotaPage() {
                     <span className="text-2xl font-bold text-primary">S/ {detalle.mensual}</span>
                   </div>
                 </div>
-                <a href={waMsg(detalle)} target="_blank" rel="noreferrer" className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[oklch(0.62_0.18_152)] px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                <a href={waMsg(detalle)} target="_blank" rel="noreferrer" className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
                   <MessageCircle className="size-5" /> Cotizar por WhatsApp
                 </a>
               </div>
