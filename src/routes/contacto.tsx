@@ -85,6 +85,16 @@ function Contacto() {
                   <label className="text-sm font-semibold text-brand-blue-dark">{t("contacto.fMessage")}</label>
                   <textarea name="mensaje" required rows={5} className="mt-1.5 w-full resize-none rounded-sm border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20" />
                 </div>
+                <div className="mt-4 flex items-start gap-2">
+                  <input id="terms" name="terms" type="checkbox" required className="mt-1 h-4 w-4 shrink-0 rounded border-border text-brand-blue focus:ring-brand-blue" />
+                  <label htmlFor="terms" className="text-xs text-foreground/70">
+                    {t("contacto.termsCheck")}{" "}
+                    <Link to="/terminos" className="font-semibold text-brand-blue underline hover:text-brand-blue-dark" target="_blank">
+                      {t("nav.terminos")}
+                    </Link>
+                    .
+                  </label>
+                </div>
                 <button type="submit" className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-brand-red px-6 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition hover:-translate-y-0.5">
                   <Send className="h-4 w-4" /> {t("contacto.send")}
                 </button>
