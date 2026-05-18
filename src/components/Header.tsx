@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Menu, X, Mail, Phone, Facebook, Youtube } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { openWhatsApp, whatsappContactMessage } from "@/lib/whatsapp";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 const socials = [
   { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
