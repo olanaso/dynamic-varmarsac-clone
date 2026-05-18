@@ -69,6 +69,8 @@ function FlotaPage() {
   const [servs, setServs] = useState<Servicio[]>([]);
   const [homo, setHomo] = useState<"todos" | "si" | "no">("todos");
   const [detalle, setDetalle] = useState<Vehiculo | null>(null);
+  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggle = <T,>(arr: T[], v: T): T[] => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
@@ -84,8 +86,35 @@ function FlotaPage() {
     [tipos, servs, homo],
   );
 
+  const addToCart = (id: string) => {
+    setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+    setCartOpen(true);
+  };
+  const setQty = (id: string, q: number) => {
+    setCart((c) => {
+      const next = { ...c };
+      if (q <= 0) delete next[id];
+      else next[id] = q;
+      return next;
+    });
+  };
+  const cartItems = Object.entries(cart)
+    .map(([id, qty]) => ({ v: VEHICULOS.find((x) => x.id === id)!, qty }))
+    .filter((x) => x.v);
+  const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
+  const cartTotal = cartItems.reduce((sum, i) => sum + i.v.diario * i.qty, 0);
+
   const waMsg = (v: Vehiculo) =>
-    `https://wa.me/51999999999?text=${encodeURIComponent(`Hola, quiero cotizar el ${v.nombre} (${v.modelo}).`)}`;
+    `https://wa.me/51950396818?text=${encodeURIComponent(`Hola, quiero cotizar el ${v.nombre} (${v.modelo}).`)}`;
+
+  const sendCartWA = () => {
+    if (!cartItems.length) return;
+    const lines = cartItems.map(
+      (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/ ${i.v.diario * i.qty}/día`,
+    );
+    const text = `Hola, quiero cotizar los siguientes vehículos:\n\n${lines.join("\n")}\n\nTotal referencial diario: S/ ${cartTotal}`;
+    window.open(`https://wa.me/51950396818?text=${encodeURIComponent(text)}`, "_blank");
+  };
 
   return (
     <>
