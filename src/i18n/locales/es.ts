@@ -7,7 +7,7 @@ export const es = {
     proyectos: "PROYECTOS",
     galeria: "GALERIA",
     contacto: "CONTÁCTENOS",
-    terminos: "TÉRMINOS",
+    terminos: "TÉRMINOS Y CONDICIONES",
     cotizar: "Cotizar Ahora",
   },
   hero: {
@@ -177,6 +177,7 @@ export const es = {
     fService: "Servicio",
     services: ["Obras Civiles", "Servicios Generales", "Proyecto Integral", "Otro"],
     fMessage: "Mensaje",
+    termsCheck: "Acepto los",
     send: "Enviar mensaje",
     sentTitle: "¡Mensaje enviado!",
     sentText: "Te contactaremos pronto.",
