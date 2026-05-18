@@ -155,8 +155,8 @@ function GaleriaPage() {
             <ChevronRight className="h-6 w-6" />
           </button>
           <figure className="max-h-[90vh] max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img src={images[active].src} alt={images[active].caption} className="max-h-[80vh] w-auto rounded-lg object-contain" />
-            <figcaption className="mt-3 text-center text-sm text-white/80">{images[active].caption}</figcaption>
+            <img src={filtered[active].src} alt={filtered[active].caption} className="max-h-[80vh] w-auto rounded-lg object-contain" />
+            <figcaption className="mt-3 text-center text-sm text-white/80">{filtered[active].caption}</figcaption>
           </figure>
         </div>
       )}
