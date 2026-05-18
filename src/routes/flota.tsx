@@ -146,9 +146,10 @@ function FlotaPage() {
               </div>
             </div>
 
-            <p className="rounded border border-secondary/30 bg-secondary/15 p-3 text-xs text-foreground/80">
-              <strong>Nota:</strong> Las unidades homologadas cumplen con los requisitos para ingresar a Las Bambas.
-            </p>
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-xs leading-relaxed text-foreground/80">
+              <p className="mb-1 text-sm font-bold text-primary">VARMAR Contratistas</p>
+              <p>Más de 15 años brindando soluciones de transporte seguro y confiable para los sectores minero, energético y turístico del Perú.</p>
+            </div>
           </aside>
 
           {/* Grid */}
