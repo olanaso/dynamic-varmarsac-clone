@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon, MapPin } from "lucide-react";
+import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon, MapPin } from "lucide-react";
 import { HeroSlider } from "@/components/HeroSlider";
 import { ClientsCarousel } from "@/components/ClientsCarousel";
 import aboutFleet from "@/assets/about-fleet.jpg";
-import manager from "@/assets/manager.jpg";
 import truck from "@/assets/truck.jpg";
 import s1 from "@/assets/flota-1.png";
 import s2 from "@/assets/flota-2.png";
@@ -53,17 +52,6 @@ function Index() {
               "{t("home.aboutP2pre")}<span className="text-brand-red">{t("home.aboutP2bold")}</span>{t("home.aboutP2mid")}<span className="text-brand-red">{t("home.aboutP2bold2")}</span>"
             </p>
 
-            <div className="mt-8 flex items-stretch gap-4 rounded-sm bg-brand-blue-dark p-5 text-white shadow-[var(--shadow-card)]">
-              <Quote className="h-6 w-6 shrink-0 text-brand-blue" />
-              <div className="flex-1">
-                <p className="text-sm leading-relaxed">{t("home.quote")}</p>
-                <div className="mt-3">
-                  <div className="text-sm font-bold">{t("home.manager")}</div>
-                  <div className="text-xs text-white/70">{t("home.managerRole")}</div>
-                </div>
-              </div>
-              <img src={manager} alt={t("home.manager")} width={512} height={512} loading="lazy" className="h-20 w-20 shrink-0 rounded-full border-2 border-brand-blue object-cover" />
-            </div>
           </div>
 
           <div className="relative">
