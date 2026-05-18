@@ -228,7 +228,8 @@ function Index() {
           {/* COLUMNA IZQUIERDA */}
           <div>
             <span className="text-sm font-bold uppercase tracking-widest text-primary">Cobertura</span>
-            <h2 className="mt-3 text-4xl font-bold uppercase md:text-5xl">Operamos en el sur del Perú</h2>
+            <h2 className="mt-3 text-5xl font-bold uppercase md:text-7xl lg:text-8xl">Cobertura</h2>
+            <p className="mt-2 text-xl font-semibold text-foreground/80 md:text-2xl">Operamos en el sur del Perú</p>
             <p className="mt-5 text-lg text-muted-foreground">
               Con sedes estratégicas en Cusco y Apurímac, brindamos servicio a las principales operaciones mineras y destinos turísticos de la región.
             </p>
