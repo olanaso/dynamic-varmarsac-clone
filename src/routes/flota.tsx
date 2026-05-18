@@ -113,7 +113,7 @@ function FlotaPage() {
       (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/ ${i.v.diario * i.qty}/día`,
     );
     const text = `Hola, quiero cotizar los siguientes vehículos:\n\n${lines.join("\n")}\n\nTotal referencial diario: S/ ${cartTotal}`;
-    window.open(`https://wa.me/51950396818?text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://api.whatsapp.com/send/?phone=51950396818&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`, "_blank");
   };
 
   return (
