@@ -67,9 +67,11 @@ export const Route = createFileRoute("/galeria")({
 
 function GaleriaPage() {
   const [active, setActive] = useState<number | null>(null);
+  const [filter, setFilter] = useState<Category>("todas");
+  const filtered = filter === "todas" ? images : images.filter((i) => i.category === filter);
   const close = () => setActive(null);
-  const prev = () => setActive((i) => (i === null ? i : (i - 1 + images.length) % images.length));
-  const next = () => setActive((i) => (i === null ? i : (i + 1) % images.length));
+  const prev = () => setActive((i) => (i === null ? i : (i - 1 + filtered.length) % filtered.length));
+  const next = () => setActive((i) => (i === null ? i : (i + 1) % filtered.length));
 
   return (
     <div className="bg-background">
@@ -84,10 +86,30 @@ function GaleriaPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+        <div className="mb-10 flex flex-wrap items-center justify-center gap-2 md:gap-3">
+          {categories.map((cat) => {
+            const isActive = filter === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => { setFilter(cat.id); setActive(null); }}
+                className={
+                  "rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all md:text-sm " +
+                  (isActive
+                    ? "bg-brand-red text-white shadow-md"
+                    : "bg-muted text-foreground/70 hover:bg-muted/80 hover:text-foreground")
+                }
+              >
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-          {images.map((img, i) => (
+          {filtered.map((img, i) => (
             <button
-              key={i}
+              key={img.src}
               onClick={() => setActive(i)}
               className="group relative aspect-square overflow-hidden rounded-xl bg-muted shadow-sm transition hover:shadow-lg"
             >
