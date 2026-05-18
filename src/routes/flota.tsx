@@ -354,7 +354,7 @@ function FlotaPage() {
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total referencial / día</span>
                 <span className="text-xl font-bold">S/ {cartTotal}</span>
               </div>
-              <button onClick={sendCartWA} className="flex w-full items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+              <button onClick={sendCartWA} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-whatsapp px-4 py-3 text-sm font-bold uppercase text-primary-foreground transition-opacity hover:opacity-90">
                 <MessageCircle className="h-4 w-4" /> Enviar Cotización
               </button>
               <button onClick={() => setCart({})} className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-brand-red px-4 py-2.5 text-xs font-bold uppercase text-brand-red transition-colors hover:bg-brand-red hover:text-white">
