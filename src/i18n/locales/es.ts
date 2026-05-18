@@ -7,6 +7,7 @@ export const es = {
     proyectos: "PROYECTOS",
     galeria: "GALERIA",
     contacto: "CONTÁCTENOS",
+    terminos: "TÉRMINOS",
     cotizar: "Cotizar Ahora",
   },
   hero: {
