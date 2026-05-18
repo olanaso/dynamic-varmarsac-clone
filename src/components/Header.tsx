@@ -6,11 +6,10 @@ import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const socials = [
-  { Icon: Facebook, href: "#" },
-  { Icon: Linkedin, href: "#" },
-  { Icon: Instagram, href: "#" },
-  { Icon: Youtube, href: "#" },
-  { Icon: Twitter, href: "#" },
+  { Icon: Facebook, href: "https://www.facebook.com/varmar.sac", label: "Facebook" },
+  { Icon: Youtube, href: "https://www.youtube.com/channel/UCwS4WakSZRYAAfROq6LFRGQ?view_as=subscriber", label: "YouTube" },
+  { Icon: Linkedin, href: "#", label: "LinkedIn" },
+  { Icon: Instagram, href: "#", label: "Instagram" },
 ];
 
 export function Header() {
