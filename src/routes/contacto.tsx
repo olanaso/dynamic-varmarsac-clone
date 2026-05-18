@@ -95,7 +95,7 @@ function Contacto() {
                     .
                   </label>
                 </div>
-                <button type="submit" className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-brand-red px-6 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition hover:-translate-y-0.5">
+                <button type="submit" className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-sky-500 px-6 py-4 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition hover:-translate-y-0.5 hover:bg-sky-600">
                   <Send className="h-4 w-4" /> {t("contacto.send")}
                 </button>
               </>

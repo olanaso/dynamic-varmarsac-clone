@@ -73,7 +73,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => openWhatsApp("Hola, quiero cotizar los servicios de VARMAR Contratistas Generales.")}
-                className="cursor-pointer rounded-sm bg-brand-red px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:brightness-110"
+                className="cursor-pointer rounded-sm bg-sky-500 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-sky-600"
               >
                 {t("nav.cotizar")}
               </button>
