@@ -104,11 +104,16 @@ function FlotaPage() {
     .filter((x) => x.v);
   const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
   const cartTotal = cartItems.reduce((sum, i) => sum + i.v.diario * i.qty, 0);
+  const quoteLabel = (v: Vehiculo) => {
+    const year = v.modelo.match(/\b20\d{2}\b/)?.[0];
+    const displayName = v.modelo.includes("Prado") ? "Toyota Land Cruiser Prado" : v.nombre;
+    return year ? `${displayName} (${year})` : `${displayName} (${v.modelo})`;
+  };
 
   const sendCartWA = () => {
     if (!cartItems.length) return;
     const lines = cartItems.map(
-      (i) => `• ${i.v.nombre} (${i.v.modelo}) x${i.qty} — S/${i.v.diario * i.qty}/día`,
+      (i) => `• ${quoteLabel(i.v)} x${i.qty} — S/${i.v.diario * i.qty}/día`,
     );
     const text = `Hola, quiero cotizar los siguientes vehículos según la cotización en la sección flota\n\n${lines.join("\n")}\n\nTotal referencial diario: S/${cartTotal}`;
     openWhatsApp(text);
