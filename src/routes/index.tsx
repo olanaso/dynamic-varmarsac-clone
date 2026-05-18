@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon } from "lucide-react";
+import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, Quote, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon, MapPin } from "lucide-react";
 import { HeroSlider } from "@/components/HeroSlider";
 import { ClientsCarousel } from "@/components/ClientsCarousel";
 import aboutFleet from "@/assets/about-fleet.jpg";
@@ -13,6 +13,7 @@ import s4 from "@/assets/flota-4.png";
 import s5 from "@/assets/flota-5.png";
 import s6 from "@/assets/flota-6.png";
 import cond1 from "@/assets/cond-1.png";
+import mapCoverage from "@/assets/map-coverage.png";
 import cond2 from "@/assets/cond-2.png";
 import cond3 from "@/assets/cond-3.png";
 
@@ -217,6 +218,98 @@ function Index() {
                 <img src={img} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </figure>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* COBERTURA */}
+      <section className="bg-muted py-20 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-8 lg:grid-cols-2">
+          {/* COLUMNA IZQUIERDA */}
+          <div>
+            <span className="text-sm font-bold uppercase tracking-widest text-primary">Cobertura</span>
+            <h2 className="mt-3 text-4xl font-bold uppercase md:text-5xl">Operamos en el sur del Perú</h2>
+            <p className="mt-5 text-lg text-muted-foreground">
+              Con sedes estratégicas en Cusco y Apurímac, brindamos servicio a las principales operaciones mineras y destinos turísticos de la región.
+            </p>
+
+            {/* Cards de sedes */}
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {/* Card Apurímac */}
+              <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand-red/40 hover:shadow-lg">
+                {/* Gradiente decorativo */}
+                <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-red/10 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-60" />
+                <div className="relative">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand-red/10">
+                      <Building2 className="h-5 w-5 text-brand-red" strokeWidth={1.8} />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Sede Operativa</span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red" />
+                    <h3 className="text-lg font-bold">Apurímac</h3>
+                  </div>
+                  <div className="my-3 border-t border-border/50" />
+                  <div className="flex items-start gap-1.5">
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <span className="text-sm text-foreground/80">Las Bambas — Barrio Manantiales S/N</span>
+                  </div>
+                  <div className="mt-3">
+                    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Apurímac · Perú
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Cusco */}
+              <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand-blue/40 hover:shadow-lg">
+                {/* Gradiente decorativo */}
+                <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-blue/10 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-60" />
+                <div className="relative">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand-blue/10">
+                      <Building2 className="h-5 w-5 text-brand-blue" strokeWidth={1.8} />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Sede Principal</span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-blue" />
+                    <h3 className="text-lg font-bold">Cusco</h3>
+                  </div>
+                  <div className="my-3 border-t border-border/50" />
+                  <div className="flex items-start gap-1.5">
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <span className="text-sm text-foreground/80">Villa Unión Huancaro C-8</span>
+                  </div>
+                  <div className="mt-3">
+                    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Cusco · Perú
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* COLUMNA DERECHA — Mapa */}
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
+            <img
+              src={mapCoverage}
+              alt="Mapa de cobertura VARMAR en el sur del Perú"
+              width={1024}
+              height={768}
+              loading="lazy"
+              className="h-full w-full object-contain"
+            />
+            {/* Overlay flotante */}
+            <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-background/95 p-4 backdrop-blur-sm">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary">Apurímac · Cusco</span>
+              <p className="mt-1 text-sm font-medium text-foreground/80">
+                Cobertura completa en zonas mineras y rutas turísticas
+              </p>
+            </div>
           </div>
         </div>
       </section>
