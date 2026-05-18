@@ -21,26 +21,36 @@ import img17 from "@/assets/galeria/img17.jpeg";
 import img18 from "@/assets/galeria/img18.jpeg";
 import img19 from "@/assets/galeria/img19.jpeg";
 
-const images: { src: string; caption: string }[] = [
-  { src: img1, caption: "Operaciones en mina — accesos y plataformas" },
-  { src: img2, caption: "Acceso controlado en operación minera" },
-  { src: img3, caption: "Convoy de camionetas escolta en ruta minera" },
-  { src: img4, caption: "Unidad VARMAR junto a perforadora en tajo" },
-  { src: img5, caption: "Pala eléctrica CAT en mantenimiento de campo" },
-  { src: img6, caption: "Supervisión en mirador de tajo abierto" },
-  { src: img7, caption: "Pala eléctrica P&H — supervisión en campo" },
-  { src: img8, caption: "Camiones mineros en tajo abierto" },
-  { src: img9, caption: "Operador VARMAR junto a camión 240t" },
-  { src: img10, caption: "Camión minero cargado en ruta de acarreo" },
-  { src: img11, caption: "Operación de perforación nocturna" },
-  { src: img12, caption: "Unidad VARMAR junto a perforadoras CAT" },
-  { src: img13, caption: "Perforadora y unidad VARMAR en zona de trabajo" },
-  { src: img14, caption: "Campamento minero — condiciones de altura" },
-  { src: img15, caption: "Perforación exploratoria en clima extremo" },
-  { src: img16, caption: 'Camión 240t — "Podemos, sabemos y queremos trabajar con seguridad"' },
-  { src: img17, caption: "Acarreo de mineral al atardecer" },
-  { src: img18, caption: "Escolta a camión minero en ruta interna" },
-  { src: img19, caption: "Transporte de mineral — vista desde escolta" },
+type Category = "todas" | "operaciones" | "equipos" | "escoltas" | "campamento";
+
+const categories: { id: Category; label: string }[] = [
+  { id: "todas", label: "Todas" },
+  { id: "operaciones", label: "Operaciones Mineras" },
+  { id: "equipos", label: "Equipos y Maquinaria" },
+  { id: "escoltas", label: "Escoltas y Transporte" },
+  { id: "campamento", label: "Campamento" },
+];
+
+const images: { src: string; caption: string; category: Exclude<Category, "todas"> }[] = [
+  { src: img1, caption: "Operaciones en mina — accesos y plataformas", category: "operaciones" },
+  { src: img2, caption: "Acceso controlado en operación minera", category: "operaciones" },
+  { src: img3, caption: "Convoy de camionetas escolta en ruta minera", category: "escoltas" },
+  { src: img4, caption: "Unidad VARMAR junto a perforadora en tajo", category: "equipos" },
+  { src: img5, caption: "Pala eléctrica CAT en mantenimiento de campo", category: "equipos" },
+  { src: img6, caption: "Supervisión en mirador de tajo abierto", category: "operaciones" },
+  { src: img7, caption: "Pala eléctrica P&H — supervisión en campo", category: "equipos" },
+  { src: img8, caption: "Camiones mineros en tajo abierto", category: "equipos" },
+  { src: img9, caption: "Operador VARMAR junto a camión 240t", category: "operaciones" },
+  { src: img10, caption: "Camión minero cargado en ruta de acarreo", category: "escoltas" },
+  { src: img11, caption: "Operación de perforación nocturna", category: "operaciones" },
+  { src: img12, caption: "Unidad VARMAR junto a perforadoras CAT", category: "equipos" },
+  { src: img13, caption: "Perforadora y unidad VARMAR en zona de trabajo", category: "equipos" },
+  { src: img14, caption: "Campamento minero — condiciones de altura", category: "campamento" },
+  { src: img15, caption: "Perforación exploratoria en clima extremo", category: "campamento" },
+  { src: img16, caption: 'Camión 240t — "Podemos, sabemos y queremos trabajar con seguridad"', category: "equipos" },
+  { src: img17, caption: "Acarreo de mineral al atardecer", category: "escoltas" },
+  { src: img18, caption: "Escolta a camión minero en ruta interna", category: "escoltas" },
+  { src: img19, caption: "Transporte de mineral — vista desde escolta", category: "escoltas" },
 ];
 
 export const Route = createFileRoute("/galeria")({
@@ -57,9 +67,11 @@ export const Route = createFileRoute("/galeria")({
 
 function GaleriaPage() {
   const [active, setActive] = useState<number | null>(null);
+  const [filter, setFilter] = useState<Category>("todas");
+  const filtered = filter === "todas" ? images : images.filter((i) => i.category === filter);
   const close = () => setActive(null);
-  const prev = () => setActive((i) => (i === null ? i : (i - 1 + images.length) % images.length));
-  const next = () => setActive((i) => (i === null ? i : (i + 1) % images.length));
+  const prev = () => setActive((i) => (i === null ? i : (i - 1 + filtered.length) % filtered.length));
+  const next = () => setActive((i) => (i === null ? i : (i + 1) % filtered.length));
 
   return (
     <div className="bg-background">
@@ -74,10 +86,30 @@ function GaleriaPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+        <div className="mb-10 flex flex-wrap items-center justify-center gap-2 md:gap-3">
+          {categories.map((cat) => {
+            const isActive = filter === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => { setFilter(cat.id); setActive(null); }}
+                className={
+                  "rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all md:text-sm " +
+                  (isActive
+                    ? "bg-brand-red text-white shadow-md"
+                    : "bg-muted text-foreground/70 hover:bg-muted/80 hover:text-foreground")
+                }
+              >
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-          {images.map((img, i) => (
+          {filtered.map((img, i) => (
             <button
-              key={i}
+              key={img.src}
               onClick={() => setActive(i)}
               className="group relative aspect-square overflow-hidden rounded-xl bg-muted shadow-sm transition hover:shadow-lg"
             >
@@ -123,8 +155,8 @@ function GaleriaPage() {
             <ChevronRight className="h-6 w-6" />
           </button>
           <figure className="max-h-[90vh] max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img src={images[active].src} alt={images[active].caption} className="max-h-[80vh] w-auto rounded-lg object-contain" />
-            <figcaption className="mt-3 text-center text-sm text-white/80">{images[active].caption}</figcaption>
+            <img src={filtered[active].src} alt={filtered[active].caption} className="max-h-[80vh] w-auto rounded-lg object-contain" />
+            <figcaption className="mt-3 text-center text-sm text-white/80">{filtered[active].caption}</figcaption>
           </figure>
         </div>
       )}
