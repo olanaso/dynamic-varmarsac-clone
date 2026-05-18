@@ -95,15 +95,20 @@ function Index() {
             {tileKeys.map((k, idx) => {
               const Icon = tileIcons[idx];
               return (
-                <div key={k} className="group flex aspect-square flex-col items-center justify-center gap-2 rounded-sm bg-brand-blue p-4 text-center text-white shadow-md transition hover:-translate-y-1 hover:bg-brand-blue-dark">
-                  <Icon className="h-10 w-10 transition-transform group-hover:scale-110" strokeWidth={1.5} />
-                  <span className="text-[11px] font-bold uppercase leading-tight tracking-wider sm:text-xs">{t(`home.tiles.${k}`)}</span>
+                <div
+                  key={k}
+                  className="group relative flex aspect-square flex-col items-center justify-center gap-3 overflow-hidden rounded-xl border border-brand-blue/15 bg-white p-4 text-center shadow-[0_4px_18px_-8px_rgba(15,23,42,0.15)] transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-blue hover:shadow-[0_12px_28px_-10px_rgba(14,165,233,0.45)]"
+                >
+                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-blue to-sky-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <span className="grid h-14 w-14 place-items-center rounded-full bg-brand-soft text-brand-blue-dark transition-all duration-300 group-hover:bg-brand-blue group-hover:text-white group-hover:scale-110">
+                    <Icon className="h-7 w-7" strokeWidth={1.6} />
+                  </span>
+                  <span className="text-[11px] font-bold uppercase leading-tight tracking-wider text-brand-blue-dark sm:text-xs">
+                    {t(`home.tiles.${k}`)}
+                  </span>
                 </div>
               );
             })}
-            <div className="col-span-2 aspect-square overflow-hidden rounded-sm shadow-md sm:col-span-2">
-              <img src={truck} alt="Transporte de carga" width={768} height={512} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 hover:scale-110" />
-            </div>
           </div>
         </div>
       </section>
