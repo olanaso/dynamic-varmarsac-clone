@@ -69,6 +69,7 @@
   --brand-blue-dark: oklch(0.40 0.04 250);
   --brand-red: oklch(0.82 0.15 85);
   --brand-soft: oklch(0.98 0.01 235);
+  --whatsapp: oklch(0.76 0.17 147);
   --body: oklch(0.50 0.03 257);
   --gradient-hero: linear-gradient(135deg, oklch(0.985 0.005 250) 0%, oklch(0.96 0.01 250) 100%);
   --gradient-blue: linear-gradient(135deg, oklch(0.55 0.17 245), oklch(0.48 0.18 250));
@@ -147,6 +148,7 @@
   --color-brand-blue-dark: var(--brand-blue-dark);
   --color-brand-red: var(--brand-red);
   --color-brand-soft: var(--brand-soft);
+  --color-whatsapp: var(--whatsapp);
   --shadow-card: var(--shadow-card);
   --shadow-glow: var(--shadow-glow);
   --animate-float: float 6s ease-in-out infinite;
