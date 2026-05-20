@@ -18,7 +18,6 @@ const pages = [
 export default defineConfig({
   cloudflare: false,
   tanstackStart: {
-    spa: { enabled: true },
     prerender: {
       enabled: true,
       crawlLinks: true,
