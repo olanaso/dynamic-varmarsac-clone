@@ -7,10 +7,12 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { I18nextProvider } from "react-i18next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { openWhatsApp, whatsappContactMessage } from "@/lib/whatsapp";
 import appCss from "../styles.css?url";
+import i18n from "@/i18n/config";
 
 function NotFoundComponent() {
   return (
@@ -93,13 +95,15 @@ function WhatsAppFloat() {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1"><Outlet /></main>
-        <Footer />
-        <WhatsAppFloat />
-      </div>
-    </QueryClientProvider>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1"><Outlet /></main>
+          <Footer />
+          <WhatsAppFloat />
+        </div>
+      </QueryClientProvider>
+    </I18nextProvider>
   );
 }
