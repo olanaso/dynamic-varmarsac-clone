@@ -95,13 +95,15 @@ function WhatsAppFloat() {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1"><Outlet /></main>
-        <Footer />
-        <WhatsAppFloat />
-      </div>
-    </QueryClientProvider>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1"><Outlet /></main>
+          <Footer />
+          <WhatsAppFloat />
+        </div>
+      </QueryClientProvider>
+    </I18nextProvider>
   );
 }
