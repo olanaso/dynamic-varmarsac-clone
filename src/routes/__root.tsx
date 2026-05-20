@@ -7,11 +7,12 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { I18nextProvider } from "react-i18next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { openWhatsApp, whatsappContactMessage } from "@/lib/whatsapp";
 import appCss from "../styles.css?url";
-import "@/i18n/config";
+import i18n from "@/i18n/config";
 
 function NotFoundComponent() {
   return (
