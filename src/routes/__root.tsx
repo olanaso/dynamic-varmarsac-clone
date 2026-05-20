@@ -11,6 +11,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { openWhatsApp, whatsappContactMessage } from "@/lib/whatsapp";
 import appCss from "../styles.css?url";
+import "@/i18n/config";
 
 function NotFoundComponent() {
   return (
