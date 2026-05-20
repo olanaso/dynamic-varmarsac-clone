@@ -22,12 +22,12 @@ const openExternalLink = (url: string) => {
 export function Header() {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
-  const nav: { to: "/" | "/nosotros" | "/servicios" | "/flota" | "/proyectos" | "/galeria" | "/contacto"; label: string }[] = [
+  const nav: { to: "/" | "/nosotros" | "/servicios" | "/flota" | "/blog" | "/galeria" | "/contacto"; label: string }[] = [
     { to: "/", label: t("nav.inicio") },
     { to: "/nosotros", label: t("nav.nosotros") },
     { to: "/servicios", label: t("nav.servicios") },
     { to: "/flota", label: t("nav.flota") },
-    { to: "/proyectos", label: t("nav.proyectos") },
+    { to: "/blog", label: t("nav.proyectos") },
     { to: "/galeria", label: t("nav.galeria") },
     { to: "/contacto", label: t("nav.contacto") },
   ];

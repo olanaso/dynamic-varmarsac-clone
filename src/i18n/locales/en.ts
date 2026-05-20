@@ -4,7 +4,7 @@ export const en = {
     nosotros: "ABOUT",
     servicios: "SERVICES",
     flota: "FLEET",
-    proyectos: "PROJECTS",
+    proyectos: "BLOG",
     galeria: "GALLERY",
     contacto: "CONTACT",
     terminos: "TERMS AND CONDITIONS",

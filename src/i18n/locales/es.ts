@@ -4,7 +4,7 @@ export const es = {
     nosotros: "NOSOTROS",
     servicios: "SERVICIOS",
     flota: "FLOTA",
-    proyectos: "PROYECTOS",
+    proyectos: "BLOG",
     galeria: "GALERIA",
     contacto: "CONTÁCTENOS",
     terminos: "TÉRMINOS Y CONDICIONES",

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon, MapPin } from "lucide-react";
+import { Wrench, Building2, ArrowRight, ShieldCheck, HardHat, Clock, Handshake, Sparkles, CheckCircle2, Truck, Bus, Car, UserCheck, ShieldCheck as ShieldIcon, CarFront, Handshake as HandshakeIcon, MapPin, CalendarDays } from "lucide-react";
 import { HeroSlider } from "@/components/HeroSlider";
 import { ClientsCarousel } from "@/components/ClientsCarousel";
 import aboutFleet from "@/assets/about-fleet.jpg";
@@ -15,6 +16,7 @@ import cond1 from "@/assets/cond-1.png";
 import mapCoverage from "@/assets/map-coverage.png";
 import cond2 from "@/assets/cond-2.png";
 import cond3 from "@/assets/cond-3.png";
+import { cleanRenderedText, fetchBlogPosts, getFeaturedImageAlt, getFeaturedImageUrl, getPostDateParts, getPrimaryCategory } from "@/lib/blog";
 import { openWhatsApp } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/")({
@@ -211,6 +213,8 @@ function Index() {
         </div>
       </section>
 
+      <BlogSection />
+
       {/* COBERTURA */}
       <section className="bg-muted py-20 lg:py-28">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-8 lg:grid-cols-2">
@@ -338,5 +342,122 @@ function Index() {
         </div>
       </section>
     </>
+  );
+}
+
+function BlogSection() {
+  const {
+    data: posts = [],
+    isError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["home-blog-posts"],
+    queryFn: async () => {
+      const { posts } = await fetchBlogPosts({ perPage: 6 });
+      return posts;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  return (
+    <section className="bg-brand-soft py-16 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-4xl font-extrabold text-brand-blue-dark md:text-5xl">
+              Blog
+            </h2>
+            <p className="mt-3 text-base font-medium text-brand-blue-dark">
+              Noticias y perspectivas para el <span className="font-extrabold text-brand-red">Perú de hoy y mañana</span>
+            </p>
+          </div>
+
+          <Link
+            to="/blog"
+            className="inline-flex w-fit items-center gap-2 rounded-sm bg-brand-red px-6 py-3 text-sm font-extrabold uppercase tracking-wider text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+          >
+            Ver todo <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        {isLoading ? (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="overflow-hidden rounded-sm bg-white shadow-[var(--shadow-card)]">
+                <div className="aspect-[4/3] animate-pulse bg-slate-200" />
+                <div className="space-y-4 p-6">
+                  <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
+                  <div className="h-5 w-4/5 animate-pulse rounded bg-slate-200" />
+                  <div className="h-10 w-full animate-pulse rounded bg-slate-200" />
+                  <div className="h-9 w-24 animate-pulse rounded bg-slate-200" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : isError ? (
+          <div className="mt-10 rounded-sm border border-brand-red/20 bg-white p-6 text-sm font-medium text-foreground/70 shadow-[var(--shadow-card)]">
+            No pudimos cargar las publicaciones en este momento. Puedes visitar el blog desde el botón "Ver todo".
+          </div>
+        ) : posts.length > 0 ? (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => {
+              const title = cleanRenderedText(post.title.rendered) || "Artículo VARMAR";
+              const excerpt = cleanRenderedText(post.excerpt.rendered);
+              const date = getPostDateParts(post.date);
+              const imageAlt = getFeaturedImageAlt(post);
+
+              return (
+                <article key={post.id} className="group overflow-hidden rounded-sm bg-white shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                  <a href={post.link} target="_blank" rel="noreferrer" className="block">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
+                      <img
+                        src={getFeaturedImageUrl(post) ?? truck}
+                        alt={imageAlt}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute left-5 top-5 rounded-sm bg-white/95 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-brand-blue-dark shadow-sm">
+                        {getPrimaryCategory(post)}
+                      </div>
+                      <div className="absolute bottom-0 left-5 grid min-h-16 min-w-16 place-items-center bg-brand-red px-3 py-2 text-center text-white shadow-lg">
+                        <span className="text-xs font-bold uppercase leading-none">{date.month}</span>
+                        <span className="mt-1 text-2xl font-extrabold leading-none">{date.day}</span>
+                      </div>
+                    </div>
+                  </a>
+
+                  <div className="flex min-h-[220px] flex-col p-6">
+                    <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      <CalendarDays className="h-4 w-4 text-brand-blue" />
+                      <span>Actualidad VARMAR</span>
+                    </div>
+                    <h3 className="text-lg font-extrabold uppercase leading-snug text-brand-blue-dark">
+                      <a href={post.link} target="_blank" rel="noreferrer" className="transition hover:text-brand-blue">
+                        {title}
+                      </a>
+                    </h3>
+                    {excerpt ? (
+                      <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-foreground/70">{excerpt}</p>
+                    ) : null}
+                    <a
+                      href={post.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-auto inline-flex w-fit items-center gap-2 rounded-sm bg-brand-blue-dark px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-blue"
+                    >
+                      Leer más <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="mt-10 rounded-sm border border-border bg-white p-6 text-sm font-medium text-foreground/70 shadow-[var(--shadow-card)]">
+            Aún no hay publicaciones disponibles en el blog.
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

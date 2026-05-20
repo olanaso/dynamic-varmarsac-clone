@@ -49,7 +49,7 @@ export function Footer() {
         <div>
           <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-400">{t("footer.links")}</h4>
           <ul className="space-y-2 text-sm">
-            {([["/", "nav.inicio"], ["/nosotros", "nav.nosotros"], ["/servicios", "nav.servicios"], ["/proyectos", "nav.proyectos"], ["/contacto", "nav.contacto"], ["/terminos", "nav.terminos"]] as const).map(([to, k]) => (
+            {([["/", "nav.inicio"], ["/nosotros", "nav.nosotros"], ["/servicios", "nav.servicios"], ["/blog", "nav.proyectos"], ["/contacto", "nav.contacto"], ["/terminos", "nav.terminos"]] as const).map(([to, k]) => (
               <li key={to}><Link to={to} className="text-white/70 transition hover:text-white">{t(k)}</Link></li>
             ))}
           </ul>

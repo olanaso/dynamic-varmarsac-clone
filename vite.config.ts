@@ -9,7 +9,7 @@ const pages = [
   "/nosotros",
   "/servicios",
   "/flota",
-  "/proyectos",
+  "/blog",
   "/galeria",
   "/contacto",
   "/terminos",
