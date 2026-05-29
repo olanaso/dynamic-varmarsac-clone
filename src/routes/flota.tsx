@@ -1,6 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Info, Users, Settings2, Fuel, Gauge, Check, MessageCircle, ShoppingCart, Trash2, Plus, Minus, X, RotateCcw } from "lucide-react";
+import {
+  Info,
+  Users,
+  Settings2,
+  Fuel,
+  Gauge,
+  Check,
+  MessageCircle,
+  ShoppingCart,
+  Trash2,
+  Plus,
+  Minus,
+  X,
+  RotateCcw,
+} from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { openWhatsApp } from "@/lib/whatsapp";
 import {
@@ -22,7 +42,11 @@ export const Route = createFileRoute("/flota")({
   head: () => ({
     meta: [
       { title: "Nuestra Flota — VARMAR Contratistas Generales" },
-      { name: "description", content: "Flota homologada de camionetas 4x4, SUV y vans para minería, exploración y turismo." },
+      {
+        name: "description",
+        content:
+          "Flota homologada de camionetas 4x4, SUV y vans para minería, exploración y turismo.",
+      },
     ],
   }),
   component: FlotaPage,
@@ -51,12 +75,108 @@ interface Vehiculo {
 }
 
 const VEHICULOS: Vehiculo[] = [
-  { id: "hilux", nombre: "Toyota Hilux Guerrero", modelo: "Hilux 4x4 · 2023", imagen: hilux, categoria: "Pickup 4x4", servicios: ["Minería", "Exploración"], pasajeros: 5, transmision: "Manual", combustible: "Diesel", traccion: "4x4", homologada: true, estado: "Disponible", diario: 450, mensual: 9500, equipamiento: ["Multimedia", "GPS", "Aire acondicionado", "Barra antivuelco"] },
-  { id: "fortuner", nombre: "Toyota Fortuner 4x4", modelo: "Fortuner · 2023", imagen: fortuner, categoria: "SUV", servicios: ["Exploración", "Turismo"], pasajeros: 7, transmision: "Automática", combustible: "Diesel", traccion: "4x4", homologada: true, estado: "Disponible", diario: 480, mensual: 9800, equipamiento: ["Cuero", "Multimedia", "Cámara de retroceso"] },
-  { id: "van", nombre: "Mercedes Sprinter Van", modelo: "Sprinter 19 pax · 2022", imagen: van, categoria: "Van", servicios: ["Turismo", "Exploración"], pasajeros: 19, transmision: "Manual", combustible: "Diesel", traccion: "4x2", homologada: false, estado: "Disponible", diario: 520, mensual: 11000, equipamiento: ["Aire acondicionado", "Asientos reclinables", "Bodega amplia"] },
-  { id: "ranger", nombre: "Ford Ranger 4x4", modelo: "Ranger XLT · 2023", imagen: ranger, categoria: "Pickup 4x4", servicios: ["Minería"], pasajeros: 5, transmision: "Automática", combustible: "Diesel", traccion: "4x4", homologada: true, estado: "Rentado", diario: 460, mensual: 9600, equipamiento: ["Estándares mineros", "Tolva con liner", "GPS"] },
-  { id: "patrol", nombre: "Nissan Patrol", modelo: "Patrol Y61 · 2022", imagen: patrol, categoria: "SUV", servicios: ["Exploración", "Turismo"], pasajeros: 8, transmision: "Automática", combustible: "Diesel", traccion: "4x4", homologada: true, estado: "Disponible", diario: 500, mensual: 10500, equipamiento: ["Tracción todo terreno", "Multimedia", "Cuero"] },
-  { id: "landcruiser", nombre: "Toyota Land Cruiser", modelo: "Land Cruiser Prado · 2023", imagen: landcruiser, categoria: "SUV", servicios: ["Minería", "Exploración"], pasajeros: 7, transmision: "Automática", combustible: "Diesel", traccion: "4x4", homologada: true, estado: "Mantenimiento", diario: 600, mensual: 12500, equipamiento: ["Premium", "Cuero", "Cámara 360°", "Estándares mineros"] },
+  {
+    id: "hilux",
+    nombre: "Toyota Hilux Guerrero",
+    modelo: "Hilux 4x4 · 2023",
+    imagen: hilux,
+    categoria: "Pickup 4x4",
+    servicios: ["Minería", "Exploración"],
+    pasajeros: 5,
+    transmision: "Manual",
+    combustible: "Diesel",
+    traccion: "4x4",
+    homologada: true,
+    estado: "Disponible",
+    diario: 450,
+    mensual: 9500,
+    equipamiento: ["Multimedia", "GPS", "Aire acondicionado", "Barra antivuelco"],
+  },
+  {
+    id: "fortuner",
+    nombre: "Toyota Fortuner 4x4",
+    modelo: "Fortuner · 2023",
+    imagen: fortuner,
+    categoria: "SUV",
+    servicios: ["Exploración", "Turismo"],
+    pasajeros: 7,
+    transmision: "Automática",
+    combustible: "Diesel",
+    traccion: "4x4",
+    homologada: true,
+    estado: "Disponible",
+    diario: 480,
+    mensual: 9800,
+    equipamiento: ["Cuero", "Multimedia", "Cámara de retroceso"],
+  },
+  {
+    id: "van",
+    nombre: "Mercedes Sprinter Van",
+    modelo: "Sprinter 19 pax · 2022",
+    imagen: van,
+    categoria: "Van",
+    servicios: ["Turismo", "Exploración"],
+    pasajeros: 19,
+    transmision: "Manual",
+    combustible: "Diesel",
+    traccion: "4x2",
+    homologada: false,
+    estado: "Disponible",
+    diario: 520,
+    mensual: 11000,
+    equipamiento: ["Aire acondicionado", "Asientos reclinables", "Bodega amplia"],
+  },
+  {
+    id: "ranger",
+    nombre: "Ford Ranger 4x4",
+    modelo: "Ranger XLT · 2023",
+    imagen: ranger,
+    categoria: "Pickup 4x4",
+    servicios: ["Minería"],
+    pasajeros: 5,
+    transmision: "Automática",
+    combustible: "Diesel",
+    traccion: "4x4",
+    homologada: true,
+    estado: "Rentado",
+    diario: 460,
+    mensual: 9600,
+    equipamiento: ["Estándares mineros", "Tolva con liner", "GPS"],
+  },
+  {
+    id: "patrol",
+    nombre: "Nissan Patrol",
+    modelo: "Patrol Y61 · 2022",
+    imagen: patrol,
+    categoria: "SUV",
+    servicios: ["Exploración", "Turismo"],
+    pasajeros: 8,
+    transmision: "Automática",
+    combustible: "Diesel",
+    traccion: "4x4",
+    homologada: true,
+    estado: "Disponible",
+    diario: 500,
+    mensual: 10500,
+    equipamiento: ["Tracción todo terreno", "Multimedia", "Cuero"],
+  },
+  {
+    id: "landcruiser",
+    nombre: "Toyota Land Cruiser",
+    modelo: "Land Cruiser Prado · 2023",
+    imagen: landcruiser,
+    categoria: "SUV",
+    servicios: ["Minería", "Exploración"],
+    pasajeros: 7,
+    transmision: "Automática",
+    combustible: "Diesel",
+    traccion: "4x4",
+    homologada: true,
+    estado: "Mantenimiento",
+    diario: 600,
+    mensual: 12500,
+    equipamiento: ["Premium", "Cuero", "Cámara 360°", "Estándares mineros"],
+  },
 ];
 
 const ESTADO_CLS: Record<Estado, string> = {
@@ -73,7 +193,8 @@ function FlotaPage() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
 
-  const toggle = <T,>(arr: T[], v: T): T[] => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+  const toggle = <T,>(arr: T[], v: T): T[] =>
+    arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
 
   const filtrados = useMemo(
     () =>
@@ -122,14 +243,26 @@ function FlotaPage() {
   return (
     <>
       <section className="relative bg-brand-blue-dark py-20 text-white">
-        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-dark via-brand-blue-dark/90 to-brand-blue-dark/60" />
+        <div
+          className="absolute inset-0 opacity-20 bg-bottom "
+          style={{
+            backgroundImage: `url(${heroBg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 73%",
+          }}
+        />
+        <div className="absolute inset-0 bg-linear-to-r from-brand-blue-dark via-brand-blue-dark/5 to-brand-blue-dark/5" />
         <div className="relative mx-auto max-w-7xl px-4 md:px-8">
-          <span className="text-sm font-bold uppercase tracking-widest text-sky-400">Nuestra Flota</span>
+          <span className="text-sm font-bold uppercase tracking-widest text-sky-400">
+            Nuestra Flota
+          </span>
           <h1 className="mt-3 text-4xl font-extrabold text-white md:text-6xl">
-            Unidades <span className="text-sky-400">homologadas</span>
+            Unidades <br /> <span className="text-sky-400">homologadas</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-white/80">Camionetas 4x4, SUV, vans y buses listos para operaciones mineras, exploración y turismo.</p>
+          <p className="mt-4 max-w-2xl text-white/80">
+            Camionetas 4x4, SUV, vans y buses listos para operaciones mineras, exploración y
+            turismo.
+          </p>
         </div>
       </section>
 
@@ -139,90 +272,172 @@ function FlotaPage() {
           <aside className="h-fit rounded-xl border border-border bg-card p-6 lg:sticky lg:top-28">
             <h2 className="mb-4 text-lg font-bold uppercase">Filtros</h2>
 
-            <div className="mb-5">
-              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">Tipo de Vehículo</h3>
-              <div className="space-y-2">
-                {(["Pickup 4x4", "SUV", "Van"] as Categoria[]).map((c) => (
-                  <label key={c} className="flex cursor-pointer items-center gap-2 text-sm">
-                    <input type="checkbox" className="size-4 accent-primary" checked={tipos.includes(c)} onChange={() => setTipos(toggle(tipos, c))} />
-                    {c}
-                  </label>
-                ))}
-              </div>
-            </div>
+            <Accordion type="multiple" defaultValue={[]} className="w-full">
+              <AccordionItem value="tipo-vehiculo" className="border-b border-border">
+                <AccordionTrigger className="py-3 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:no-underline">
+                  Tipo de Vehículo
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2">
+                    {(["Pickup 4x4", "SUV", "Van"] as Categoria[]).map((c) => (
+                      <label key={c} className="flex cursor-pointer items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="size-4 accent-primary"
+                          checked={tipos.includes(c)}
+                          onChange={() => setTipos(toggle(tipos, c))}
+                        />
+                        {c}
+                      </label>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-            <div className="mb-5">
-              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">Tipo de Servicio</h3>
-              <div className="space-y-2">
-                {(["Minería", "Exploración", "Turismo"] as Servicio[]).map((s) => (
-                  <label key={s} className="flex cursor-pointer items-center gap-2 text-sm">
-                    <input type="checkbox" className="size-4 accent-primary" checked={servs.includes(s)} onChange={() => setServs(toggle(servs, s))} />
-                    {s}
-                  </label>
-                ))}
-              </div>
-            </div>
+              <AccordionItem value="tipo-servicio" className="border-b border-border">
+                <AccordionTrigger className="py-3 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:no-underline">
+                  Tipo de Servicio
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2">
+                    {(["Minería", "Exploración", "Turismo"] as Servicio[]).map((s) => (
+                      <label key={s} className="flex cursor-pointer items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="size-4 accent-primary"
+                          checked={servs.includes(s)}
+                          onChange={() => setServs(toggle(servs, s))}
+                        />
+                        {s}
+                      </label>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-            <div className="mb-5">
-              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">Homologación</h3>
-              <div className="space-y-2">
-                {([
-                  ["todos", "Todos"],
-                  ["si", "Solo Homologadas"],
-                  ["no", "No Homologadas"],
-                ] as const).map(([k, label]) => (
-                  <label key={k} className="flex cursor-pointer items-center gap-2 text-sm">
-                    <input type="radio" name="homo" className="size-4 accent-primary" checked={homo === k} onChange={() => setHomo(k)} />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            </div>
+              <AccordionItem value="homologacion" className="border-b-0">
+                <AccordionTrigger className="py-3 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:no-underline">
+                  Homologación
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2">
+                    {(
+                      [
+                        ["todos", "Todos"],
+                        ["si", "Solo Homologadas"],
+                        ["no", "No Homologadas"],
+                      ] as const
+                    ).map(([k, label]) => (
+                      <label key={k} className="flex cursor-pointer items-center gap-2 text-sm">
+                        <input
+                          type="radio"
+                          name="homo"
+                          className="size-4 accent-primary"
+                          checked={homo === k}
+                          onChange={() => setHomo(k)}
+                        />
+                        {label}
+                      </label>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-xs leading-relaxed text-foreground/80">
               <p className="mb-1 text-sm font-bold text-primary">VARMAR Contratistas</p>
-              <p>Más de 15 años brindando soluciones de transporte seguro y confiable para los sectores minero, energético y turístico del Perú.</p>
+              <p>
+                Más de 15 años brindando soluciones de transporte seguro y confiable para los
+                sectores minero, energético y turístico del Perú.
+              </p>
             </div>
           </aside>
 
           {/* Grid */}
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {filtrados.length === 0 && (
-              <p className="col-span-full py-20 text-center text-muted-foreground">No se encontraron vehículos con esos filtros.</p>
+              <p className="col-span-full py-20 text-center text-muted-foreground">
+                No se encontraron vehículos con esos filtros.
+              </p>
             )}
             {filtrados.map((v) => (
-              <article key={v.id} className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card">
-                <div className="relative aspect-[4/3] overflow-hidden bg-white">
-                  <img src={v.imagen} alt={v.nombre} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <span className={`absolute left-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${v.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}>
+              <article
+                key={v.id}
+                className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card"
+              >
+                <div className="relative aspect-4/3 overflow-hidden bg-white">
+                  <img
+                    src={v.imagen}
+                    alt={v.nombre}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span
+                    className={`absolute left-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${v.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}
+                  >
                     {v.homologada ? "✓ Homologada" : "No Homologada"}
                   </span>
-                  <span className={`absolute right-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[v.estado]}`}>{v.estado}</span>
+                  <span
+                    className={`absolute right-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[v.estado]}`}
+                  >
+                    {v.estado}
+                  </span>
                 </div>
                 <div className="flex flex-1 flex-col p-5">
                   <h3 className="text-lg font-bold">{v.nombre}</h3>
                   <p className="text-xs text-muted-foreground">{v.modelo}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {v.servicios.map((s) => (
-                      <span key={s} className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">{s}</span>
+                      <span
+                        key={s}
+                        className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground"
+                      >
+                        {s}
+                      </span>
                     ))}
-                    <span className="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-semibold text-secondary-foreground">{v.categoria}</span>
+                    <span className="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-semibold text-secondary-foreground">
+                      {v.categoria}
+                    </span>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex items-center gap-1.5"><Users className="size-3.5 text-primary" />{v.pasajeros} pasajeros</div>
-                    <div className="flex items-center gap-1.5"><Settings2 className="size-3.5 text-primary" />{v.transmision}</div>
-                    <div className="flex items-center gap-1.5"><Fuel className="size-3.5 text-primary" />{v.combustible}</div>
-                    <div className="flex items-center gap-1.5"><Gauge className="size-3.5 text-primary" />{v.traccion}</div>
+                    <div className="flex items-center gap-1.5">
+                      <Users className="size-3.5 text-primary" />
+                      {v.pasajeros} pasajeros
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Settings2 className="size-3.5 text-primary" />
+                      {v.transmision}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Fuel className="size-3.5 text-primary" />
+                      {v.combustible}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Gauge className="size-3.5 text-primary" />
+                      {v.traccion}
+                    </div>
                   </div>
                   <div className="mt-4 space-y-1 border-t border-border pt-3 text-sm">
-                    <div className="flex justify-between"><span className="text-muted-foreground">Diario:</span><span className="font-bold">S/ {v.diario}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Mensual:</span><span className="font-bold">S/ {v.mensual}</span></div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Diario:</span>
+                      <span className="font-bold">S/ {v.diario}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Mensual:</span>
+                      <span className="font-bold">S/ {v.mensual}</span>
+                    </div>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-2">
-                    <button onClick={() => setDetalle(v)} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 py-2.5 text-sm font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+                    <button
+                      onClick={() => setDetalle(v)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 py-2.5 text-sm font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                    >
                       <Info className="size-4" /> Detalles
                     </button>
-                    <button onClick={() => addToCart(v.id)} className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                    <button
+                      onClick={() => addToCart(v.id)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90"
+                    >
                       <ShoppingCart className="size-4" /> Cotizar
                     </button>
                   </div>
@@ -238,7 +453,11 @@ function FlotaPage() {
           {detalle && (
             <>
               <div className="aspect-video w-full overflow-hidden bg-white">
-                <img src={detalle.imagen} alt={detalle.nombre} className="h-full w-full object-cover" />
+                <img
+                  src={detalle.imagen}
+                  alt={detalle.nombre}
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="p-6">
                 <DialogHeader>
@@ -246,26 +465,54 @@ function FlotaPage() {
                   <DialogDescription>{detalle.modelo}</DialogDescription>
                 </DialogHeader>
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  <span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${detalle.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}>
+                  <span
+                    className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${detalle.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}
+                  >
                     {detalle.homologada ? "✓ Homologada" : "No Homologada"}
                   </span>
-                  <span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[detalle.estado]}`}>{detalle.estado}</span>
-                  <span className="rounded-full bg-secondary/20 px-2 py-1 text-[10px] font-semibold text-secondary-foreground">{detalle.categoria}</span>
+                  <span
+                    className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[detalle.estado]}`}
+                  >
+                    {detalle.estado}
+                  </span>
+                  <span className="rounded-full bg-secondary/20 px-2 py-1 text-[10px] font-semibold text-secondary-foreground">
+                    {detalle.categoria}
+                  </span>
                   {detalle.servicios.map((s) => (
-                    <span key={s} className="rounded-full bg-accent px-2 py-1 text-[10px] font-semibold text-accent-foreground">{s}</span>
+                    <span
+                      key={s}
+                      className="rounded-full bg-accent px-2 py-1 text-[10px] font-semibold text-accent-foreground"
+                    >
+                      {s}
+                    </span>
                   ))}
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
-                  <div className="flex items-center gap-2"><Users className="size-4 text-primary" />{detalle.pasajeros} pasajeros</div>
-                  <div className="flex items-center gap-2"><Settings2 className="size-4 text-primary" />{detalle.transmision}</div>
-                  <div className="flex items-center gap-2"><Fuel className="size-4 text-primary" />{detalle.combustible}</div>
-                  <div className="flex items-center gap-2"><Gauge className="size-4 text-primary" />{detalle.traccion}</div>
+                  <div className="flex items-center gap-2">
+                    <Users className="size-4 text-primary" />
+                    {detalle.pasajeros} pasajeros
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Settings2 className="size-4 text-primary" />
+                    {detalle.transmision}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Fuel className="size-4 text-primary" />
+                    {detalle.combustible}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Gauge className="size-4 text-primary" />
+                    {detalle.traccion}
+                  </div>
                 </div>
                 <div className="mt-5">
                   <h4 className="mb-2 text-sm font-bold uppercase">Equipamiento</h4>
                   <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
                     {detalle.equipamiento.map((e) => (
-                      <li key={e} className="flex items-center gap-2 text-sm"><Check className="size-4 text-primary" />{e}</li>
+                      <li key={e} className="flex items-center gap-2 text-sm">
+                        <Check className="size-4 text-primary" />
+                        {e}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -279,7 +526,13 @@ function FlotaPage() {
                     <span className="text-2xl font-bold text-primary">S/ {detalle.mensual}</span>
                   </div>
                 </div>
-                <button onClick={() => { addToCart(detalle.id); setDetalle(null); }} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                <button
+                  onClick={() => {
+                    addToCart(detalle.id);
+                    setDetalle(null);
+                  }}
+                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90"
+                >
                   <ShoppingCart className="size-5" /> Agregar a cotización
                 </button>
               </div>
@@ -310,7 +563,10 @@ function FlotaPage() {
               <ShoppingCart className="h-5 w-5 text-sky-600" /> Mi Cotización
             </SheetTitle>
             {cartItems.length > 0 && (
-              <button onClick={() => setCart({})} className="flex items-center gap-1 text-xs font-semibold text-sky-700 hover:opacity-80">
+              <button
+                onClick={() => setCart({})}
+                className="flex items-center gap-1 text-xs font-semibold text-sky-700 hover:opacity-80"
+              >
                 <Trash2 className="h-3.5 w-3.5" /> Limpiar
               </button>
             )}
@@ -321,28 +577,53 @@ function FlotaPage() {
               <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
                 <ShoppingCart className="mb-3 h-12 w-12 opacity-30" />
                 <p className="text-sm">Tu cotización está vacía.</p>
-                <p className="mt-1 text-xs">Agrega vehículos para solicitar una cotización personalizada.</p>
+                <p className="mt-1 text-xs">
+                  Agrega vehículos para solicitar una cotización personalizada.
+                </p>
               </div>
             ) : (
               <ul className="space-y-3">
                 {cartItems.map(({ v, qty }) => (
-                  <li key={v.id} className="flex gap-3 rounded-lg border border-sky-100 bg-card p-3">
-                    <img src={v.imagen} alt={v.nombre} className="h-16 w-20 shrink-0 rounded object-cover" />
+                  <li
+                    key={v.id}
+                    className="flex gap-3 rounded-lg border border-sky-100 bg-card p-3"
+                  >
+                    <img
+                      src={v.imagen}
+                      alt={v.nombre}
+                      className="h-16 w-20 shrink-0 rounded object-cover"
+                    />
                     <div className="flex flex-1 flex-col">
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <p className="text-sm font-bold leading-tight">{v.nombre}</p>
-                          <p className="text-[11px] text-muted-foreground">CÓD: {v.id.toUpperCase()}</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            CÓD: {v.id.toUpperCase()}
+                          </p>
                         </div>
-                        <button onClick={() => setQty(v.id, 0)} aria-label="Eliminar" className="text-muted-foreground hover:text-sky-600">
+                        <button
+                          onClick={() => setQty(v.id, 0)}
+                          aria-label="Eliminar"
+                          className="text-muted-foreground hover:text-sky-600"
+                        >
                           <X className="h-4 w-4" />
                         </button>
                       </div>
                       <div className="mt-2 flex items-center justify-between">
                         <div className="flex items-center rounded-md border border-sky-200">
-                          <button onClick={() => setQty(v.id, qty - 1)} className="grid h-7 w-7 place-items-center hover:bg-sky-50"><Minus className="h-3 w-3" /></button>
+                          <button
+                            onClick={() => setQty(v.id, qty - 1)}
+                            className="grid h-7 w-7 place-items-center hover:bg-sky-50"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </button>
                           <span className="w-7 text-center text-sm font-semibold">{qty}</span>
-                          <button onClick={() => setQty(v.id, qty + 1)} className="grid h-7 w-7 place-items-center hover:bg-sky-50"><Plus className="h-3 w-3" /></button>
+                          <button
+                            onClick={() => setQty(v.id, qty + 1)}
+                            className="grid h-7 w-7 place-items-center hover:bg-sky-50"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </button>
                         </div>
                         <span className="text-sm font-bold text-sky-600">S/ {v.diario * qty}</span>
                       </div>
@@ -356,16 +637,26 @@ function FlotaPage() {
           {cartItems.length > 0 && (
             <div className="border-t border-sky-100 bg-white p-5">
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total referencial / día</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Total referencial / día
+                </span>
                 <span className="text-xl font-bold text-sky-700">S/ {cartTotal}</span>
               </div>
-              <button onClick={sendCartWA} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-colors hover:bg-sky-600">
+              <button
+                onClick={sendCartWA}
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-colors hover:bg-sky-600"
+              >
                 <MessageCircle className="h-4 w-4" /> Enviar Cotización
               </button>
-              <button onClick={() => setCart({})} className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-sky-500 px-4 py-2.5 text-xs font-bold uppercase text-sky-600 transition-colors hover:bg-sky-500 hover:text-white">
+              <button
+                onClick={() => setCart({})}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-sky-500 px-4 py-2.5 text-xs font-bold uppercase text-sky-600 transition-colors hover:bg-sky-500 hover:text-white"
+              >
                 <RotateCcw className="h-3.5 w-3.5" /> Reiniciar
               </button>
-              <p className="mt-3 text-center text-[11px] text-muted-foreground">Cotización referencial — se confirma por WhatsApp.</p>
+              <p className="mt-3 text-center text-[11px] text-muted-foreground">
+                Cotización referencial — se confirma por WhatsApp.
+              </p>
             </div>
           )}
         </SheetContent>
