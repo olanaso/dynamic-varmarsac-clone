@@ -1,0 +1,39 @@
+/* Scroll suave y barras de desplazamiento discretas (WebKit + Firefox) */
+:root {
+  --scrollbar-thumb: #fb923c;
+  --scrollbar-thumb-hover: #f97316;
+  --scrollbar-track: #f1f5f9;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}

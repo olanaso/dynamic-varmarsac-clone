@@ -1,0 +1,72 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+}
+const { id, title, size = 'md' } = Astro.props;
+
+const sizeClass = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-3xl',
+  xl: 'max-w-5xl',
+}[size];
+---
+<dialog
+  id={id}
+  class:list={[
+    'w-full rounded-2xl border border-slate-200 shadow-2xl p-0',
+    'backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm',
+    sizeClass,
+  ]}
+>
+  <div class="flex flex-col max-h-[90vh]">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white rounded-t-2xl">
+      <h2 class="text-base font-semibold text-slate-800">{title}</h2>
+      <button
+        type="button"
+        onclick={`document.getElementById('${id}').close()`}
+        aria-label="Cerrar"
+        class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Body -->
+    <div class="px-6 py-5 overflow-y-auto">
+      <slot />
+    </div>
+  </div>
+</dialog>
+
+<!-- Animations (injected once globally) -->
+<style is:global>
+  @keyframes barmar-dlg-in {
+    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+  }
+  @keyframes barmar-bd-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  dialog[open] {
+    animation: barmar-dlg-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  dialog[open]::backdrop {
+    animation: barmar-bd-in 0.2s ease forwards;
+  }
+</style>
+
+<!-- Runs once: backdrop click closes the dialog -->
+<script>
+  document.addEventListener('click', (e) => {
+    if (e.target instanceof HTMLDialogElement) {
+      e.target.close();
+    }
+  });
+</script>

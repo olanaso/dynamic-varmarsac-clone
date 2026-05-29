@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nuevo vehículo — VARMAR Admin</title><script>(function(){const apiBase = "https://app.varmarsac.com";
+
+    window.__VARMAR_API_BASE__ = apiBase;
+    window.barmarAuthFetch = function (path, init) {
+      init = init || {};
+      var headers = new Headers(init.headers || {});
+      var t = localStorage.getItem('barmar_token');
+      if (t) headers.set('Authorization', 'Bearer ' + t);
+      return fetch(window.__VARMAR_API_BASE__ + path, Object.assign({}, init, { headers: headers }));
+    };
+    window.barmarUploadsUrl = function (file) {
+      return window.__VARMAR_API_BASE__ + '/uploads/' + file;
+    };
+
+    // ── Searchable select ─────────────────────────────────────────────────
+    // Usage: var ss = new SearchableSelect(containerEl, 'Buscar...')
+    //   ss.setOptions([{ value, label }])   populate + reset
+    //   ss.getValue()                       current selected value (string) or ''
+    //   ss.reset()                          clear selection
+    window.SearchableSelect = function (container, placeholder) {
+      container.innerHTML = '';
+      container.style.position = 'relative';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = placeholder || 'Buscar…';
+      input.autocomplete = 'off';
+      input.className = 'w-full px-3.5 py-2.5 pr-9 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer bg-white';
+
+      var chevron = document.createElement('span');
+      chevron.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#94a3b8;line-height:0';
+      chevron.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>';
+
+      var hidden = document.createElement('input');
+      hidden.type = 'hidden';
+
+      var dropdown = document.createElement('div');
+      dropdown.style.cssText = 'position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:9999;background:#fff;border:1px solid #e2e8f0;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:192px;overflow-y:auto;display:none';
+
+      container.appendChild(input);
+      container.appendChild(chevron);
+      container.appendChild(hidden);
+      container.appendChild(dropdown);
+
+      var _opts = [];
+      var _val  = '';
+      var _label = '';
+
+      function render(filter) {
+        dropdown.innerHTML = '';
+        var f = (filter || '').toLowerCase();
+        var hits = f ? _opts.filter(function (o) { return o.label.toLowerCase().indexOf(f) !== -1; }) : _opts;
+        if (hits.length === 0) {
+          var d = document.createElement('div');
+          d.style.cssText = 'padding:10px 16px;font-size:.875rem;color:#94a3b8';
+          d.textContent = 'Sin resultados';
+          dropdown.appendChild(d);
+          return;
+        }
+        hits.forEach(function (o) {
+          var d = document.createElement('div');
+          var isSel = String(o.value) === String(_val);
+          d.style.cssText = 'padding:9px 14px;font-size:.875rem;cursor:pointer;transition:background .1s;' +
+            (isSel ? 'background:#eff6ff;color:#1d4ed8;font-weight:600' : 'color:#334155');
+          d.textContent = o.label;
+          d.addEventListener('mouseover', function () { if (!isSel) d.style.background = '#f8fafc'; });
+          d.addEventListener('mouseout',  function () { if (!isSel) d.style.background = ''; });
+          d.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            _val = o.value; _label = o.label;
+            hidden.value = o.value;
+            input.value  = o.label;
+            dropdown.style.display = 'none';
+          });
+          dropdown.appendChild(d);
+        });
+      }
+
+      input.addEventListener('focus', function () {
+        if (input.value === _label) input.value = '';
+        render(input.value);
+        dropdown.style.display = 'block';
+      });
+      input.addEventListener('input', function () {
+        _val = ''; hidden.value = '';
+        render(input.value);
+        dropdown.style.display = 'block';
+      });
+      input.addEventListener('blur', function () {
+        setTimeout(function () {
+          dropdown.style.display = 'none';
+          input.value = _val ? _label : '';
+        }, 160);
+      });
+      // click on input when already focused — re-open
+      input.addEventListener('click', function () {
+        if (dropdown.style.display === 'none') {
+          if (input.value === _label) input.value = '';
+          render(input.value);
+          dropdown.style.display = 'block';
+        }
+      });
+
+      return {
+        setOptions: function (opts) {
+          _opts = opts; _val = ''; _label = '';
+          hidden.value = ''; input.value = '';
+        },
+        getValue:   function () { return hidden.value; },
+        reset:      function () {
+          _val = ''; _label = ''; hidden.value = ''; input.value = '';
+        },
+      };
+    };
+  })();</script><link rel="stylesheet" href="/_astro/index.D7YHtQZJ.css">
+<style>:root{--scrollbar-thumb: #fb923c;--scrollbar-thumb-hover: #f97316;--scrollbar-track: #f1f5f9}html{scroll-behavior:smooth}*{scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track)}*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track{background:var(--scrollbar-track);border-radius:9999px}*::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:9999px;border:2px solid var(--scrollbar-track)}*::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}*::-webkit-scrollbar-corner{background:var(--scrollbar-track)}
+</style></head> <body class="bg-slate-50 min-h-screen text-slate-900 antialiased"> <div class="flex min-h-screen"> <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-slate-900/50 opacity-0 pointer-events-none transition-opacity md:hidden"></div> <!-- Sidebar --> <aside id="sidebar" class="w-64 bg-slate-900 fixed inset-y-0 left-0 z-40 flex flex-col -translate-x-full transition-transform duration-200 md:translate-x-0"> <!-- Logo --> <div class="px-6 py-5 border-b border-slate-700/60"> <div class="flex items-center gap-2"> <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"></path> </svg> </div> <div> <p class="text-white font-bold text-base leading-none">VARMAR</p> <p class="text-slate-400 text-xs mt-0.5">Panel Admin</p> </div> </div> </div> <!-- Nav --> <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto overscroll-y-contain"> <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg> Dashboard </a><a href="/vehicles" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-primary-600 text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"/></svg> Vehículos </a><a href="/categories" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg> Categorías </a><a href="/service-types" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Tipos de Servicio </a><div class="px-3 pt-5 pb-1"> <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Personal</p> </div><a href="/admins" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> Administrativos </a><a href="/conductores" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Conductores </a> </nav> <!-- Logout --> <div class="px-3 py-4 border-t border-slate-700/60"> <div class="px-3 py-2 mb-2 rounded-lg bg-slate-800/60 border border-slate-700/60"> <p id="sidebar-user-name" class="text-sm font-semibold text-slate-100 truncate">Administrador</p> <p class="text-xs text-slate-400 mt-0.5">Administrador</p> </div> <a href="/logout" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path> </svg>
+Cerrar sesión
+</a> </div> </aside> <!-- Main --> <div class="md:ml-64 flex-1 flex flex-col min-h-screen"> <header class="bg-white border-b border-slate-200 px-4 md:px-8 py-4 sticky top-0 z-20"> <div class="flex items-center justify-between gap-4"> <button id="sidebar-toggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menú lateral" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 md:hidden"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> <h1 class="text-lg md:text-xl font-semibold text-slate-800">Nuevo vehículo</h1> </div> </header> <main class="flex-1 p-4 md:p-8">  <div> <div class="mb-6 flex items-center gap-3"> <a href="/vehicles" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path> </svg>
+Volver
+</a> <span class="text-slate-300">/</span> <span class="text-sm text-slate-700 font-medium">Nuevo vehículo</span> </div> <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6"> <div id="new-veh-error" class="hidden mb-5 flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg> <span id="new-veh-error-msg"></span> </div> <form id="new-veh-form" class="space-y-4"> <!-- Image upload + preview --> <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200"> <div id="img-thumb" class="w-16 h-16 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 shrink-0 flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path> </svg> </div> <div class="flex-1 min-w-0"> <label class="block text-xs font-medium text-slate-600 mb-1">
+Imagen del vehículo <span class="font-normal text-slate-400">(JPEG / PNG / WEBP · máx 5 MB)</span> </label> <input type="file" name="image" id="inp-image" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"> </div> </div> <!-- 3-col grid --> <div class="grid grid-cols-3 gap-3"> <!-- Fila 1: Nombre · Marca · Matrícula --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-name">
+Nombre <span class="text-red-500">*</span> </label> <input id="f-name" name="name" type="text" required placeholder="Ej. Toyota Hilux GR Sport" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-make">
+Marca <span class="text-red-500">*</span> </label> <input id="f-make" name="make" type="text" required placeholder="Toyota" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-regnum">
+Matrícula <span class="text-red-500">*</span> </label> <input id="f-regnum" name="registration_number" type="text" required placeholder="ABC-1234" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <!-- Fila 2: Año · Categoría · Estado --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-year">
+Año <span class="text-red-500">*</span> </label> <input id="f-year" name="year" type="number" required min="1900" max="2100" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-catid">
+Categoría <span class="text-red-500">*</span> </label> <select id="f-catid" name="category_id" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="">— Cargando… —</option> </select> <p id="cat-warn" class="hidden mt-1 text-xs text-amber-600">Sin categorías. Crea una primero.</p> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-status">Estado</label> <select id="f-status" name="status" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="AVAILABLE">Disponible</option><option value="RENTED">Alquilado</option><option value="MAINTENANCE">Mantenimiento</option> </select> </div> <!-- Fila 3–5: Tarifas, especificaciones y kilometraje --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-rate">
+Tarifa diaria (S/.) <span class="text-red-500">*</span> </label> <div class="relative"> <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-medium select-none">S/.</span> <input id="f-rate" name="daily_rate" type="number" required min="0" step="0.01" placeholder="0.00" class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-monthly">
+Precio mensual (S/.) <span class="text-red-500">*</span> </label> <div class="relative"> <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-medium select-none">S/.</span> <input id="f-monthly" name="precio_mensual" type="number" required min="0" step="0.01" placeholder="0.00" class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-passengers">
+Pasajeros <span class="text-red-500">*</span> </label> <input id="f-passengers" name="cantidad_pasajeros" type="number" required min="1" max="99" placeholder="5" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-transmission">
+Transmisión <span class="text-red-500">*</span> </label> <select id="f-transmission" name="tipo_transmision" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="" selected>— Seleccionar —</option><option value="MANUAL">Manual</option><option value="AUTOMATICA">Automática</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-fuel">
+Combustible <span class="text-red-500">*</span> </label> <select id="f-fuel" name="tipo_combustible" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="" selected>— Seleccionar —</option><option value="GASOLINA">Gasolina</option><option value="DIESEL">Diésel</option><option value="ELECTRICO">Eléctrico</option><option value="HIBRIDO">Híbrido</option><option value="GNV">GNV</option><option value="GLP">GLP</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-traction">
+Tracción <span class="text-red-500">*</span> </label> <select id="f-traction" name="tipo_traccion" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="" selected>— Seleccionar —</option><option value="4X4">4x4</option><option value="4X2">4x2</option><option value="DELANTERA">Delantera</option><option value="TRASERA">Trasera</option><option value="AWD">AWD</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-km">KM actual</label> <input id="f-km" name="current_mileage" type="number" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-km-maint">
+KM mantenimiento <span class="font-normal text-slate-400">(opcional)</span> </label> <input id="f-km-maint" name="kilometraje_mantenimiento" type="number" min="1" placeholder="—" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <!-- Fila 6: checkboxes --> <div class="col-span-3 flex items-center gap-6 py-1"> <label class="flex items-center gap-2 cursor-pointer select-none"> <input id="f-approved" name="is_approved" type="checkbox" class="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-500"> <span class="text-xs font-medium text-slate-700">Aprobado</span> </label> <label class="flex items-center gap-2 cursor-pointer select-none"> <input id="f-homologado" name="homologado" type="checkbox" class="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-500"> <span class="text-xs font-medium text-slate-700">Homologado</span> </label> </div> </div> <!-- Description --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-desc">Descripción</label> <textarea id="f-desc" name="description" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Sin descripción"></textarea> </div> <!-- Equipamiento --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="f-equip-input">Equipamiento</label> <div class="flex gap-2"> <input id="f-equip-input" type="text" maxlength="80" placeholder="Ej. Aire acondicionado, Bluetooth…" class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> <button type="button" id="f-equip-add" class="shrink-0 px-3 py-2 text-xs font-semibold text-primary-700 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100 transition-colors">
+Agregar
+</button> </div> <div id="f-equip-tags" class="flex flex-wrap gap-2 mt-2 min-h-[1.5rem]"></div> </div> <!-- Service type pills --> <div> <p class="text-xs font-medium text-slate-600 mb-2">Tipos de Servicio</p> <div id="stype-pills" class="flex flex-wrap gap-2"> <span class="text-xs text-slate-400">Cargando…</span> </div> </div> <!-- Actions --> <div class="flex items-center gap-3 pt-3 border-t border-slate-100"> <button type="submit" id="btn-submit" class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors">
+Crear vehículo
+</button> <a href="/vehicles" class="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+Cancelar
+</a> </div> </form> </div> </div>  </main> </div> </div> <script>(function(){const apiUrl = "https://app.varmarsac.com";
+
+    const API_URL = apiUrl;
+    const token = localStorage.getItem('barmar_token');
+
+    if (!token) {
+      window.location.href = '/login';
+    } else {
+      fetch(`${API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('invalid token');
+          return res.json();
+        })
+        .then((data) => {
+          const user = data?.user ?? {};
+          const email = typeof user.email === 'string' ? user.email : '';
+          const userName = user.nombre_completo || user.name || user.full_name || (email.includes('@') ? email.split('@')[0] : email) || 'Administrador';
+          const userRole = typeof user.role === 'string' ? user.role : 'admin';
+
+          window.__barmarCurrentUserId = user.id ?? null;
+
+          const nameEl = document.getElementById('sidebar-user-name');
+          if (nameEl) nameEl.textContent = userName;
+        })
+        .catch(() => {
+          localStorage.removeItem('barmar_token');
+          window.location.href = '/login';
+        });
+    }
+
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    if (sidebar && sidebarToggle && sidebarOverlay) {
+      const openSidebar = () => {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
+      };
+
+      const closeSidebar = () => {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+      };
+
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        if (isOpen) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      });
+
+      sidebarOverlay.addEventListener('click', closeSidebar);
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+          sidebarToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+        }
+      });
+    }
+  })();</script> </body> </html> <script>(function(){const VEHICLE_MAX_EQUIPAMIENTO_TAGS = 30;
+
+  (function () {
+    function setLoading(btn, isLoading) {
+      if (!btn) return;
+      if (isLoading) {
+        if (!document.getElementById('_bspin')) {
+          var s = document.createElement('style');
+          s.id = '_bspin';
+          s.textContent = '@keyframes _bspin{to{transform:rotate(360deg)}}';
+          document.head.appendChild(s);
+        }
+        btn._origHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+        btn.style.cursor = 'not-allowed';
+        btn.innerHTML =
+          '<svg style="display:inline-block;width:1rem;height:1rem;margin-right:0.4rem;vertical-align:-0.175em;animation:_bspin 1s linear infinite" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Creando…';
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.style.cursor = '';
+        if (btn._origHTML !== undefined) btn.innerHTML = btn._origHTML;
+      }
+    }
+
+    function showError(msg) {
+      var div = document.getElementById('new-veh-error');
+      var span = document.getElementById('new-veh-error-msg');
+      if (span) span.textContent = msg;
+      if (div) div.classList.remove('hidden');
+      if (div) div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideError() {
+      var div = document.getElementById('new-veh-error');
+      if (div) div.classList.add('hidden');
+    }
+
+    function initEquipamientoTags(opts) {
+      var tags = Array.isArray(opts.initial) ? opts.initial.slice() : [];
+      var input = document.getElementById(opts.inputId);
+      var addBtn = document.getElementById(opts.addBtnId);
+      var container = document.getElementById(opts.containerId);
+      if (!input || !addBtn || !container) return function () { return []; };
+
+      function render() {
+        container.innerHTML = '';
+        if (!tags.length) {
+          container.innerHTML = '<span class="text-xs text-slate-400">Sin etiquetas</span>';
+          return;
+        }
+        tags.forEach(function (tag, idx) {
+          var pill = document.createElement('span');
+          pill.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-800';
+          var txt = document.createElement('span');
+          txt.textContent = tag;
+          var rm = document.createElement('button');
+          rm.type = 'button';
+          rm.className = 'text-emerald-600/70 hover:text-red-600 leading-none px-0.5';
+          rm.innerHTML = '&times;';
+          rm.addEventListener('click', function () { tags.splice(idx, 1); render(); });
+          pill.appendChild(txt);
+          pill.appendChild(rm);
+          container.appendChild(pill);
+        });
+      }
+
+      function addTag() {
+        var val = (input.value || '').trim();
+        if (!val || tags.indexOf(val) !== -1) { input.value = ''; return; }
+        if (tags.length >= VEHICLE_MAX_EQUIPAMIENTO_TAGS) return;
+        tags.push(val);
+        input.value = '';
+        render();
+      }
+
+      addBtn.addEventListener('click', addTag);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); addTag(); }
+      });
+
+      render();
+      return function () { return tags.slice(); };
+    }
+
+    function init() {
+      // Set default year
+      var yearInput = document.getElementById('f-year');
+      if (yearInput && !yearInput.value) yearInput.value = String(new Date().getFullYear());
+
+      // Load categories
+      window.barmarAuthFetch('/api/categories?limit=200')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          var cats = j.data || [];
+          var sel = document.getElementById('f-catid');
+          sel.innerHTML = '<option value="">— Seleccionar —</option>';
+          cats.forEach(function (c) {
+            var opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            sel.appendChild(opt);
+          });
+          if (cats.length === 0) {
+            document.getElementById('cat-warn').classList.remove('hidden');
+          }
+        })
+        .catch(function () {
+          var sel = document.getElementById('f-catid');
+          sel.innerHTML = '<option value="">— Error al cargar —</option>';
+        });
+
+      // Load service types
+      window.barmarAuthFetch('/api/service-types?limit=200')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          var types = j.data || [];
+          var container = document.getElementById('stype-pills');
+          container.innerHTML = '';
+          if (types.length === 0) {
+            container.innerHTML = '<span class="text-xs text-slate-400">Sin tipos disponibles.</span>';
+            return;
+          }
+          types.forEach(function (st) {
+            var label = document.createElement('label');
+            label.setAttribute('data-pill', '');
+            label.className = 'inline-flex items-center gap-1.5 cursor-pointer select-none px-2.5 py-1 rounded-full border text-xs font-medium transition-colors bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100';
+            var cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.name = 'service_type_ids';
+            cb.value = String(st.id);
+            cb.className = 'w-3.5 h-3.5 text-primary-600 border-slate-300 rounded';
+            cb.addEventListener('change', function () {
+              if (cb.checked) {
+                label.className = 'inline-flex items-center gap-1.5 cursor-pointer select-none px-2.5 py-1 rounded-full border text-xs font-medium transition-colors bg-primary-100 border-primary-300 text-primary-700';
+              } else {
+                label.className = 'inline-flex items-center gap-1.5 cursor-pointer select-none px-2.5 py-1 rounded-full border text-xs font-medium transition-colors bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100';
+              }
+            });
+            var span = document.createElement('span');
+            span.textContent = st.name;
+            label.appendChild(cb);
+            label.appendChild(span);
+            container.appendChild(label);
+          });
+        })
+        .catch(function () {
+          document.getElementById('stype-pills').innerHTML = '<span class="text-xs text-slate-400">No se pudieron cargar.</span>';
+        });
+
+      var getEquipTags = initEquipamientoTags({
+        inputId: 'f-equip-input',
+        addBtnId: 'f-equip-add',
+        containerId: 'f-equip-tags',
+        initial: [],
+      });
+
+      // Image preview
+      var inp = document.getElementById('inp-image');
+      var thumb = document.getElementById('img-thumb');
+      if (inp && thumb) {
+        inp.addEventListener('change', function () {
+          var file = inp.files && inp.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            thumb.innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover" alt="preview" />';
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Form submit
+      var form = document.getElementById('new-veh-form');
+      var btn = document.getElementById('btn-submit');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideError();
+
+        var fd = new FormData();
+        fd.append('name',            document.getElementById('f-name').value);
+        fd.append('make',            document.getElementById('f-make').value);
+        fd.append('registration_number', document.getElementById('f-regnum').value);
+        fd.append('year',            document.getElementById('f-year').value);
+        fd.append('category_id',     document.getElementById('f-catid').value);
+        fd.append('status',          document.getElementById('f-status').value);
+        fd.append('daily_rate',         document.getElementById('f-rate').value);
+        fd.append('precio_mensual',     document.getElementById('f-monthly').value);
+        fd.append('cantidad_pasajeros', document.getElementById('f-passengers').value);
+        fd.append('tipo_transmision',   document.getElementById('f-transmission').value);
+        fd.append('tipo_combustible',   document.getElementById('f-fuel').value);
+        fd.append('tipo_traccion',      document.getElementById('f-traction').value);
+        fd.append('current_mileage',    document.getElementById('f-km').value);
+        fd.append('description',     document.getElementById('f-desc').value);
+        fd.append('is_approved',     document.getElementById('f-approved').checked ? 'true' : 'false');
+        fd.append('homologado',      document.getElementById('f-homologado').checked ? 'true' : 'false');
+
+        var kmMaint = document.getElementById('f-km-maint').value;
+        if (kmMaint && kmMaint.trim()) fd.append('kilometraje_mantenimiento', kmMaint);
+
+        document.querySelectorAll('[name="service_type_ids"]:checked').forEach(function (cb) {
+          fd.append('service_type_ids', cb.value);
+        });
+
+        if (getEquipTags) {
+          var equipTags = getEquipTags();
+          if (!equipTags.length) {
+            fd.append('equipamiento', '[]');
+          } else {
+            equipTags.forEach(function (tag) {
+              fd.append('equipamiento', tag);
+            });
+          }
+        }
+
+        var imageFile = inp && inp.files && inp.files[0];
+        if (imageFile) fd.append('image', imageFile, imageFile.name);
+
+        setLoading(btn, true);
+
+        window.barmarAuthFetch('/api/admin/vehicles', { method: 'POST', body: fd })
+          .then(function (res) {
+            if (res.status === 401) { window.location.href = '/login'; return; }
+            return res.json().then(function (data) {
+              if (!res.ok) {
+                var errs = data.errors;
+                showError(errs ? errs.map(function (e) { return e.message; }).join(' · ') : (data.message || 'No se pudo crear el vehículo.'));
+                setLoading(btn, false);
+                return;
+              }
+              window.location.href = '/vehicles';
+            });
+          })
+          .catch(function (err) {
+            showError(err.message || 'Error de red.');
+            setLoading(btn, false);
+          });
+      });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+})();</script>

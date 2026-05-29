@@ -1,0 +1,267 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+---
+<AdminLayout title="Dashboard">
+
+  <div id="dash-api-error" class="hidden mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    No se pudo conectar con el backend.
+  </div>
+
+  <p id="dash-loading" class="mb-6 text-sm text-slate-500">Cargando datos de la flota…</p>
+
+  <div id="dash-main" class="hidden">
+    <!-- ── Stat cards ──────────────────────────────────────────────────────── -->
+    <div class="grid grid-cols-3 gap-5 mb-6">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"/>
+          </svg>
+        </div>
+        <div>
+          <p id="dash-stat-total" class="text-2xl font-bold text-slate-800">0</p>
+          <p class="text-sm text-slate-500">Total de flota</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p id="dash-stat-rate" class="text-2xl font-bold text-slate-800">0%</p>
+          <p class="text-sm text-slate-500">Tasa de disponibilidad</p>
+          <p id="dash-stat-rate-sub" class="text-xs text-slate-400">0 de 0 disponibles</p>
+        </div>
+      </div>
+
+      <div id="dash-alerts-card" class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
+        <div id="dash-alerts-icon-wrap" class="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div>
+          <p id="dash-stat-alerts" class="text-2xl font-bold text-slate-800">0</p>
+          <p class="text-sm text-slate-500">Alertas de mantenimiento</p>
+          <p class="text-xs text-slate-400">Prioridad alta (&lt; 500 km)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-sm font-semibold text-slate-700 mb-5">Estado de la flota</h2>
+        <div class="flex flex-col items-center">
+          <div id="dash-donut-wrap"></div>
+          <div id="dash-legend" class="w-full mt-5 space-y-2.5"></div>
+        </div>
+      </div>
+
+      <div class="col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-sm font-semibold text-slate-700">Alertas de mantenimiento por kilometraje</h2>
+          <span id="dash-maint-count-label" class="text-xs text-slate-400">0 vehículos monitoreados</span>
+        </div>
+        <div id="dash-maint-body"></div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script is:inline>
+  (function () {
+    var priorityConfig = {
+      alta:  { label: 'Alta',  badge: 'bg-red-100 text-red-700 border border-red-200',     bar: '#ef4444' },
+      media: { label: 'Media', badge: 'bg-amber-100 text-amber-700 border border-amber-200', bar: '#f59e0b' },
+      baja:  { label: 'Baja',  badge: 'bg-slate-100 text-slate-600 border border-slate-200', bar: '#cbd5e1' },
+    };
+
+    function esc(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    }
+
+    function render() {
+      if (!window.barmarAuthFetch) return;
+
+      window.barmarAuthFetch('/api/admin/vehicles?limit=500')
+        .then(function (res) {
+          if (!res.ok) throw new Error('api');
+          return res.json();
+        })
+        .then(function (json) {
+          var allVehicles = json.data || [];
+          var total = json.pagination && json.pagination.total != null ? json.pagination.total : allVehicles.length;
+
+          var availableCount = allVehicles.filter(function (v) { return v.status === 'AVAILABLE'; }).length;
+          var rentedCount = allVehicles.filter(function (v) { return v.status === 'RENTED'; }).length;
+          var maintenanceCount = allVehicles.filter(function (v) { return v.status === 'MAINTENANCE'; }).length;
+          var availabilityRate = total > 0 ? Math.round((availableCount / total) * 100) : 0;
+
+          var maintenanceAlerts = allVehicles
+            .filter(function (v) { return v.kilometraje_mantenimiento != null; })
+            .map(function (v) {
+              var diff = v.kilometraje_mantenimiento - v.current_mileage;
+              var priority = diff < 500 ? 'alta' : diff < 1500 ? 'media' : 'baja';
+              return Object.assign({}, v, { diff: diff, priority: priority });
+            })
+            .sort(function (a, b) { return a.diff - b.diff; });
+
+          var alertasAltas = maintenanceAlerts.filter(function (v) { return v.priority === 'alta'; }).length;
+
+          document.getElementById('dash-loading').classList.add('hidden');
+          document.getElementById('dash-main').classList.remove('hidden');
+
+          document.getElementById('dash-stat-total').textContent = String(total);
+          document.getElementById('dash-stat-rate').textContent = availabilityRate + '%';
+          document.getElementById('dash-stat-rate-sub').textContent =
+            availableCount + ' de ' + total + ' disponibles';
+
+          var alertsEl = document.getElementById('dash-stat-alerts');
+          alertsEl.textContent = String(alertasAltas);
+          alertsEl.className =
+            'text-2xl font-bold ' + (alertasAltas > 0 ? 'text-red-600' : 'text-slate-800');
+
+          var card = document.getElementById('dash-alerts-card');
+          card.className =
+            'bg-white rounded-xl border shadow-sm p-5 flex items-center gap-4 ' +
+            (alertasAltas > 0 ? 'border-red-200' : 'border-slate-200');
+
+          var iconWrap = document.getElementById('dash-alerts-icon-wrap');
+          iconWrap.className =
+            'w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ' +
+            (alertasAltas > 0 ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-400');
+
+          var r = 70, cx = 100, cy = 100, circ = 2 * Math.PI * r;
+          var statusSlices = [
+            { key: 'AVAILABLE', label: 'Disponible', count: availableCount, color: '#22c55e' },
+            { key: 'RENTED', label: 'Alquilado', count: rentedCount, color: '#3b82f6' },
+            { key: 'MAINTENANCE', label: 'Mantenimiento', count: maintenanceCount, color: '#f59e0b' },
+          ];
+          var cumOffset = 0;
+          var pieSlices = statusSlices.map(function (s) {
+            var len = total > 0 ? (s.count / total) * circ : 0;
+            var slice = {
+              label: s.label,
+              count: s.count,
+              color: s.color,
+              len: len,
+              dasharray: len + ' ' + circ,
+              dashoffset: circ - cumOffset,
+            };
+            cumOffset += len;
+            return slice;
+          });
+
+          var svgParts = [];
+          svgParts.push(
+            '<svg viewBox="0 0 200 200" class="w-44 h-44" aria-hidden="true">',
+            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#f1f5f9" stroke-width="32"/>',
+          );
+          if (total > 0) {
+            pieSlices.forEach(function (s) {
+              if (s.len > 0.1) {
+                svgParts.push(
+                  '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + s.color +
+                  '" stroke-width="32" stroke-dasharray="' + s.dasharray + '" stroke-dashoffset="' + s.dashoffset +
+                  '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>',
+                );
+              }
+            });
+          }
+          svgParts.push(
+            '<text x="' + cx + '" y="' + (cy - 6) + '" text-anchor="middle" fill="#1e293b" font-size="26" font-weight="700">' + total + '</text>',
+            '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" fill="#94a3b8" font-size="11">vehículos</text>',
+            '</svg>',
+          );
+          document.getElementById('dash-donut-wrap').innerHTML = svgParts.join('');
+
+          var leg = [];
+          statusSlices.forEach(function (s) {
+            var pct = total > 0 ? Math.round((s.count / total) * 100) : 0;
+            leg.push(
+              '<div class="flex items-center justify-between text-sm">',
+              '<div class="flex items-center gap-2">',
+              '<span class="w-3 h-3 rounded-full shrink-0" style="background:' + s.color + '"></span>',
+              '<span class="text-slate-600">' + esc(s.label) + '</span>',
+              '</div>',
+              '<div class="flex items-center gap-3">',
+              '<span class="font-semibold text-slate-800">' + s.count + '</span>',
+              '<span class="text-xs text-slate-400 w-9 text-right">' + pct + '%</span>',
+              '</div></div>',
+            );
+          });
+          document.getElementById('dash-legend').innerHTML = leg.join('');
+
+          var nMon = maintenanceAlerts.length;
+          document.getElementById('dash-maint-count-label').textContent =
+            nMon + ' vehículo' + (nMon !== 1 ? 's' : '') + ' monitoreado' + (nMon !== 1 ? 's' : '');
+
+          var base = window.__VARMAR_API_BASE__ || '';
+          var maintBody = document.getElementById('dash-maint-body');
+          if (maintenanceAlerts.length === 0) {
+            maintBody.innerHTML =
+              '<div class="flex flex-col items-center justify-center py-12 text-slate-300">' +
+              '<p class="text-sm text-slate-400">Sin alertas activas</p>' +
+              '<p class="text-xs mt-1 text-slate-400 text-center">Configura un KM de mantenimiento en cada vehículo para hacer seguimiento.</p></div>';
+          } else {
+            var rows = [];
+            maintenanceAlerts.forEach(function (v) {
+              var cfg = priorityConfig[v.priority];
+              var exceeded = v.diff < 0;
+              var imgUrl = v.image ? window.barmarUploadsUrl(v.image) : '';
+              var imgBlock = imgUrl
+                ? '<img src="' + esc(imgUrl) + '" alt="' + esc(v.name) + '" class="w-10 h-10 rounded-lg object-cover bg-slate-100 shrink-0"/>'
+                : '<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0"><span class="text-slate-300 text-xs">—</span></div>';
+              var subTxt = exceeded
+                ? 'Superado por ' + Math.abs(v.diff).toLocaleString() + ' km'
+                : 'Faltan ' + v.diff.toLocaleString() + ' km';
+              var subCls =
+                'text-xs font-semibold mt-0.5 ' +
+                (exceeded ? 'text-red-600' : v.priority === 'media' ? 'text-amber-600' : 'text-slate-500');
+              var barColor = v.priority === 'alta' ? '#ef4444' : v.priority === 'media' ? '#f59e0b' : '#cbd5e1';
+              rows.push(
+                '<div class="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-colors">',
+                imgBlock,
+                '<div class="flex-1 min-w-0">',
+                '<div class="flex items-center gap-2">',
+                '<p class="text-sm font-medium text-slate-800 truncate">' + esc(v.name) + '</p>',
+                '<span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ' + cfg.badge + '">' + esc(cfg.label) + '</span>',
+                '</div>',
+                '<p class="text-xs text-slate-400">' + esc(v.make) + ' · ' + esc(v.registration_number) + '</p>',
+                '</div>',
+                '<div class="text-right shrink-0">',
+                '<p class="text-xs text-slate-500">' +
+                  Number(v.current_mileage).toLocaleString() +
+                  ' / ' +
+                  Number(v.kilometraje_mantenimiento).toLocaleString() +
+                  ' km</p>',
+                '<p class="' + subCls + '">' + esc(subTxt) + '</p>',
+                '</div>',
+                '<div class="w-1 h-10 rounded-full shrink-0" style="background:' + barColor + '"></div>',
+                '</div>',
+              );
+            });
+            maintBody.innerHTML =
+              '<div class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">' + rows.join('') + '</div>';
+          }
+        })
+        .catch(function () {
+          document.getElementById('dash-loading').classList.add('hidden');
+          document.getElementById('dash-api-error').classList.remove('hidden');
+        });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', render);
+    } else {
+      render();
+    }
+  })();
+</script>

@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard — VARMAR Admin</title><script>(function(){const apiBase = "https://app.varmarsac.com";
+
+    window.__VARMAR_API_BASE__ = apiBase;
+    window.barmarAuthFetch = function (path, init) {
+      init = init || {};
+      var headers = new Headers(init.headers || {});
+      var t = localStorage.getItem('barmar_token');
+      if (t) headers.set('Authorization', 'Bearer ' + t);
+      return fetch(window.__VARMAR_API_BASE__ + path, Object.assign({}, init, { headers: headers }));
+    };
+    window.barmarUploadsUrl = function (file) {
+      return window.__VARMAR_API_BASE__ + '/uploads/' + file;
+    };
+
+    // ── Searchable select ─────────────────────────────────────────────────
+    // Usage: var ss = new SearchableSelect(containerEl, 'Buscar...')
+    //   ss.setOptions([{ value, label }])   populate + reset
+    //   ss.getValue()                       current selected value (string) or ''
+    //   ss.reset()                          clear selection
+    window.SearchableSelect = function (container, placeholder) {
+      container.innerHTML = '';
+      container.style.position = 'relative';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = placeholder || 'Buscar…';
+      input.autocomplete = 'off';
+      input.className = 'w-full px-3.5 py-2.5 pr-9 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer bg-white';
+
+      var chevron = document.createElement('span');
+      chevron.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#94a3b8;line-height:0';
+      chevron.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>';
+
+      var hidden = document.createElement('input');
+      hidden.type = 'hidden';
+
+      var dropdown = document.createElement('div');
+      dropdown.style.cssText = 'position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:9999;background:#fff;border:1px solid #e2e8f0;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:192px;overflow-y:auto;display:none';
+
+      container.appendChild(input);
+      container.appendChild(chevron);
+      container.appendChild(hidden);
+      container.appendChild(dropdown);
+
+      var _opts = [];
+      var _val  = '';
+      var _label = '';
+
+      function render(filter) {
+        dropdown.innerHTML = '';
+        var f = (filter || '').toLowerCase();
+        var hits = f ? _opts.filter(function (o) { return o.label.toLowerCase().indexOf(f) !== -1; }) : _opts;
+        if (hits.length === 0) {
+          var d = document.createElement('div');
+          d.style.cssText = 'padding:10px 16px;font-size:.875rem;color:#94a3b8';
+          d.textContent = 'Sin resultados';
+          dropdown.appendChild(d);
+          return;
+        }
+        hits.forEach(function (o) {
+          var d = document.createElement('div');
+          var isSel = String(o.value) === String(_val);
+          d.style.cssText = 'padding:9px 14px;font-size:.875rem;cursor:pointer;transition:background .1s;' +
+            (isSel ? 'background:#eff6ff;color:#1d4ed8;font-weight:600' : 'color:#334155');
+          d.textContent = o.label;
+          d.addEventListener('mouseover', function () { if (!isSel) d.style.background = '#f8fafc'; });
+          d.addEventListener('mouseout',  function () { if (!isSel) d.style.background = ''; });
+          d.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            _val = o.value; _label = o.label;
+            hidden.value = o.value;
+            input.value  = o.label;
+            dropdown.style.display = 'none';
+          });
+          dropdown.appendChild(d);
+        });
+      }
+
+      input.addEventListener('focus', function () {
+        if (input.value === _label) input.value = '';
+        render(input.value);
+        dropdown.style.display = 'block';
+      });
+      input.addEventListener('input', function () {
+        _val = ''; hidden.value = '';
+        render(input.value);
+        dropdown.style.display = 'block';
+      });
+      input.addEventListener('blur', function () {
+        setTimeout(function () {
+          dropdown.style.display = 'none';
+          input.value = _val ? _label : '';
+        }, 160);
+      });
+      // click on input when already focused — re-open
+      input.addEventListener('click', function () {
+        if (dropdown.style.display === 'none') {
+          if (input.value === _label) input.value = '';
+          render(input.value);
+          dropdown.style.display = 'block';
+        }
+      });
+
+      return {
+        setOptions: function (opts) {
+          _opts = opts; _val = ''; _label = '';
+          hidden.value = ''; input.value = '';
+        },
+        getValue:   function () { return hidden.value; },
+        reset:      function () {
+          _val = ''; _label = ''; hidden.value = ''; input.value = '';
+        },
+      };
+    };
+  })();</script><link rel="stylesheet" href="/_astro/index.D7YHtQZJ.css">
+<style>:root{--scrollbar-thumb: #fb923c;--scrollbar-thumb-hover: #f97316;--scrollbar-track: #f1f5f9}html{scroll-behavior:smooth}*{scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track)}*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track{background:var(--scrollbar-track);border-radius:9999px}*::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:9999px;border:2px solid var(--scrollbar-track)}*::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}*::-webkit-scrollbar-corner{background:var(--scrollbar-track)}
+</style></head> <body class="bg-slate-50 min-h-screen text-slate-900 antialiased"> <div class="flex min-h-screen"> <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-slate-900/50 opacity-0 pointer-events-none transition-opacity md:hidden"></div> <!-- Sidebar --> <aside id="sidebar" class="w-64 bg-slate-900 fixed inset-y-0 left-0 z-40 flex flex-col -translate-x-full transition-transform duration-200 md:translate-x-0"> <!-- Logo --> <div class="px-6 py-5 border-b border-slate-700/60"> <div class="flex items-center gap-2"> <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"></path> </svg> </div> <div> <p class="text-white font-bold text-base leading-none">VARMAR</p> <p class="text-slate-400 text-xs mt-0.5">Panel Admin</p> </div> </div> </div> <!-- Nav --> <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto overscroll-y-contain"> <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg> Dashboard </a><a href="/vehicles" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"/></svg> Vehículos </a><a href="/categories" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg> Categorías </a><a href="/service-types" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Tipos de Servicio </a><div class="px-3 pt-5 pb-1"> <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Personal</p> </div><a href="/admins" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> Administrativos </a><a href="/conductores" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Conductores </a> </nav> <!-- Logout --> <div class="px-3 py-4 border-t border-slate-700/60"> <div class="px-3 py-2 mb-2 rounded-lg bg-slate-800/60 border border-slate-700/60"> <p id="sidebar-user-name" class="text-sm font-semibold text-slate-100 truncate">Administrador</p> <p class="text-xs text-slate-400 mt-0.5">Administrador</p> </div> <a href="/logout" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path> </svg>
+Cerrar sesión
+</a> </div> </aside> <!-- Main --> <div class="md:ml-64 flex-1 flex flex-col min-h-screen"> <header class="bg-white border-b border-slate-200 px-4 md:px-8 py-4 sticky top-0 z-20"> <div class="flex items-center justify-between gap-4"> <button id="sidebar-toggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menú lateral" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 md:hidden"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> <h1 class="text-lg md:text-xl font-semibold text-slate-800">Dashboard</h1> </div> </header> <main class="flex-1 p-4 md:p-8">  <div id="dash-api-error" class="hidden mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg>
+No se pudo conectar con el backend.
+</div> <p id="dash-loading" class="mb-6 text-sm text-slate-500">Cargando datos de la flota…</p> <div id="dash-main" class="hidden"> <!-- ── Stat cards ──────────────────────────────────────────────────────── --> <div class="grid grid-cols-3 gap-5 mb-6"> <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4"> <div class="w-12 h-12 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center shrink-0"> <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"></path> </svg> </div> <div> <p id="dash-stat-total" class="text-2xl font-bold text-slate-800">0</p> <p class="text-sm text-slate-500">Total de flota</p> </div> </div> <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4"> <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0"> <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg> </div> <div> <p id="dash-stat-rate" class="text-2xl font-bold text-slate-800">0%</p> <p class="text-sm text-slate-500">Tasa de disponibilidad</p> <p id="dash-stat-rate-sub" class="text-xs text-slate-400">0 de 0 disponibles</p> </div> </div> <div id="dash-alerts-card" class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex items-center gap-4"> <div id="dash-alerts-icon-wrap" class="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center shrink-0"> <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path> </svg> </div> <div> <p id="dash-stat-alerts" class="text-2xl font-bold text-slate-800">0</p> <p class="text-sm text-slate-500">Alertas de mantenimiento</p> <p class="text-xs text-slate-400">Prioridad alta (&lt; 500 km)</p> </div> </div> </div> <div class="grid grid-cols-3 gap-6"> <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6"> <h2 class="text-sm font-semibold text-slate-700 mb-5">Estado de la flota</h2> <div class="flex flex-col items-center"> <div id="dash-donut-wrap"></div> <div id="dash-legend" class="w-full mt-5 space-y-2.5"></div> </div> </div> <div class="col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6"> <div class="flex items-center justify-between mb-5"> <h2 class="text-sm font-semibold text-slate-700">Alertas de mantenimiento por kilometraje</h2> <span id="dash-maint-count-label" class="text-xs text-slate-400">0 vehículos monitoreados</span> </div> <div id="dash-maint-body"></div> </div> </div> </div>  </main> </div> </div> <script>(function(){const apiUrl = "https://app.varmarsac.com";
+
+    const API_URL = apiUrl;
+    const token = localStorage.getItem('barmar_token');
+
+    if (!token) {
+      window.location.href = '/login';
+    } else {
+      fetch(`${API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('invalid token');
+          return res.json();
+        })
+        .then((data) => {
+          const user = data?.user ?? {};
+          const email = typeof user.email === 'string' ? user.email : '';
+          const userName = user.nombre_completo || user.name || user.full_name || (email.includes('@') ? email.split('@')[0] : email) || 'Administrador';
+          const userRole = typeof user.role === 'string' ? user.role : 'admin';
+
+          window.__barmarCurrentUserId = user.id ?? null;
+
+          const nameEl = document.getElementById('sidebar-user-name');
+          if (nameEl) nameEl.textContent = userName;
+        })
+        .catch(() => {
+          localStorage.removeItem('barmar_token');
+          window.location.href = '/login';
+        });
+    }
+
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    if (sidebar && sidebarToggle && sidebarOverlay) {
+      const openSidebar = () => {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
+      };
+
+      const closeSidebar = () => {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+      };
+
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        if (isOpen) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      });
+
+      sidebarOverlay.addEventListener('click', closeSidebar);
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+          sidebarToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+        }
+      });
+    }
+  })();</script> </body> </html> <script>
+  (function () {
+    var priorityConfig = {
+      alta:  { label: 'Alta',  badge: 'bg-red-100 text-red-700 border border-red-200',     bar: '#ef4444' },
+      media: { label: 'Media', badge: 'bg-amber-100 text-amber-700 border border-amber-200', bar: '#f59e0b' },
+      baja:  { label: 'Baja',  badge: 'bg-slate-100 text-slate-600 border border-slate-200', bar: '#cbd5e1' },
+    };
+
+    function esc(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    }
+
+    function render() {
+      if (!window.barmarAuthFetch) return;
+
+      window.barmarAuthFetch('/api/admin/vehicles?limit=500')
+        .then(function (res) {
+          if (!res.ok) throw new Error('api');
+          return res.json();
+        })
+        .then(function (json) {
+          var allVehicles = json.data || [];
+          var total = json.pagination && json.pagination.total != null ? json.pagination.total : allVehicles.length;
+
+          var availableCount = allVehicles.filter(function (v) { return v.status === 'AVAILABLE'; }).length;
+          var rentedCount = allVehicles.filter(function (v) { return v.status === 'RENTED'; }).length;
+          var maintenanceCount = allVehicles.filter(function (v) { return v.status === 'MAINTENANCE'; }).length;
+          var availabilityRate = total > 0 ? Math.round((availableCount / total) * 100) : 0;
+
+          var maintenanceAlerts = allVehicles
+            .filter(function (v) { return v.kilometraje_mantenimiento != null; })
+            .map(function (v) {
+              var diff = v.kilometraje_mantenimiento - v.current_mileage;
+              var priority = diff < 500 ? 'alta' : diff < 1500 ? 'media' : 'baja';
+              return Object.assign({}, v, { diff: diff, priority: priority });
+            })
+            .sort(function (a, b) { return a.diff - b.diff; });
+
+          var alertasAltas = maintenanceAlerts.filter(function (v) { return v.priority === 'alta'; }).length;
+
+          document.getElementById('dash-loading').classList.add('hidden');
+          document.getElementById('dash-main').classList.remove('hidden');
+
+          document.getElementById('dash-stat-total').textContent = String(total);
+          document.getElementById('dash-stat-rate').textContent = availabilityRate + '%';
+          document.getElementById('dash-stat-rate-sub').textContent =
+            availableCount + ' de ' + total + ' disponibles';
+
+          var alertsEl = document.getElementById('dash-stat-alerts');
+          alertsEl.textContent = String(alertasAltas);
+          alertsEl.className =
+            'text-2xl font-bold ' + (alertasAltas > 0 ? 'text-red-600' : 'text-slate-800');
+
+          var card = document.getElementById('dash-alerts-card');
+          card.className =
+            'bg-white rounded-xl border shadow-sm p-5 flex items-center gap-4 ' +
+            (alertasAltas > 0 ? 'border-red-200' : 'border-slate-200');
+
+          var iconWrap = document.getElementById('dash-alerts-icon-wrap');
+          iconWrap.className =
+            'w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ' +
+            (alertasAltas > 0 ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-400');
+
+          var r = 70, cx = 100, cy = 100, circ = 2 * Math.PI * r;
+          var statusSlices = [
+            { key: 'AVAILABLE', label: 'Disponible', count: availableCount, color: '#22c55e' },
+            { key: 'RENTED', label: 'Alquilado', count: rentedCount, color: '#3b82f6' },
+            { key: 'MAINTENANCE', label: 'Mantenimiento', count: maintenanceCount, color: '#f59e0b' },
+          ];
+          var cumOffset = 0;
+          var pieSlices = statusSlices.map(function (s) {
+            var len = total > 0 ? (s.count / total) * circ : 0;
+            var slice = {
+              label: s.label,
+              count: s.count,
+              color: s.color,
+              len: len,
+              dasharray: len + ' ' + circ,
+              dashoffset: circ - cumOffset,
+            };
+            cumOffset += len;
+            return slice;
+          });
+
+          var svgParts = [];
+          svgParts.push(
+            '<svg viewBox="0 0 200 200" class="w-44 h-44" aria-hidden="true">',
+            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#f1f5f9" stroke-width="32"/>',
+          );
+          if (total > 0) {
+            pieSlices.forEach(function (s) {
+              if (s.len > 0.1) {
+                svgParts.push(
+                  '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + s.color +
+                  '" stroke-width="32" stroke-dasharray="' + s.dasharray + '" stroke-dashoffset="' + s.dashoffset +
+                  '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>',
+                );
+              }
+            });
+          }
+          svgParts.push(
+            '<text x="' + cx + '" y="' + (cy - 6) + '" text-anchor="middle" fill="#1e293b" font-size="26" font-weight="700">' + total + '</text>',
+            '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" fill="#94a3b8" font-size="11">vehículos</text>',
+            '</svg>',
+          );
+          document.getElementById('dash-donut-wrap').innerHTML = svgParts.join('');
+
+          var leg = [];
+          statusSlices.forEach(function (s) {
+            var pct = total > 0 ? Math.round((s.count / total) * 100) : 0;
+            leg.push(
+              '<div class="flex items-center justify-between text-sm">',
+              '<div class="flex items-center gap-2">',
+              '<span class="w-3 h-3 rounded-full shrink-0" style="background:' + s.color + '"></span>',
+              '<span class="text-slate-600">' + esc(s.label) + '</span>',
+              '</div>',
+              '<div class="flex items-center gap-3">',
+              '<span class="font-semibold text-slate-800">' + s.count + '</span>',
+              '<span class="text-xs text-slate-400 w-9 text-right">' + pct + '%</span>',
+              '</div></div>',
+            );
+          });
+          document.getElementById('dash-legend').innerHTML = leg.join('');
+
+          var nMon = maintenanceAlerts.length;
+          document.getElementById('dash-maint-count-label').textContent =
+            nMon + ' vehículo' + (nMon !== 1 ? 's' : '') + ' monitoreado' + (nMon !== 1 ? 's' : '');
+
+          var base = window.__VARMAR_API_BASE__ || '';
+          var maintBody = document.getElementById('dash-maint-body');
+          if (maintenanceAlerts.length === 0) {
+            maintBody.innerHTML =
+              '<div class="flex flex-col items-center justify-center py-12 text-slate-300">' +
+              '<p class="text-sm text-slate-400">Sin alertas activas</p>' +
+              '<p class="text-xs mt-1 text-slate-400 text-center">Configura un KM de mantenimiento en cada vehículo para hacer seguimiento.</p></div>';
+          } else {
+            var rows = [];
+            maintenanceAlerts.forEach(function (v) {
+              var cfg = priorityConfig[v.priority];
+              var exceeded = v.diff < 0;
+              var imgUrl = v.image ? window.barmarUploadsUrl(v.image) : '';
+              var imgBlock = imgUrl
+                ? '<img src="' + esc(imgUrl) + '" alt="' + esc(v.name) + '" class="w-10 h-10 rounded-lg object-cover bg-slate-100 shrink-0"/>'
+                : '<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0"><span class="text-slate-300 text-xs">—</span></div>';
+              var subTxt = exceeded
+                ? 'Superado por ' + Math.abs(v.diff).toLocaleString() + ' km'
+                : 'Faltan ' + v.diff.toLocaleString() + ' km';
+              var subCls =
+                'text-xs font-semibold mt-0.5 ' +
+                (exceeded ? 'text-red-600' : v.priority === 'media' ? 'text-amber-600' : 'text-slate-500');
+              var barColor = v.priority === 'alta' ? '#ef4444' : v.priority === 'media' ? '#f59e0b' : '#cbd5e1';
+              rows.push(
+                '<div class="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-colors">',
+                imgBlock,
+                '<div class="flex-1 min-w-0">',
+                '<div class="flex items-center gap-2">',
+                '<p class="text-sm font-medium text-slate-800 truncate">' + esc(v.name) + '</p>',
+                '<span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ' + cfg.badge + '">' + esc(cfg.label) + '</span>',
+                '</div>',
+                '<p class="text-xs text-slate-400">' + esc(v.make) + ' · ' + esc(v.registration_number) + '</p>',
+                '</div>',
+                '<div class="text-right shrink-0">',
+                '<p class="text-xs text-slate-500">' +
+                  Number(v.current_mileage).toLocaleString() +
+                  ' / ' +
+                  Number(v.kilometraje_mantenimiento).toLocaleString() +
+                  ' km</p>',
+                '<p class="' + subCls + '">' + esc(subTxt) + '</p>',
+                '</div>',
+                '<div class="w-1 h-10 rounded-full shrink-0" style="background:' + barColor + '"></div>',
+                '</div>',
+              );
+            });
+            maintBody.innerHTML =
+              '<div class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">' + rows.join('') + '</div>';
+          }
+        })
+        .catch(function () {
+          document.getElementById('dash-loading').classList.add('hidden');
+          document.getElementById('dash-api-error').classList.remove('hidden');
+        });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', render);
+    } else {
+      render();
+    }
+  })();
+</script>

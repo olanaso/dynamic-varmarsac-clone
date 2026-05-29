@@ -1,0 +1,23 @@
+---
+import type { VehicleSelectOption } from '../lib/vehicleConfig';
+
+interface Props {
+  options: VehicleSelectOption[];
+  placeholder?: string;
+  selected?: string;
+}
+
+const { options, placeholder, selected } = Astro.props;
+---
+{placeholder !== undefined && (
+  <option value="" selected={selected === undefined || selected === ''}>
+    {placeholder}
+  </option>
+)}
+{
+  options.map((opt) => (
+    <option value={opt.value} selected={selected === opt.value}>
+      {opt.label}
+    </option>
+  ))
+}

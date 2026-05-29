@@ -1,0 +1,1713 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Vehículos — VARMAR Admin</title><script>(function(){const apiBase = "https://app.varmarsac.com";
+
+    window.__VARMAR_API_BASE__ = apiBase;
+    window.barmarAuthFetch = function (path, init) {
+      init = init || {};
+      var headers = new Headers(init.headers || {});
+      var t = localStorage.getItem('barmar_token');
+      if (t) headers.set('Authorization', 'Bearer ' + t);
+      return fetch(window.__VARMAR_API_BASE__ + path, Object.assign({}, init, { headers: headers }));
+    };
+    window.barmarUploadsUrl = function (file) {
+      return window.__VARMAR_API_BASE__ + '/uploads/' + file;
+    };
+
+    // ── Searchable select ─────────────────────────────────────────────────
+    // Usage: var ss = new SearchableSelect(containerEl, 'Buscar...')
+    //   ss.setOptions([{ value, label }])   populate + reset
+    //   ss.getValue()                       current selected value (string) or ''
+    //   ss.reset()                          clear selection
+    window.SearchableSelect = function (container, placeholder) {
+      container.innerHTML = '';
+      container.style.position = 'relative';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = placeholder || 'Buscar…';
+      input.autocomplete = 'off';
+      input.className = 'w-full px-3.5 py-2.5 pr-9 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer bg-white';
+
+      var chevron = document.createElement('span');
+      chevron.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#94a3b8;line-height:0';
+      chevron.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>';
+
+      var hidden = document.createElement('input');
+      hidden.type = 'hidden';
+
+      var dropdown = document.createElement('div');
+      dropdown.style.cssText = 'position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:9999;background:#fff;border:1px solid #e2e8f0;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:192px;overflow-y:auto;display:none';
+
+      container.appendChild(input);
+      container.appendChild(chevron);
+      container.appendChild(hidden);
+      container.appendChild(dropdown);
+
+      var _opts = [];
+      var _val  = '';
+      var _label = '';
+
+      function render(filter) {
+        dropdown.innerHTML = '';
+        var f = (filter || '').toLowerCase();
+        var hits = f ? _opts.filter(function (o) { return o.label.toLowerCase().indexOf(f) !== -1; }) : _opts;
+        if (hits.length === 0) {
+          var d = document.createElement('div');
+          d.style.cssText = 'padding:10px 16px;font-size:.875rem;color:#94a3b8';
+          d.textContent = 'Sin resultados';
+          dropdown.appendChild(d);
+          return;
+        }
+        hits.forEach(function (o) {
+          var d = document.createElement('div');
+          var isSel = String(o.value) === String(_val);
+          d.style.cssText = 'padding:9px 14px;font-size:.875rem;cursor:pointer;transition:background .1s;' +
+            (isSel ? 'background:#eff6ff;color:#1d4ed8;font-weight:600' : 'color:#334155');
+          d.textContent = o.label;
+          d.addEventListener('mouseover', function () { if (!isSel) d.style.background = '#f8fafc'; });
+          d.addEventListener('mouseout',  function () { if (!isSel) d.style.background = ''; });
+          d.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            _val = o.value; _label = o.label;
+            hidden.value = o.value;
+            input.value  = o.label;
+            dropdown.style.display = 'none';
+          });
+          dropdown.appendChild(d);
+        });
+      }
+
+      input.addEventListener('focus', function () {
+        if (input.value === _label) input.value = '';
+        render(input.value);
+        dropdown.style.display = 'block';
+      });
+      input.addEventListener('input', function () {
+        _val = ''; hidden.value = '';
+        render(input.value);
+        dropdown.style.display = 'block';
+      });
+      input.addEventListener('blur', function () {
+        setTimeout(function () {
+          dropdown.style.display = 'none';
+          input.value = _val ? _label : '';
+        }, 160);
+      });
+      // click on input when already focused — re-open
+      input.addEventListener('click', function () {
+        if (dropdown.style.display === 'none') {
+          if (input.value === _label) input.value = '';
+          render(input.value);
+          dropdown.style.display = 'block';
+        }
+      });
+
+      return {
+        setOptions: function (opts) {
+          _opts = opts; _val = ''; _label = '';
+          hidden.value = ''; input.value = '';
+        },
+        getValue:   function () { return hidden.value; },
+        reset:      function () {
+          _val = ''; _label = ''; hidden.value = ''; input.value = '';
+        },
+      };
+    };
+  })();</script><link rel="stylesheet" href="/_astro/index.D7YHtQZJ.css">
+<style>:root{--scrollbar-thumb: #fb923c;--scrollbar-thumb-hover: #f97316;--scrollbar-track: #f1f5f9}html{scroll-behavior:smooth}*{scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track)}*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track{background:var(--scrollbar-track);border-radius:9999px}*::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:9999px;border:2px solid var(--scrollbar-track)}*::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}*::-webkit-scrollbar-corner{background:var(--scrollbar-track)}
+@keyframes barmar-dlg-in{0%{opacity:0;transform:scale(.95) translateY(-10px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes barmar-bd-in{0%{opacity:0}to{opacity:1}}dialog[open]{animation:barmar-dlg-in .2s cubic-bezier(.16,1,.3,1) forwards}dialog[open]::backdrop{animation:barmar-bd-in .2s ease forwards}
+</style><script type="module">document.addEventListener("click",e=>{e.target instanceof HTMLDialogElement&&e.target.close()});
+</script></head> <body class="bg-slate-50 min-h-screen text-slate-900 antialiased"> <div class="flex min-h-screen"> <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-slate-900/50 opacity-0 pointer-events-none transition-opacity md:hidden"></div> <!-- Sidebar --> <aside id="sidebar" class="w-64 bg-slate-900 fixed inset-y-0 left-0 z-40 flex flex-col -translate-x-full transition-transform duration-200 md:translate-x-0"> <!-- Logo --> <div class="px-6 py-5 border-b border-slate-700/60"> <div class="flex items-center gap-2"> <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"></path> </svg> </div> <div> <p class="text-white font-bold text-base leading-none">VARMAR</p> <p class="text-slate-400 text-xs mt-0.5">Panel Admin</p> </div> </div> </div> <!-- Nav --> <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto overscroll-y-contain"> <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg> Dashboard </a><a href="/vehicles" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors bg-primary-600 text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"/></svg> Vehículos </a><a href="/categories" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg> Categorías </a><a href="/service-types" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Tipos de Servicio </a><div class="px-3 pt-5 pb-1"> <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Personal</p> </div><a href="/admins" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> Administrativos </a><a href="/conductores" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Conductores </a> </nav> <!-- Logout --> <div class="px-3 py-4 border-t border-slate-700/60"> <div class="px-3 py-2 mb-2 rounded-lg bg-slate-800/60 border border-slate-700/60"> <p id="sidebar-user-name" class="text-sm font-semibold text-slate-100 truncate">Administrador</p> <p class="text-xs text-slate-400 mt-0.5">Administrador</p> </div> <a href="/logout" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path> </svg>
+Cerrar sesión
+</a> </div> </aside> <!-- Main --> <div class="md:ml-64 flex-1 flex flex-col min-h-screen"> <header class="bg-white border-b border-slate-200 px-4 md:px-8 py-4 sticky top-0 z-20"> <div class="flex items-center justify-between gap-4"> <button id="sidebar-toggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menú lateral" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 md:hidden"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> <h1 class="text-lg md:text-xl font-semibold text-slate-800">Vehículos</h1> </div> </header> <main class="flex-1 p-4 md:p-8">  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"> <form method="GET" id="veh-filter-form" class="flex flex-wrap gap-3"> <input id="veh-inp-search" name="search" type="search" value="" placeholder="Buscar vehículo..." class="px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 w-52"> <select id="veh-sel-status" name="status" onchange="this.form.submit()" class="px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"> <option value="">Todos los estados</option><option value="AVAILABLE">Disponible</option><option value="RENTED">Alquilado</option><option value="MAINTENANCE">Mantenimiento</option> </select> <select id="veh-sel-approved" name="approved" onchange="this.form.submit()" class="px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"> <option value="">Todos</option><option value="true">Aprobados</option><option value="false">Pendientes</option> </select> <button type="submit" class="px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-sm rounded-lg transition-colors">Buscar</button> <a id="veh-link-clear" href="/vehicles" class="hidden px-4 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors flex items-center">Limpiar</a> </form> <div class="flex items-center gap-2 shrink-0"> <button type="button" id="btn-export-excel" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path> </svg>
+Exportar Excel
+</button> <a href="/vehicles/new" class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path> </svg>
+Nuevo vehículo
+</a> </div> </div> <div id="veh-flash" class="hidden mb-5 flex items-center gap-3 rounded-xl px-4 py-3 text-sm border"></div> <p id="veh-loading" class="mb-4 text-sm text-slate-500">
+Cargando vehículos…
+</p> <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"> <div id="veh-empty" class="hidden flex flex-col items-center justify-center py-16 text-slate-400"> <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"></path> </svg> <p class="text-sm font-medium">No se encontraron vehículos</p> <p class="text-xs mt-1">Ajusta los filtros o agrega un nuevo vehículo.</p> </div> <div id="veh-table-wrap"> <table class="w-full text-sm min-w-[900px]"> <thead> <tr class="bg-slate-50 border-b border-slate-200"> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Vehículo</th> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Categoría</th> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Tipos de Servicio</th> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Año</th> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Tarifas</th> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Estado</th> <th class="text-left px-4 py-3.5 font-semibold text-slate-600">Flags</th> <th class="text-right px-4 py-3.5 font-semibold text-slate-600">Acciones</th> </tr> </thead> <tbody id="vehicles-tbody" class="divide-y divide-slate-100"></tbody> </table> </div> <div id="veh-pager" class="hidden flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 md:px-6 py-4 border-t border-slate-100" data-page-size="10"> <p id="veh-pager-info" class="text-sm text-slate-500"></p> <div id="veh-pager-nav" class="flex flex-wrap gap-2"> <button type="button" id="veh-pager-prev" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent">
+← Anterior
+</button> <button type="button" id="veh-pager-next" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent">
+Siguiente →
+</button> </div> </div> </div>  <dialog id="dlg-vehicle" class="w-full rounded-2xl border border-slate-200 shadow-2xl p-0 backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm max-w-3xl"> <div class="flex flex-col max-h-[90vh]"> <!-- Header --> <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white rounded-t-2xl"> <h2 class="text-base font-semibold text-slate-800">Editar vehículo</h2> <button type="button" onclick="document.getElementById('dlg-vehicle').close()" aria-label="Cerrar" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path> </svg> </button> </header> <!-- Body --> <div class="px-6 py-5 overflow-y-auto">  <form id="vd-form" class="space-y-3"> <input type="hidden" name="id" id="vd-f-id"> <!-- Image preview + upload --> <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200"> <div class="w-16 h-16 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 shrink-0 flex items-center justify-center"> <img id="vd-image" src="" alt="Vehículo" class="w-full h-full object-cover hidden"> <div id="vd-no-image" class="text-slate-400"> <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path> </svg> </div> </div> <div class="flex-1 min-w-0"> <p id="vd-subtitle" class="text-xs text-slate-400 mb-1.5 truncate"></p> <label class="block text-xs font-medium text-slate-600 mb-1">
+Cambiar imagen <span class="font-normal text-slate-400">(JPEG / PNG / WEBP · máx 5 MB)</span> </label> <input type="file" name="image" id="vd-f-image" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"> </div> </div> <!-- Main fields 2-col grid --> <div class="grid grid-cols-2 gap-3"> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-name">Nombre</label> <input id="vd-f-name" name="name" type="text" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-make">Marca</label> <input id="vd-f-make" name="make" type="text" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-regnum">Matrícula</label> <input id="vd-f-regnum" name="registration_number" type="text" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-year">Año</label> <input id="vd-f-year" name="year" type="number" min="1900" max="2100" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-catid">Categoría</label> <select id="vd-f-catid" name="category_id" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="">— Seleccionar —</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-rate">Tarifa diaria (S/.)</label> <div class="relative"> <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-medium select-none">S/.</span> <input id="vd-f-rate" name="daily_rate" type="number" min="0" step="0.01" required class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-monthly">Precio mensual (S/.)</label> <div class="relative"> <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-medium select-none">S/.</span> <input id="vd-f-monthly" name="precio_mensual" type="number" min="0" step="0.01" required class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-passengers">Pasajeros</label> <input id="vd-f-passengers" name="cantidad_pasajeros" type="number" min="1" max="99" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-transmission">Transmisión</label> <select id="vd-f-transmission" name="tipo_transmision" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="" selected>— Seleccionar —</option><option value="MANUAL">Manual</option><option value="AUTOMATICA">Automática</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-fuel">Combustible</label> <select id="vd-f-fuel" name="tipo_combustible" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="" selected>— Seleccionar —</option><option value="GASOLINA">Gasolina</option><option value="DIESEL">Diésel</option><option value="ELECTRICO">Eléctrico</option><option value="HIBRIDO">Híbrido</option><option value="GNV">GNV</option><option value="GLP">GLP</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-traction">Tracción</label> <select id="vd-f-traction" name="tipo_traccion" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="" selected>— Seleccionar —</option><option value="4X4">4x4</option><option value="4X2">4x2</option><option value="DELANTERA">Delantera</option><option value="TRASERA">Trasera</option><option value="AWD">AWD</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-status">Estado</label> <select id="vd-f-status" name="status" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"> <option value="AVAILABLE">Disponible</option><option value="RENTED">Alquilado</option><option value="MAINTENANCE">Mantenimiento</option> </select> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-km-current">KM actual</label> <input id="vd-f-km-current" name="current_mileage" type="number" min="0" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-km-maint">
+KM mantenimiento <span class="font-normal text-slate-400">(opcional)</span> </label> <input id="vd-f-km-maint" name="kilometraje_mantenimiento" type="number" min="1" placeholder="—" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div class="flex items-end gap-5 pb-1"> <label class="flex items-center gap-2 cursor-pointer select-none"> <input type="checkbox" id="vd-f-approved" class="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-500"> <span class="text-xs font-medium text-slate-700">Aprobado</span> </label> <label class="flex items-center gap-2 cursor-pointer select-none"> <input type="checkbox" id="vd-f-homologado" class="w-4 h-4 rounded text-primary-600 border-slate-300 focus:ring-primary-500"> <span class="text-xs font-medium text-slate-700">Homologado</span> </label> </div> </div> <!-- Descripción --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-f-desc">Descripción</label> <textarea id="vd-f-desc" name="description" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Sin descripción"></textarea> </div> <!-- Equipamiento --> <div> <label class="block text-xs font-medium text-slate-600 mb-1" for="vd-equip-input">Equipamiento</label> <div class="flex gap-2"> <input id="vd-equip-input" type="text" maxlength="80" placeholder="Ej. Aire acondicionado, Bluetooth…" class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> <button type="button" id="vd-equip-add" class="shrink-0 px-3 py-2 text-xs font-semibold text-primary-700 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100 transition-colors">
+Agregar
+</button> </div> <div id="vd-equip-tags" class="flex flex-wrap gap-2 mt-2 min-h-[1.5rem]"></div> </div> <!-- Tipos de servicio --> <div> <p class="text-xs font-medium text-slate-600 mb-1.5">
+Tipos de Servicio
+</p> <div id="vd-f-stypes" class="flex flex-wrap gap-2"></div> </div> <!-- Maintenance bar (read-only display) --> <div id="vd-maint-section" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3"> <div class="flex items-center justify-between mb-2"> <span class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Estado de mantenimiento</span> <span id="vd-km-priority" class="text-xs font-semibold px-2 py-0.5 rounded-full"></span> </div> <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden mb-1.5"> <div id="vd-km-bar" class="h-full rounded-full transition-all bg-green-500" style="width:0%"></div> </div> <div class="flex justify-between text-xs text-slate-400 mb-1"> <span id="vd-km-curr"></span> <span id="vd-km-maint-label"></span> </div> <p id="vd-km-status-text" class="text-xs text-slate-500"></p> </div> <!-- Actions --> <div class="flex items-center gap-3 pt-1 border-t border-slate-100"> <button type="submit" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
+Guardar cambios
+</button> <button type="button" onclick="document.getElementById('dlg-vehicle').close()" class="px-5 text-sm font-medium border border-slate-300 text-slate-600 hover:bg-slate-50 py-2.5 rounded-lg transition-colors">
+Cancelar
+</button> </div> </form>  </div> </div> </dialog> <!-- Animations (injected once globally) -->  <!-- Runs once: backdrop click closes the dialog -->   <dialog id="dlg-vehicle-view" class="w-full rounded-2xl border border-slate-200 shadow-2xl p-0 backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm max-w-3xl"> <div class="flex flex-col max-h-[90vh]"> <!-- Header --> <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white rounded-t-2xl"> <h2 class="text-base font-semibold text-slate-800">Detalle del vehículo</h2> <button type="button" onclick="document.getElementById('dlg-vehicle-view').close()" aria-label="Cerrar" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path> </svg> </button> </header> <!-- Body --> <div class="px-6 py-5 overflow-y-auto">  <div class="space-y-4"> <!-- Image banner --> <div id="vv-img-wrap" class="hidden w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-200" style="height:150px"> <img id="vv-image" src="" alt="" class="w-full h-full object-cover"> </div> <!-- Identity + status --> <div class="flex items-start justify-between gap-3"> <div class="min-w-0"> <h3 id="vv-name" class="text-base font-bold text-slate-800"></h3> <p id="vv-make-reg" class="text-xs text-slate-500 mt-0.5"></p> </div> <span id="vv-status" class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"></span> </div> <!-- Info grid --> <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Categoría
+</p> <p id="vv-category" class="text-sm font-semibold text-slate-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Año
+</p> <p id="vv-year" class="text-sm font-semibold text-slate-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Tarifa diaria
+</p> <p id="vv-rate" class="text-sm font-semibold text-primary-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Precio mensual
+</p> <p id="vv-monthly" class="text-sm font-semibold text-primary-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Pasajeros
+</p> <p id="vv-passengers" class="text-sm font-semibold text-slate-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Transmisión
+</p> <p id="vv-transmission" class="text-sm font-semibold text-slate-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Combustible
+</p> <p id="vv-fuel" class="text-sm font-semibold text-slate-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+Tracción
+</p> <p id="vv-traction" class="text-sm font-semibold text-slate-700"></p> </div> <div class="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-100"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+KM actual
+</p> <p id="vv-km" class="text-sm font-semibold text-slate-700"></p> </div> </div> <!-- Maintenance progress bar --> <div id="vv-maint" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3.5"> <div class="flex items-center justify-between mb-3"> <p class="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+Mantenimiento
+</p> <span id="vv-km-priority" class="text-xs font-semibold px-2.5 py-0.5 rounded-full"></span> </div> <div class="flex justify-between text-xs mb-1.5"> <span class="text-slate-500">Actual: <span id="vv-km-curr" class="font-semibold text-slate-700"></span></span> <span class="text-slate-500">Objetivo: <span id="vv-km-goal" class="font-semibold text-slate-700"></span></span> </div> <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden"> <div id="vv-km-bar" class="h-full rounded-full transition-all" style="width:0%"></div> </div> <div class="flex items-center justify-between mt-1.5"> <p id="vv-km-status" class="text-xs text-slate-500"></p> <span id="vv-km-pct" class="text-xs font-bold text-slate-500"></span> </div> </div> <!-- Service types --> <div> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">
+Tipos de Servicio
+</p> <div id="vv-stypes" class="flex flex-wrap gap-1.5"></div> </div> <!-- Equipamiento --> <div> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">
+Equipamiento
+</p> <div id="vv-equipamiento" class="flex flex-wrap gap-1.5"></div> </div> <!-- Description --> <div id="vv-desc-wrap" class="hidden"> <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">
+Descripción
+</p> <p id="vv-desc" class="text-sm text-slate-600 leading-relaxed"></p> </div> <!-- Flags --> <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-100"> <span id="vv-flag-approved" class="hidden inline-flex items-center gap-1.5 text-xs text-green-700 font-medium bg-green-50 border border-green-200 px-2.5 py-1 rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path> </svg>Aprobado
+</span> <span id="vv-flag-pending" class="hidden inline-flex items-center gap-1.5 text-xs text-amber-700 font-medium bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg>Pendiente de aprobación
+</span> <span id="vv-flag-homologado" class="hidden inline-flex items-center gap-1.5 text-xs text-primary-700 font-medium bg-primary-50 border border-primary-200 px-2.5 py-1 rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path> </svg>Homologado
+</span> </div> </div>  </div> </div> </dialog> <!-- Animations (injected once globally) -->  <!-- Runs once: backdrop click closes the dialog -->   <dialog id="dlg-asignar-conductor" class="w-full rounded-2xl border border-slate-200 shadow-2xl p-0 backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm max-w-md"> <div class="flex flex-col max-h-[90vh]"> <!-- Header --> <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white rounded-t-2xl"> <h2 class="text-base font-semibold text-slate-800">Asignar conductor</h2> <button type="button" onclick="document.getElementById('dlg-asignar-conductor').close()" aria-label="Cerrar" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path> </svg> </button> </header> <!-- Body --> <div class="px-6 py-5 overflow-y-auto">  <div id="veh-asignar-error" class="hidden mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2.5 text-sm"></div> <form id="form-asignar-conductor" class="space-y-4"> <input type="hidden" id="veh-asignar-vehicle-id"> <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5"> <p class="text-xs text-slate-500">Vehículo</p> <p id="veh-asignar-vehicle-name" class="text-sm font-semibold text-slate-800"></p> </div> <div> <label class="block text-sm font-medium text-slate-700 mb-1.5">
+Conductor <span class="text-red-500">*</span> </label> <div id="veh-asignar-conductor-wrap"></div> </div> <div class="grid grid-cols-2 gap-3"> <div> <label class="block text-sm font-medium text-slate-700 mb-1.5" for="veh-asignar-inicio">
+Fecha inicio <span class="text-red-500">*</span> </label> <input id="veh-asignar-inicio" type="date" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> <div> <label class="block text-sm font-medium text-slate-700 mb-1.5" for="veh-asignar-limite">
+Fecha límite <span class="text-red-500">*</span> </label> <input id="veh-asignar-limite" type="date" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"> </div> </div> <div class="flex items-center justify-between pt-4 border-t border-slate-100"> <button type="button" onclick="document.getElementById('dlg-asignar-conductor').close()" class="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">Cancelar</button> <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+Asignar
+</button> </div> </form>  </div> </div> </dialog> <!-- Animations (injected once globally) -->  <!-- Runs once: backdrop click closes the dialog -->   <dialog id="dlg-veh-historial" class="w-full rounded-2xl border border-slate-200 shadow-2xl p-0 backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm max-w-3xl"> <div class="flex flex-col max-h-[90vh]"> <!-- Header --> <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white rounded-t-2xl"> <h2 class="text-base font-semibold text-slate-800">Historial de asignaciones</h2> <button type="button" onclick="document.getElementById('dlg-veh-historial').close()" aria-label="Cerrar" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path> </svg> </button> </header> <!-- Body --> <div class="px-6 py-5 overflow-y-auto">  <div id="veh-historial-vehicle-info" class="mb-4 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5"> <p class="text-xs text-slate-500">Vehículo</p> <p id="veh-historial-vehicle-name" class="text-sm font-semibold text-slate-800"></p> </div> <div id="veh-historial-empty" class="hidden py-10 text-center text-slate-400"> <p class="text-sm">Sin asignaciones registradas para este vehículo.</p> </div> <div id="veh-historial-table-wrap" class="hidden overflow-x-auto rounded-lg border border-slate-200"> <table class="w-full text-sm"> <thead> <tr class="bg-slate-50 border-b border-slate-200"> <th class="text-left px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">Conductor</th> <th class="text-left px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">N° Doc.</th> <th class="text-left px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">Inicio</th> <th class="text-left px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">Límite</th> <th class="text-left px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">Estado</th> <th class="text-right px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">Acciones</th> </tr> </thead> <tbody id="veh-historial-tbody" class="divide-y divide-slate-100"></tbody> </table> </div> <div class="pt-4 border-t border-slate-100 flex justify-end"> <button type="button" onclick="document.getElementById('dlg-veh-historial').close()" class="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors px-4 py-2">Cerrar</button> </div>  </div> </div> </dialog> <!-- Animations (injected once globally) -->  <!-- Runs once: backdrop click closes the dialog -->   <dialog id="dlg-delete" class="w-full rounded-2xl border border-slate-200 shadow-2xl p-0 backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm max-w-sm"> <div class="flex flex-col max-h-[90vh]"> <!-- Header --> <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white rounded-t-2xl"> <h2 class="text-base font-semibold text-slate-800">Eliminar vehículo</h2> <button type="button" onclick="document.getElementById('dlg-delete').close()" aria-label="Cerrar" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path> </svg> </button> </header> <!-- Body --> <div class="px-6 py-5 overflow-y-auto">  <div class="flex flex-col items-center text-center gap-4"> <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0"> <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path> </svg> </div> <div> <p class="text-sm font-medium text-slate-800">
+¿Eliminar este vehículo?
+</p> <p class="text-sm text-slate-500 mt-1"> <span class="font-semibold" id="delete-vehicle-name"></span> será eliminado
+          permanentemente.
+</p> </div> </div> <div class="flex justify-center gap-3 mt-6"> <input type="hidden" id="delete-vehicle-id"> <button type="button" onclick="document.getElementById('dlg-delete').close()" class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+Cancelar
+</button> <button type="button" id="delete-vehicle-confirm" class="px-5 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+Sí, eliminar
+</button> </div>  </div> </div> </dialog> <!-- Animations (injected once globally) -->  <!-- Runs once: backdrop click closes the dialog -->   </main> </div> </div> <script>(function(){const apiUrl = "https://app.varmarsac.com";
+
+    const API_URL = apiUrl;
+    const token = localStorage.getItem('barmar_token');
+
+    if (!token) {
+      window.location.href = '/login';
+    } else {
+      fetch(`${API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('invalid token');
+          return res.json();
+        })
+        .then((data) => {
+          const user = data?.user ?? {};
+          const email = typeof user.email === 'string' ? user.email : '';
+          const userName = user.nombre_completo || user.name || user.full_name || (email.includes('@') ? email.split('@')[0] : email) || 'Administrador';
+          const userRole = typeof user.role === 'string' ? user.role : 'admin';
+
+          window.__barmarCurrentUserId = user.id ?? null;
+
+          const nameEl = document.getElementById('sidebar-user-name');
+          if (nameEl) nameEl.textContent = userName;
+        })
+        .catch(() => {
+          localStorage.removeItem('barmar_token');
+          window.location.href = '/login';
+        });
+    }
+
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    if (sidebar && sidebarToggle && sidebarOverlay) {
+      const openSidebar = () => {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
+      };
+
+      const closeSidebar = () => {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+      };
+
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        if (isOpen) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      });
+
+      sidebarOverlay.addEventListener('click', closeSidebar);
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+          sidebarToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+        }
+      });
+    }
+  })();</script> </body> </html> <script>(function(){const PAGE_SIZE = 10;
+const vehClientCfg = {"statusColors":{"AVAILABLE":"bg-green-100 text-green-700","RENTED":"bg-blue-100 text-blue-700","MAINTENANCE":"bg-amber-100 text-amber-700"},"statusLabels":{"AVAILABLE":"Disponible","RENTED":"Alquilado","MAINTENANCE":"Mantenimiento"},"statusBadgeClasses":{"AVAILABLE":["Disponible","bg-green-100 text-green-700"],"RENTED":["Alquilado","bg-blue-100 text-blue-700"],"MAINTENANCE":["Mantenimiento","bg-amber-100 text-amber-700"]},"transmissionLabels":{"MANUAL":"Manual","AUTOMATICA":"Automática"},"fuelLabels":{"GASOLINA":"Gasolina","DIESEL":"Diésel","ELECTRICO":"Eléctrico","HIBRIDO":"Híbrido","GNV":"GNV","GLP":"GLP"},"tractionLabels":{"4X4":"4x4","4X2":"4x2","DELANTERA":"Delantera","TRASERA":"Trasera","AWD":"AWD"},"exportStatusLabels":{"AVAILABLE":"Disponible","RENTED":"Alquilado","MAINTENANCE":"Mantenimiento"},"exportStatusFileLabels":{"AVAILABLE":"disponible","RENTED":"alquilado","MAINTENANCE":"mantenimiento"},"maxEquipamientoTags":30,"maxEquipamientoTagLength":80};
+
+  function vehShowFlash(message, type) {
+    var el = document.getElementById("veh-flash");
+    if (!el || !message) return;
+    var ok = type === "success";
+    el.className =
+      "mb-5 flex items-center gap-3 rounded-xl px-4 py-3 text-sm border " +
+      (ok
+        ? "bg-green-50 border-green-200 text-green-700"
+        : "bg-red-50 border-red-200 text-red-700");
+    el.textContent = message;
+    el.classList.remove("hidden");
+  }
+
+  function vehHideFlash() {
+    var el = document.getElementById("veh-flash");
+    if (el) {
+      el.classList.add("hidden");
+      el.textContent = "";
+    }
+  }
+
+  function vehSetLoading(btn, isLoading) {
+    if (!btn) return;
+    if (isLoading) {
+      if (!document.getElementById("_bspin")) {
+        var s = document.createElement("style");
+        s.id = "_bspin";
+        s.textContent = "@keyframes _bspin{to{transform:rotate(360deg)}}";
+        document.head.appendChild(s);
+      }
+      btn._origHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.style.opacity = "0.7";
+      btn.style.cursor = "not-allowed";
+      btn.innerHTML =
+        '<svg style="display:inline-block;width:1rem;height:1rem;margin-right:0.4rem;vertical-align:-0.175em;animation:_bspin 1s linear infinite" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Guardando…';
+    } else {
+      btn.disabled = false;
+      btn.style.opacity = "";
+      btn.style.cursor = "";
+      if (btn._origHTML !== undefined) btn.innerHTML = btn._origHTML;
+    }
+  }
+
+  function vehSyncFiltersFromUrl() {
+    var u = new URL(window.location.href);
+    var s = document.getElementById("veh-inp-search");
+    var st = document.getElementById("veh-sel-status");
+    var ap = document.getElementById("veh-sel-approved");
+    var clr = document.getElementById("veh-link-clear");
+    if (s) s.value = u.searchParams.get("search") || "";
+    if (st) st.value = u.searchParams.get("status") || "";
+    if (ap) ap.value = u.searchParams.get("approved") || "";
+    if (clr) {
+      var has = !!(
+        u.searchParams.get("search") ||
+        u.searchParams.get("status") ||
+        u.searchParams.get("approved")
+      );
+      clr.classList.toggle("hidden", !has);
+    }
+  }
+
+  function vehListQueryParams() {
+    var u = new URL(window.location.href);
+    var q = new URLSearchParams();
+    var search = u.searchParams.get("search");
+    var status = u.searchParams.get("status");
+    var approved = u.searchParams.get("approved");
+    if (search) q.set("search", search);
+    if (status) q.set("status", status);
+    if (approved === "true" || approved === "false")
+      q.set("is_approved", approved);
+    return q;
+  }
+
+  async function vehFetchAllFiltered() {
+    var baseQ = vehListQueryParams();
+    var all = [];
+    var page = 1;
+    var limit = 100;
+    for (;;) {
+      var q = new URLSearchParams(baseQ);
+      q.set("page", String(page));
+      q.set("limit", String(limit));
+      var res = await window.barmarAuthFetch(
+        "/api/admin/vehicles?" + q.toString(),
+      );
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return [];
+      }
+      if (!res.ok) {
+        var errText = await res.text();
+        throw new Error(errText || res.statusText);
+      }
+      var json = await res.json();
+      var data = json.data || [];
+      all = all.concat(data);
+      var totalPages =
+        json.pagination && json.pagination.totalPages
+          ? json.pagination.totalPages
+          : 1;
+      if (page >= totalPages || data.length === 0) break;
+      page++;
+    }
+    return all;
+  }
+
+  function vehEsc(s) {
+    if (s == null) return "";
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function initEquipamientoTags(opts) {
+    var tags = Array.isArray(opts.initial) ? opts.initial.slice() : [];
+    var input = document.getElementById(opts.inputId);
+    var addBtn = document.getElementById(opts.addBtnId);
+    var container = document.getElementById(opts.containerId);
+    if (!input || !addBtn || !container) return function () { return []; };
+
+    function render() {
+      container.innerHTML = "";
+      if (!tags.length) {
+        container.innerHTML =
+          '<span class="text-xs text-slate-400">Sin etiquetas</span>';
+        return;
+      }
+      tags.forEach(function (tag, idx) {
+        var pill = document.createElement("span");
+        pill.className =
+          "inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-800";
+        var txt = document.createElement("span");
+        txt.textContent = tag;
+        var rm = document.createElement("button");
+        rm.type = "button";
+        rm.className = "text-emerald-600/70 hover:text-red-600 leading-none px-0.5";
+        rm.innerHTML = "&times;";
+        rm.addEventListener("click", function () {
+          tags.splice(idx, 1);
+          render();
+        });
+        pill.appendChild(txt);
+        pill.appendChild(rm);
+        container.appendChild(pill);
+      });
+    }
+
+    function addTag() {
+      var val = (input.value || "").trim();
+      if (!val) return;
+      if (tags.indexOf(val) !== -1) {
+        input.value = "";
+        return;
+      }
+      if (tags.length >= vehClientCfg.maxEquipamientoTags) return;
+      tags.push(val);
+      input.value = "";
+      render();
+    }
+
+    if (addBtn._equipClick) addBtn.removeEventListener("click", addBtn._equipClick);
+    addBtn._equipClick = addTag;
+    addBtn.addEventListener("click", addTag);
+
+    if (input._equipKey) input.removeEventListener("keydown", input._equipKey);
+    input._equipKey = function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTag();
+      }
+    };
+    input.addEventListener("keydown", input._equipKey);
+
+    render();
+    return function () {
+      return tags.slice();
+    };
+  }
+
+  function appendEquipamientoToFormData(fd, getTags) {
+    fd.delete("equipamiento");
+    var tags = getTags ? getTags() : [];
+    if (!tags.length) {
+      fd.append("equipamiento", "[]");
+      return;
+    }
+    tags.forEach(function (tag) {
+      fd.append("equipamiento", tag);
+    });
+  }
+
+  var statusColors = vehClientCfg.statusColors;
+  var statusLabels = vehClientCfg.statusLabels;
+  var vehTransLabels = vehClientCfg.transmissionLabels;
+  var vehFuelLabels = vehClientCfg.fuelLabels;
+  var vehTractionLabels = vehClientCfg.tractionLabels;
+
+  function vehSpecLabel(map, key) {
+    return key && map[key] ? map[key] : key || "—";
+  }
+
+  function normalizeEquipamiento(val) {
+    if (Array.isArray(val)) {
+      return val.map(function (item) { return String(item).trim(); }).filter(Boolean);
+    }
+    if (typeof val === "string") {
+      var trimmed = val.trim();
+      if (!trimmed) return [];
+      try {
+        var parsed = JSON.parse(trimmed);
+        return Array.isArray(parsed)
+          ? parsed.map(function (item) { return String(item).trim(); }).filter(Boolean)
+          : [];
+      } catch (e) {
+        return trimmed.split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+      }
+    }
+    return [];
+  }
+
+  window.__vehiclesReload = null;
+  var _allVehiclesData = [];
+
+  /* ── Excel export (ExcelJS — preserva estilos de la plantilla) ─────────── */
+  var _excelJsLoaded = false;
+
+  function loadExcelJs() {
+    if (_excelJsLoaded || window.ExcelJS) {
+      _excelJsLoaded = true;
+      return Promise.resolve();
+    }
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js";
+      s.onload = function () {
+        _excelJsLoaded = true;
+        resolve();
+      };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  var _exportStatusLabels = vehClientCfg.exportStatusLabels;
+
+  async function exportFlotaExcel() {
+    var btn = document.getElementById("btn-export-excel");
+    if (btn) {
+      btn._orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.style.opacity = "0.7";
+      btn.textContent = "Generando…";
+    }
+    try {
+      await loadExcelJs();
+
+      // Fetch template bytes (served from public/)
+      var resp = await fetch("/plantilla-flota.xlsx");
+      if (!resp.ok) throw new Error("No se encontró /plantilla-flota.xlsx");
+      var ab = await resp.arrayBuffer();
+
+      // Load template — ExcelJS preserva estilos, bordes, merges, etc.
+      var wb = new window.ExcelJS.Workbook();
+      await wb.xlsx.load(ab);
+      var ws = wb.worksheets[0];
+
+      var data = _allVehiclesData;
+
+      // Fila 4: encabezados (A=Matrícula … L=Estado)
+      var hdr = ws.getRow(4);
+      hdr.getCell(1).value = "Matrícula";
+      hdr.getCell(2).value = "Nombre";
+      hdr.getCell(3).value = "Categoría";
+      hdr.getCell(4).value = "Pasajeros";
+      hdr.getCell(5).value = "Transmisión";
+      hdr.getCell(6).value = "Combustible";
+      hdr.getCell(7).value = "Año";
+      hdr.getCell(8).value = "Tarifa diaria";
+      hdr.getCell(9).value = "Homologado";
+      hdr.getCell(10).value = "KM actual";
+      hdr.getCell(11).value = "KM mantenimiento";
+      hdr.getCell(12).value = "Estado";
+      hdr.commit();
+
+      data.forEach(function (v, i) {
+        var row = ws.getRow(5 + i);
+        row.getCell(1).value = v.registration_number || "";
+        row.getCell(2).value = v.name || "";
+        row.getCell(3).value =
+          v.category && v.category.name ? v.category.name : "";
+        row.getCell(4).value =
+          v.cantidad_pasajeros != null ? Number(v.cantidad_pasajeros) : "";
+        row.getCell(5).value = vehSpecLabel(vehTransLabels, v.tipo_transmision);
+        row.getCell(6).value = vehSpecLabel(vehFuelLabels, v.tipo_combustible);
+        row.getCell(7).value = Number(v.year);
+        row.getCell(8).value = parseFloat(v.daily_rate);
+        row.getCell(9).value = v.homologado ? "Si" : "No";
+        row.getCell(10).value = Number(v.current_mileage || 0);
+        row.getCell(11).value =
+          v.kilometraje_mantenimiento != null
+            ? Number(v.kilometraje_mantenimiento)
+            : "";
+        row.getCell(12).value = _exportStatusLabels[v.status] || v.status;
+        row.commit();
+      });
+
+      // Write to buffer and trigger download
+      var buffer = await wb.xlsx.writeBuffer();
+      var blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      var _statusFileLabels = vehClientCfg.exportStatusFileLabels;
+      var _selStatus =
+        (document.getElementById("veh-sel-status") || {}).value || "";
+      var _filePart = _selStatus
+        ? (_statusFileLabels[_selStatus] || _selStatus.toLowerCase()) + "-"
+        : "";
+      a.download =
+        "flota-" + _filePart + new Date().toISOString().split("T")[0] + ".xlsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      vehShowFlash("Error al exportar: " + (err.message || err), "error");
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.style.opacity = "";
+        btn.innerHTML = btn._orig;
+      }
+    }
+  }
+
+  /* ── Asignar conductor dialog ──────────────────────────────────────────── */
+  var _conductoresCache = null;
+  var _asignarCondSelect = null;
+
+  window.openAsignarConductorDialog = function (btn) {
+    document.getElementById("veh-asignar-vehicle-id").value =
+      btn.getAttribute("data-id");
+    document.getElementById("veh-asignar-vehicle-name").textContent =
+      btn.getAttribute("data-name");
+    document.getElementById("veh-asignar-error").classList.add("hidden");
+
+    var today = new Date().toISOString().split("T")[0];
+    document.getElementById("veh-asignar-inicio").value = today;
+    document.getElementById("veh-asignar-limite").value = today;
+
+    if (!_asignarCondSelect) {
+      _asignarCondSelect = new window.SearchableSelect(
+        document.getElementById("veh-asignar-conductor-wrap"),
+        "Buscar conductor…",
+      );
+    } else {
+      _asignarCondSelect.reset();
+    }
+
+    var fetchConductores = _conductoresCache
+      ? Promise.resolve(_conductoresCache)
+      : window
+          .barmarAuthFetch("/api/admin/conductores")
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (j) {
+            _conductoresCache = j.data || [];
+            return _conductoresCache;
+          });
+
+    fetchConductores.then(function (list) {
+      _asignarCondSelect.setOptions(
+        list.map(function (c) {
+          return {
+            value: c.id,
+            label: c.nombre_completo + " · " + c.numero_documento,
+          };
+        }),
+      );
+    });
+
+    document.getElementById("dlg-asignar-conductor").showModal();
+  };
+
+  /* ── Vehicle assignment history dialog ─────────────────────────────────── */
+  function vehFmtDate(iso) {
+    if (!iso) return "—";
+    var parts = String(iso).split("T")[0].split("-");
+    var months = [
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic",
+    ];
+    return parts[2] + " " + months[parseInt(parts[1], 10) - 1] + " " + parts[0];
+  }
+
+  window.openVehHistorialDialog = function (btn) {
+    document.getElementById("veh-historial-vehicle-name").textContent =
+      btn.getAttribute("data-name");
+    var tbody = document.getElementById("veh-historial-tbody");
+    var empty = document.getElementById("veh-historial-empty");
+    var wrap = document.getElementById("veh-historial-table-wrap");
+    tbody.innerHTML =
+      '<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400 text-sm">Cargando…</td></tr>';
+    empty.classList.add("hidden");
+    wrap.classList.remove("hidden");
+    document.getElementById("dlg-veh-historial").showModal();
+
+    window
+      .barmarAuthFetch(
+        "/api/admin/asignaciones?vehicle_id=" + btn.getAttribute("data-id"),
+      )
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (j) {
+        var list = j.data || [];
+        if (list.length === 0) {
+          wrap.classList.add("hidden");
+          empty.classList.remove("hidden");
+          return;
+        }
+        wrap.classList.remove("hidden");
+        empty.classList.add("hidden");
+        tbody.innerHTML = list
+          .map(function (a) {
+            var cname = a.conductor ? vehEsc(a.conductor.nombre_completo) : "—";
+            var cdoc = a.conductor ? vehEsc(a.conductor.numero_documento) : "—";
+            var estadoCls =
+              a.estado === "activa"
+                ? "bg-green-100 text-green-700"
+                : "bg-slate-100 text-slate-500";
+            var acciones =
+              a.estado === "activa"
+                ? '<button type="button" class="text-xs px-2.5 py-1 rounded-lg border border-amber-200 text-amber-700 hover:bg-amber-50 transition-colors" onclick="vehCancelarAsig(' +
+                  a.id +
+                  ', this)">Cancelar</button> '
+                : "";
+            acciones +=
+              '<button type="button" class="text-xs px-2.5 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors" onclick="vehEliminarAsig(' +
+              a.id +
+              ', this)">Eliminar</button>';
+            return (
+              '<tr class="hover:bg-slate-50/50">' +
+              '<td class="px-4 py-3 font-medium text-slate-800 whitespace-nowrap">' +
+              cname +
+              "</td>" +
+              '<td class="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">' +
+              cdoc +
+              "</td>" +
+              '<td class="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">' +
+              vehFmtDate(a.fecha_inicio) +
+              "</td>" +
+              '<td class="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">' +
+              vehFmtDate(a.fecha_limite) +
+              "</td>" +
+              '<td class="px-4 py-3"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ' +
+              estadoCls +
+              '">' +
+              (a.estado === "activa" ? "Activa" : "Cancelada") +
+              "</span></td>" +
+              '<td class="px-4 py-3 text-right whitespace-nowrap">' +
+              acciones +
+              "</td>" +
+              "</tr>"
+            );
+          })
+          .join("");
+      })
+      .catch(function () {
+        tbody.innerHTML =
+          '<tr><td colspan="6" class="px-4 py-6 text-center text-red-500 text-sm">Error al cargar.</td></tr>';
+      });
+  };
+
+  window.vehCancelarAsig = function (id, btn) {
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = "…";
+    window
+      .barmarAuthFetch("/api/admin/asignaciones/" + id + "/cancelar", {
+        method: "PATCH",
+      })
+      .then(function (r) {
+        return r.json().then(function (d) {
+          return { ok: r.ok, data: d };
+        });
+      })
+      .then(function (x) {
+        if (!x.ok) {
+          vehShowFlash(x.data.message || "Error.", "error");
+          btn.disabled = false;
+          btn.textContent = "Cancelar";
+          return;
+        }
+        vehShowFlash("Asignación cancelada.", "success");
+        var row = btn.closest("tr");
+        if (row) {
+          var cells = row.querySelectorAll("td");
+          if (cells[4])
+            cells[4].innerHTML =
+              '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500">Cancelada</span>';
+          if (cells[5])
+            cells[5].innerHTML =
+              '<button type="button" class="text-xs px-2.5 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors" onclick="vehEliminarAsig(' +
+              id +
+              ', this)">Eliminar</button>';
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = "Cancelar";
+        vehShowFlash("Error de red.", "error");
+      });
+  };
+
+  window.vehEliminarAsig = function (id, btn) {
+    if (!confirm("¿Eliminar esta asignación permanentemente?")) return;
+    btn.disabled = true;
+    btn.textContent = "…";
+    window
+      .barmarAuthFetch("/api/admin/asignaciones/" + id, { method: "DELETE" })
+      .then(function (r) {
+        return r.json().then(function (d) {
+          return { ok: r.ok, data: d };
+        });
+      })
+      .then(function (x) {
+        if (!x.ok) {
+          vehShowFlash(x.data.message || "Error.", "error");
+          btn.disabled = false;
+          btn.textContent = "Eliminar";
+          return;
+        }
+        vehShowFlash("Asignación eliminada.", "success");
+        var row = btn.closest("tr");
+        if (row) row.remove();
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = "Eliminar";
+        vehShowFlash("Error de red.", "error");
+      });
+  };
+
+  /* ── Vehicle view dialog ───────────────────────────────────────────────── */
+  window.openVehicleViewDialog = function (btn) {
+    var raw = btn.getAttribute("data-vehicle") || "";
+    var v = JSON.parse(decodeURIComponent(raw));
+
+    // Image
+    var imgWrap = document.getElementById("vv-img-wrap");
+    var imgEl = document.getElementById("vv-image");
+    if (v.imageUrl) {
+      imgEl.src = v.imageUrl;
+      imgWrap.classList.remove("hidden");
+    } else {
+      imgWrap.classList.add("hidden");
+    }
+
+    // Identity
+    document.getElementById("vv-name").textContent = v.name;
+    document.getElementById("vv-make-reg").textContent =
+      v.make + " · " + v.registration_number;
+    document.getElementById("vv-category").textContent =
+      v.category && v.category.name ? v.category.name : "—";
+    document.getElementById("vv-year").textContent = v.year;
+    document.getElementById("vv-rate").textContent =
+      "S/. " + Number(v.daily_rate).toFixed(2);
+    document.getElementById("vv-monthly").textContent =
+      "S/. " + Number(v.precio_mensual || 0).toFixed(2);
+    document.getElementById("vv-passengers").textContent = String(
+      v.cantidad_pasajeros || "—",
+    );
+    document.getElementById("vv-transmission").textContent = vehSpecLabel(
+      vehTransLabels,
+      v.tipo_transmision,
+    );
+    document.getElementById("vv-fuel").textContent = vehSpecLabel(
+      vehFuelLabels,
+      v.tipo_combustible,
+    );
+    document.getElementById("vv-traction").textContent = vehSpecLabel(
+      vehTractionLabels,
+      v.tipo_traccion,
+    );
+    document.getElementById("vv-km").textContent =
+      (v.current_mileage || 0).toLocaleString() + " km";
+
+    // Status badge
+    var statusMap = vehClientCfg.statusBadgeClasses;
+    var sInfo = statusMap[v.status] || ["—", "bg-slate-100 text-slate-600"];
+    var sEl = document.getElementById("vv-status");
+    sEl.textContent = sInfo[0];
+    sEl.className =
+      "shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold " +
+      sInfo[1];
+
+    // Service types
+    var stEl = document.getElementById("vv-stypes");
+    stEl.innerHTML = "";
+    var types = v.serviceTypes || [];
+    if (types.length === 0) {
+      stEl.innerHTML =
+        '<span class="text-xs text-slate-400">Sin tipos asignados</span>';
+    } else {
+      types.forEach(function (st) {
+        var span = document.createElement("span");
+        span.className =
+          "inline-block px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-700 text-xs font-medium";
+        span.textContent = st.name;
+        stEl.appendChild(span);
+      });
+    }
+
+    // Equipamiento
+    var eqEl = document.getElementById("vv-equipamiento");
+    eqEl.innerHTML = "";
+    var equip = normalizeEquipamiento(v.equipamiento);
+    if (!equip.length) {
+      eqEl.innerHTML =
+        '<span class="text-xs text-slate-400">Sin equipamiento</span>';
+    } else {
+      equip.forEach(function (item) {
+        var span = document.createElement("span");
+        span.className =
+          "inline-block px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-medium";
+        span.textContent = item;
+        eqEl.appendChild(span);
+      });
+    }
+
+    // Description
+    var descWrap = document.getElementById("vv-desc-wrap");
+    if (v.description) {
+      document.getElementById("vv-desc").textContent = v.description;
+      descWrap.classList.remove("hidden");
+    } else {
+      descWrap.classList.add("hidden");
+    }
+
+    // Flags
+    document
+      .getElementById("vv-flag-approved")
+      .classList.toggle("hidden", !v.is_approved);
+    document
+      .getElementById("vv-flag-pending")
+      .classList.toggle("hidden", !!v.is_approved);
+    document
+      .getElementById("vv-flag-homologado")
+      .classList.toggle("hidden", !v.homologado);
+
+    // Maintenance progress bar
+    var kmCurr = v.current_mileage || 0;
+    var kmMaint = v.kilometraje_mantenimiento;
+    var maintEl = document.getElementById("vv-maint");
+    if (kmMaint != null) {
+      maintEl.classList.remove("hidden");
+      var diff = kmMaint - kmCurr;
+      var pct = Math.min((kmCurr / kmMaint) * 100, 100);
+      var priority = diff < 500 ? "alta" : diff < 1500 ? "media" : "baja";
+      var exceeded = diff < 0;
+
+      document.getElementById("vv-km-curr").textContent =
+        kmCurr.toLocaleString() + " km";
+      document.getElementById("vv-km-goal").textContent =
+        kmMaint.toLocaleString() + " km";
+      document.getElementById("vv-km-pct").textContent = Math.round(pct) + "%";
+
+      var bar = document.getElementById("vv-km-bar");
+      bar.style.width = pct + "%";
+      var barColors = {
+        alta: "bg-red-500",
+        media: "bg-amber-400",
+        baja: "bg-green-500",
+      };
+      bar.className =
+        "h-full rounded-full transition-all " + barColors[priority];
+
+      var prioEl = document.getElementById("vv-km-priority");
+      var prioMap = {
+        alta: [
+          "Prioridad Alta",
+          "text-red-700 bg-red-100 border border-red-200",
+        ],
+        media: [
+          "Prioridad Media",
+          "text-amber-700 bg-amber-100 border border-amber-200",
+        ],
+        baja: [
+          "Prioridad Baja",
+          "text-green-700 bg-green-100 border border-green-200",
+        ],
+      };
+      var pInfo = prioMap[priority];
+      prioEl.textContent = pInfo[0];
+      prioEl.className =
+        "text-xs font-semibold px-2.5 py-0.5 rounded-full " + pInfo[1];
+
+      var kmStatusEl = document.getElementById("vv-km-status");
+      if (exceeded) {
+        kmStatusEl.textContent =
+          "⚠ Superado por " + Math.abs(diff).toLocaleString() + " km";
+        kmStatusEl.className = "text-xs text-red-600 font-medium";
+      } else {
+        kmStatusEl.textContent = "Faltan " + diff.toLocaleString() + " km";
+        kmStatusEl.className = "text-xs text-slate-500";
+      }
+    } else {
+      maintEl.classList.add("hidden");
+    }
+
+    document.getElementById("dlg-vehicle-view").showModal();
+  };
+
+  /* ── Delete dialog ─────────────────────────────────────────────────────── */
+  window.openDeleteDialog = function (btn) {
+    document.getElementById("delete-vehicle-id").value =
+      btn.getAttribute("data-id") || "";
+    document.getElementById("delete-vehicle-name").textContent =
+      btn.getAttribute("data-name") || "";
+    document.getElementById("dlg-delete").showModal();
+  };
+
+  /* ── Vehicle edit dialog ───────────────────────────────────────────────── */
+  var _catsCache = null;
+  var _stypesCache = null;
+
+  function vehFetchCats() {
+    if (_catsCache) return Promise.resolve(_catsCache);
+    return window
+      .barmarAuthFetch("/api/categories?limit=100")
+      .then(function (r) {
+        return r.ok ? r.json() : { data: [] };
+      })
+      .then(function (j) {
+        _catsCache = j.data || j || [];
+        return _catsCache;
+      });
+  }
+
+  function vehFetchStypes() {
+    if (_stypesCache) return Promise.resolve(_stypesCache);
+    return window
+      .barmarAuthFetch("/api/service-types?limit=100")
+      .then(function (r) {
+        return r.ok ? r.json() : { data: [] };
+      })
+      .then(function (j) {
+        _stypesCache = j.data || j || [];
+        return _stypesCache;
+      });
+  }
+
+  window.openVehicleDialog = function (btn) {
+    var raw = btn.getAttribute("data-vehicle") || "";
+    var v = JSON.parse(decodeURIComponent(raw));
+
+    // ── Image preview ──────────────────────────────────────────────────────
+    var imgEl = document.getElementById("vd-image");
+    var noImgEl = document.getElementById("vd-no-image");
+    if (v.imageUrl) {
+      imgEl.src = v.imageUrl;
+      imgEl.classList.remove("hidden");
+      noImgEl.classList.add("hidden");
+    } else {
+      imgEl.classList.add("hidden");
+      noImgEl.classList.remove("hidden");
+    }
+
+    // Reset file input & wire preview on change
+    var fileInput = document.getElementById("vd-f-image");
+    fileInput.value = "";
+    fileInput.onchange = function () {
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        imgEl.src = e.target.result;
+        imgEl.classList.remove("hidden");
+        noImgEl.classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+    };
+
+    document.getElementById("vd-subtitle").textContent =
+      v.make + " · " + v.registration_number;
+
+    // ── Basic fields ───────────────────────────────────────────────────────
+    document.getElementById("vd-f-id").value = v.id;
+    document.getElementById("vd-f-name").value = v.name;
+    document.getElementById("vd-f-make").value = v.make;
+    document.getElementById("vd-f-regnum").value = v.registration_number;
+    document.getElementById("vd-f-year").value = v.year;
+    document.getElementById("vd-f-rate").value = v.daily_rate;
+    document.getElementById("vd-f-monthly").value = v.precio_mensual;
+    document.getElementById("vd-f-passengers").value = v.cantidad_pasajeros;
+    document.getElementById("vd-f-transmission").value =
+      v.tipo_transmision || "";
+    document.getElementById("vd-f-fuel").value = v.tipo_combustible || "";
+    document.getElementById("vd-f-traction").value = v.tipo_traccion || "";
+    document.getElementById("vd-f-status").value = v.status;
+    document.getElementById("vd-f-km-current").value = v.current_mileage || 0;
+    document.getElementById("vd-f-km-maint").value =
+      v.kilometraje_mantenimiento != null ? v.kilometraje_mantenimiento : "";
+    document.getElementById("vd-f-desc").value = v.description || "";
+    document.getElementById("vd-f-approved").checked = !!v.is_approved;
+    document.getElementById("vd-f-homologado").checked = !!v.homologado;
+
+    window._vdEquipGetTags = initEquipamientoTags({
+      inputId: "vd-equip-input",
+      addBtnId: "vd-equip-add",
+      containerId: "vd-equip-tags",
+      initial: normalizeEquipamiento(v.equipamiento),
+    });
+
+    // ── Categories select ──────────────────────────────────────────────────
+    var catSel = document.getElementById("vd-f-catid");
+    catSel.innerHTML = '<option value="">— Cargando… —</option>';
+    vehFetchCats().then(function (cats) {
+      catSel.innerHTML = '<option value="">— Seleccionar —</option>';
+      cats.forEach(function (c) {
+        var opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        opt.selected = String(c.id) === String(v.category_id);
+        catSel.appendChild(opt);
+      });
+    });
+
+    // ── Service type checkboxes ────────────────────────────────────────────
+    var stContainer = document.getElementById("vd-f-stypes");
+    stContainer.innerHTML =
+      '<span class="text-xs text-slate-400">Cargando…</span>';
+    var selectedIds = (v.serviceTypes || []).map(function (s) {
+      return String(s.id);
+    });
+    vehFetchStypes().then(function (types) {
+      stContainer.innerHTML = "";
+      if (types.length === 0) {
+        stContainer.innerHTML =
+          '<span class="text-xs text-slate-400">Sin tipos disponibles</span>';
+        return;
+      }
+      types.forEach(function (st) {
+        var checked = selectedIds.indexOf(String(st.id)) !== -1;
+        var label = document.createElement("label");
+        label.className =
+          "inline-flex items-center gap-1.5 cursor-pointer select-none px-2.5 py-1 rounded-full border text-xs font-medium transition-colors " +
+          (checked
+            ? "bg-primary-100 border-primary-300 text-primary-700"
+            : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100");
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.name = "service_type_ids";
+        cb.value = String(st.id);
+        cb.checked = checked;
+        cb.className = "w-3.5 h-3.5 text-primary-600 border-slate-300 rounded";
+        cb.addEventListener("change", function () {
+          label.className =
+            "inline-flex items-center gap-1.5 cursor-pointer select-none px-2.5 py-1 rounded-full border text-xs font-medium transition-colors " +
+            (cb.checked
+              ? "bg-primary-100 border-primary-300 text-primary-700"
+              : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100");
+        });
+        var span = document.createElement("span");
+        span.textContent = st.name;
+        label.appendChild(cb);
+        label.appendChild(span);
+        stContainer.appendChild(label);
+      });
+    });
+
+    // ── Maintenance bar ────────────────────────────────────────────────────
+    var kmCurr = v.current_mileage || 0;
+    var kmMaint = v.kilometraje_mantenimiento;
+    var maintSection = document.getElementById("vd-maint-section");
+    if (kmMaint != null) {
+      maintSection.classList.remove("hidden");
+      var diff = kmMaint - kmCurr;
+      var pct = Math.min((kmCurr / kmMaint) * 100, 100);
+      var priority = diff < 500 ? "alta" : diff < 1500 ? "media" : "baja";
+      var exceeded = diff < 0;
+      document.getElementById("vd-km-curr").textContent =
+        kmCurr.toLocaleString() + " km";
+      document.getElementById("vd-km-maint-label").textContent =
+        kmMaint.toLocaleString() + " km objetivo";
+      var bar = document.getElementById("vd-km-bar");
+      bar.style.width = pct + "%";
+      var barColors = {
+        alta: "bg-red-500",
+        media: "bg-amber-400",
+        baja: "bg-green-500",
+      };
+      bar.className =
+        "h-full rounded-full transition-all " + barColors[priority];
+      var prioEl = document.getElementById("vd-km-priority");
+      var prioMap = {
+        alta: [
+          "Prioridad Alta",
+          "text-red-700 bg-red-100 border border-red-200",
+        ],
+        media: [
+          "Prioridad Media",
+          "text-amber-700 bg-amber-100 border border-amber-200",
+        ],
+        baja: [
+          "Prioridad Baja",
+          "text-green-700 bg-green-100 border border-green-200",
+        ],
+      };
+      var pInfo = prioMap[priority];
+      prioEl.textContent = pInfo[0];
+      prioEl.className =
+        "text-xs font-semibold px-2 py-0.5 rounded-full " + pInfo[1];
+      var statusText = document.getElementById("vd-km-status-text");
+      if (exceeded) {
+        statusText.textContent =
+          "⚠ Mantenimiento superado por " +
+          Math.abs(diff).toLocaleString() +
+          " km";
+        statusText.className = "text-xs text-red-600 font-medium";
+      } else {
+        statusText.textContent =
+          "Faltan " +
+          diff.toLocaleString() +
+          " km para el próximo mantenimiento";
+        statusText.className = "text-xs text-slate-500";
+      }
+    } else {
+      maintSection.classList.add("hidden");
+    }
+
+    document.getElementById("dlg-vehicle").showModal();
+  };
+
+  (function initVehiclesPage() {
+    var tbody = document.getElementById("vehicles-tbody");
+    var loading = document.getElementById("veh-loading");
+    var empty = document.getElementById("veh-empty");
+    var tableWrap = document.getElementById("veh-table-wrap");
+    var pager = document.getElementById("veh-pager");
+    var pageSize =
+      typeof PAGE_SIZE === "number"
+        ? PAGE_SIZE
+        : parseInt(pager && pager.getAttribute("data-page-size"), 10) || 10;
+
+    var allRows = [];
+    var currentPage = 1;
+
+    function renderTablePage() {
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      var total = allRows.length;
+      var totalPages = Math.max(1, Math.ceil(total / pageSize));
+      if (currentPage > totalPages) currentPage = totalPages;
+      var start = (currentPage - 1) * pageSize;
+      var end = Math.min(start + pageSize, total);
+      for (var i = start; i < end; i++) {
+        tbody.appendChild(allRows[i]);
+      }
+
+      var info = document.getElementById("veh-pager-info");
+      var prev = document.getElementById("veh-pager-prev");
+      var next = document.getElementById("veh-pager-next");
+      var nav = document.getElementById("veh-pager-nav");
+      if (info) {
+        var lo = total ? start + 1 : 0;
+        info.textContent =
+          "Mostrando " +
+          lo +
+          "–" +
+          end +
+          " de " +
+          total +
+          " vehículos · Página " +
+          currentPage +
+          " de " +
+          totalPages;
+      }
+      if (prev) prev.disabled = currentPage <= 1;
+      if (next) next.disabled = currentPage >= totalPages;
+      if (nav) nav.style.display = totalPages > 1 ? "" : "none";
+    }
+
+    function buildRow(v) {
+      var tr = document.createElement("tr");
+      tr.className = "vehicle-row hover:bg-slate-50/50 transition-colors";
+
+      var imgCell = document.createElement("td");
+      imgCell.className = "px-4 py-3.5";
+      var flexImg = document.createElement("div");
+      flexImg.className = "flex items-center gap-3";
+      if (v.image) {
+        var img = document.createElement("img");
+        img.src = window.barmarUploadsUrl(v.image);
+        img.alt = v.name;
+        img.className =
+          "w-10 h-10 rounded-lg object-cover bg-slate-100 shrink-0";
+        flexImg.appendChild(img);
+      } else {
+        flexImg.innerHTML =
+          '<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">' +
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"/></svg></div>';
+      }
+      var textWrap = document.createElement("div");
+      var pName = document.createElement("p");
+      pName.className = "font-medium text-slate-800";
+      pName.textContent = v.name;
+      var pSub = document.createElement("p");
+      pSub.className = "text-xs text-slate-400";
+      pSub.textContent = v.make + " · " + v.registration_number;
+      textWrap.appendChild(pName);
+      textWrap.appendChild(pSub);
+      flexImg.appendChild(textWrap);
+      imgCell.appendChild(flexImg);
+
+      var catCell = document.createElement("td");
+      catCell.className = "px-4 py-3.5 text-slate-600 text-xs";
+      catCell.textContent =
+        v.category && v.category.name ? v.category.name : "—";
+
+      var stCell = document.createElement("td");
+      stCell.className = "px-4 py-3.5";
+      var stWrap = document.createElement("div");
+      stWrap.className = "flex flex-wrap gap-1 max-w-[160px]";
+      var types = v.serviceTypes || [];
+      if (types.length === 0) {
+        stWrap.innerHTML = '<span class="text-xs text-slate-400">—</span>';
+      } else {
+        types.slice(0, 2).forEach(function (st) {
+          var sp = document.createElement("span");
+          sp.className =
+            "inline-block px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 text-xs font-medium";
+          sp.textContent = st.name;
+          stWrap.appendChild(sp);
+        });
+        if (types.length > 2) {
+          var more = document.createElement("span");
+          more.className =
+            "inline-block px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs";
+          more.textContent = "+" + (types.length - 2);
+          stWrap.appendChild(more);
+        }
+      }
+      stCell.appendChild(stWrap);
+
+      var yearCell = document.createElement("td");
+      yearCell.className = "px-4 py-3.5 text-slate-600";
+      yearCell.textContent = String(v.year);
+
+      var rateCell = document.createElement("td");
+      rateCell.className = "px-4 py-3.5 text-slate-800";
+      rateCell.innerHTML =
+        '<div class="font-medium">S/. ' +
+        Number(v.daily_rate).toFixed(2) +
+        '<span class="text-slate-400 font-normal text-xs">/día</span></div>' +
+        '<div class="text-xs text-slate-500 mt-0.5">S/. ' +
+        Number(v.precio_mensual || 0).toFixed(2) +
+        "/mes</div>";
+
+      var statCell = document.createElement("td");
+      statCell.className = "px-4 py-3.5";
+      var badge = document.createElement("span");
+      var sc = statusColors[v.status] || "bg-slate-100 text-slate-600";
+      badge.className =
+        "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold " +
+        sc;
+      badge.textContent = statusLabels[v.status] || v.status;
+      statCell.appendChild(badge);
+
+      var flagsCell = document.createElement("td");
+      flagsCell.className = "px-4 py-3.5";
+      var flagsInner = document.createElement("div");
+      flagsInner.className = "flex flex-col gap-1";
+      if (v.is_approved) {
+        flagsInner.innerHTML +=
+          '<span class="inline-flex items-center gap-1 text-xs text-green-700 font-medium">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">' +
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Aprobado</span>';
+      } else {
+        flagsInner.innerHTML +=
+          '<span class="inline-flex items-center gap-1 text-xs text-amber-600 font-medium">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">' +
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pendiente</span>';
+      }
+      if (v.homologado) {
+        flagsInner.innerHTML +=
+          '<span class="inline-flex items-center gap-1 text-xs text-primary-600 font-medium">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">' +
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>Homologado</span>';
+      }
+      flagsCell.appendChild(flagsInner);
+
+      var payload = Object.assign({}, v, {
+        imageUrl: v.image ? window.barmarUploadsUrl(v.image) : null,
+      });
+      var dataVeh = encodeURIComponent(JSON.stringify(payload));
+
+      var actionsCell = document.createElement("td");
+      actionsCell.className = "px-4 py-3.5";
+      var actionsWrap = document.createElement("div");
+      actionsWrap.className = "flex items-center justify-end gap-1";
+
+      actionsWrap.innerHTML =
+        '<span class="relative inline-flex group">' +
+        '<button type="button" data-vehicle="' +
+        dataVeh +
+        '" onclick="openVehicleViewDialog(this)" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1" aria-label="Ver detalle">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
+        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />' +
+        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></button>' +
+        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Ver detalle</span></span>';
+
+      if (!v.is_approved) {
+        var appr = document.createElement("span");
+        appr.className = "relative inline-flex group";
+        appr.innerHTML =
+          '<button type="button" class="veh-btn-approve inline-flex items-center justify-center rounded-lg border border-green-200 p-2 text-green-700 hover:bg-green-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1" data-id="' +
+          vehEsc(String(v.id)) +
+          '" aria-label="Aprobar vehículo">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button>' +
+          '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Aprobar</span>';
+        actionsWrap.appendChild(appr);
+      }
+
+      var editSpan = document.createElement("span");
+      editSpan.className = "relative inline-flex group";
+      editSpan.innerHTML =
+        '<button type="button" data-vehicle="' +
+        dataVeh +
+        '" onclick="openVehicleDialog(this)" class="inline-flex items-center justify-center rounded-lg border border-primary-200 p-2 text-primary-600 hover:bg-primary-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1" aria-label="Editar vehículo en modal">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
+        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>' +
+        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Editar (modal)</span>';
+      actionsWrap.appendChild(editSpan);
+
+      var histSpan = document.createElement("span");
+      histSpan.className = "relative inline-flex group";
+      histSpan.innerHTML =
+        '<button type="button" data-id="' +
+        vehEsc(String(v.id)) +
+        '" data-name="' +
+        vehEsc(v.name) +
+        '" ' +
+        'onclick="openVehHistorialDialog(this)" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-1" aria-label="Historial de asignaciones">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
+        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></button>' +
+        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Historial asignaciones</span>';
+      actionsWrap.appendChild(histSpan);
+
+      var asignSpan = document.createElement("span");
+      asignSpan.className = "relative inline-flex group";
+      asignSpan.innerHTML =
+        '<button type="button" data-id="' +
+        vehEsc(String(v.id)) +
+        '" data-name="' +
+        vehEsc(v.name) +
+        '" ' +
+        'onclick="openAsignarConductorDialog(this)" class="inline-flex items-center justify-center rounded-lg border border-violet-200 p-2 text-violet-600 hover:bg-violet-50 transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-1" aria-label="Asignar conductor">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
+        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>' +
+        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Asignar conductor</span>';
+      actionsWrap.appendChild(asignSpan);
+
+      var delSpan = document.createElement("span");
+      delSpan.className = "relative inline-flex group";
+      delSpan.innerHTML =
+        '<button type="button" data-id="' +
+        vehEsc(String(v.id)) +
+        '" data-name="' +
+        vehEsc(v.name) +
+        '" onclick="openDeleteDialog(this)" class="inline-flex items-center justify-center rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1" aria-label="Eliminar vehículo">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
+        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>' +
+        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Eliminar</span>';
+      actionsWrap.appendChild(delSpan);
+
+      actionsCell.appendChild(actionsWrap);
+
+      tr.appendChild(imgCell);
+      tr.appendChild(catCell);
+      tr.appendChild(stCell);
+      tr.appendChild(yearCell);
+      tr.appendChild(rateCell);
+      tr.appendChild(statCell);
+      tr.appendChild(flagsCell);
+      tr.appendChild(actionsCell);
+      return tr;
+    }
+
+    async function loadVehicles() {
+      vehHideFlash();
+      if (loading) {
+        loading.classList.remove("hidden");
+        loading.textContent = "Cargando vehículos…";
+      }
+      if (empty) empty.classList.add("hidden");
+      if (tableWrap) tableWrap.classList.add("hidden");
+      if (pager) pager.classList.add("hidden");
+      if (tbody) tbody.innerHTML = "";
+
+      try {
+        var list = await vehFetchAllFiltered();
+        _allVehiclesData = list;
+        allRows = list.map(buildRow);
+        currentPage = 1;
+        if (loading) loading.classList.add("hidden");
+        if (list.length === 0) {
+          if (empty) empty.classList.remove("hidden");
+        } else {
+          if (tableWrap) tableWrap.classList.remove("hidden");
+          if (pager) pager.classList.remove("hidden");
+          renderTablePage();
+        }
+      } catch (e) {
+        if (loading) loading.classList.add("hidden");
+        vehShowFlash(e.message || "Error al cargar vehículos", "error");
+      }
+    }
+
+    window.__vehiclesReload = loadVehicles;
+
+    function run() {
+      vehSyncFiltersFromUrl();
+
+      window._vdEquipGetTags = initEquipamientoTags({
+        inputId: "vd-equip-input",
+        addBtnId: "vd-equip-add",
+        containerId: "vd-equip-tags",
+        initial: [],
+      });
+
+      document
+        .getElementById("veh-pager-prev")
+        .addEventListener("click", function () {
+          if (currentPage > 1) {
+            currentPage--;
+            renderTablePage();
+          }
+        });
+      document
+        .getElementById("veh-pager-next")
+        .addEventListener("click", function () {
+          var totalPages = Math.max(1, Math.ceil(allRows.length / pageSize));
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderTablePage();
+          }
+        });
+
+      var vdForm = document.getElementById("vd-form");
+      if (vdForm) {
+        vdForm.addEventListener("submit", async function (ev) {
+          ev.preventDefault();
+          var btn = vdForm.querySelector('[type="submit"]');
+          var id = document.getElementById("vd-f-id").value;
+          var fd = new FormData(vdForm);
+          fd.delete("id");
+          fd.set(
+            "is_approved",
+            document.getElementById("vd-f-approved").checked ? "true" : "false",
+          );
+          fd.set(
+            "homologado",
+            document.getElementById("vd-f-homologado").checked
+              ? "true"
+              : "false",
+          );
+          var kmMaint = fd.get("kilometraje_mantenimiento");
+          if (!kmMaint || String(kmMaint).trim() === "") {
+            fd.delete("kilometraje_mantenimiento");
+          }
+          appendEquipamientoToFormData(fd, window._vdEquipGetTags);
+          vehSetLoading(btn, true);
+          try {
+            var res = await window.barmarAuthFetch(
+              "/api/admin/vehicles/" + encodeURIComponent(id),
+              {
+                method: "PUT",
+                body: fd,
+              },
+            );
+            if (res.status === 401) {
+              window.location.href = "/login";
+              return;
+            }
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (!res.ok) {
+              vehShowFlash(data.message || "No se pudo guardar", "error");
+              return;
+            }
+            document.getElementById("dlg-vehicle").close();
+            vehShowFlash("Cambios guardados.", "success");
+            await loadVehicles();
+          } catch (err) {
+            vehShowFlash(err.message || "Error de red", "error");
+          } finally {
+            vehSetLoading(btn, false);
+          }
+        });
+      }
+
+      var delBtn = document.getElementById("delete-vehicle-confirm");
+      if (delBtn) {
+        delBtn.addEventListener("click", async function () {
+          var id = document.getElementById("delete-vehicle-id").value;
+          if (!id) return;
+          try {
+            var res = await window.barmarAuthFetch(
+              "/api/admin/vehicles/" + encodeURIComponent(id),
+              {
+                method: "DELETE",
+              },
+            );
+            if (res.status === 401) {
+              window.location.href = "/login";
+              return;
+            }
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (!res.ok) {
+              vehShowFlash(data.message || "No se pudo eliminar", "error");
+              return;
+            }
+            document.getElementById("dlg-delete").close();
+            vehShowFlash("Vehículo eliminado.", "success");
+            await loadVehicles();
+          } catch (err) {
+            vehShowFlash(err.message || "Error de red", "error");
+          }
+        });
+      }
+
+      if (tbody) {
+        tbody.addEventListener("click", async function (e) {
+          var btn = e.target.closest(".veh-btn-approve");
+          if (!btn) return;
+          var vid = btn.getAttribute("data-id");
+          if (!vid) return;
+          try {
+            var res = await window.barmarAuthFetch(
+              "/api/admin/vehicles/" + encodeURIComponent(vid) + "/approve",
+              {
+                method: "PATCH",
+              },
+            );
+            if (res.status === 401) {
+              window.location.href = "/login";
+              return;
+            }
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (!res.ok) {
+              vehShowFlash(data.message || "No se pudo aprobar", "error");
+              return;
+            }
+            vehShowFlash("Vehículo aprobado.", "success");
+            await loadVehicles();
+          } catch (err) {
+            vehShowFlash(err.message || "Error de red", "error");
+          }
+        });
+      }
+
+      var asignarCondForm = document.getElementById("form-asignar-conductor");
+      if (asignarCondForm) {
+        asignarCondForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          var err = document.getElementById("veh-asignar-error");
+          err.classList.add("hidden");
+          var btn = asignarCondForm.querySelector('[type="submit"]');
+          var vehicleId = document.getElementById(
+            "veh-asignar-vehicle-id",
+          ).value;
+          var conductorId = _asignarCondSelect
+            ? _asignarCondSelect.getValue()
+            : "";
+          var inicio = document.getElementById("veh-asignar-inicio").value;
+          var limite = document.getElementById("veh-asignar-limite").value;
+          if (!conductorId) {
+            err.textContent = "Selecciona un conductor.";
+            err.classList.remove("hidden");
+            return;
+          }
+          vehSetLoading(btn, true);
+          try {
+            var res = await window.barmarAuthFetch("/api/admin/asignaciones", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                conductor_id: Number(conductorId),
+                vehicle_id: Number(vehicleId),
+                fecha_inicio: inicio,
+                fecha_limite: limite,
+              }),
+            });
+            var data = await res.json();
+            if (!res.ok) {
+              err.textContent =
+                (data.errors &&
+                  data.errors
+                    .map(function (e) {
+                      return e.message;
+                    })
+                    .join(" · ")) ||
+                data.message ||
+                "No se pudo asignar.";
+              err.classList.remove("hidden");
+              return;
+            }
+            document.getElementById("dlg-asignar-conductor").close();
+            vehShowFlash("Conductor asignado correctamente.", "success");
+          } catch (ex) {
+            err.textContent = "Error de red.";
+            err.classList.remove("hidden");
+          } finally {
+            vehSetLoading(btn, false);
+          }
+        });
+      }
+
+      var exportBtn = document.getElementById("btn-export-excel");
+      if (exportBtn) exportBtn.addEventListener("click", exportFlotaExcel);
+
+      loadVehicles();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+})();</script>

@@ -1,0 +1,372 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Dialog from '../../components/Dialog.astro';
+---
+<AdminLayout title="Tipos de Servicio">
+
+  <div class="flex items-center justify-between mb-6">
+    <p id="st-count" class="text-sm text-slate-500">Cargando…</p>
+    <button
+      type="button"
+      onclick="document.getElementById('dlg-create').showModal()"
+      class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Nuevo tipo
+    </button>
+  </div>
+
+  <div id="st-flash" class="hidden mb-5 flex items-center gap-3 rounded-xl px-4 py-3 text-sm border"></div>
+
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div id="st-empty" class="hidden flex flex-col items-center justify-center py-16 text-slate-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+      </svg>
+      <p class="text-sm font-medium">No hay tipos de servicio</p>
+      <p class="text-xs mt-1">Crea el primero para asociarlo a vehículos.</p>
+    </div>
+
+    <div id="st-table-wrap" class="hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th class="text-left px-6 py-3.5 font-semibold text-slate-600">Nombre</th>
+            <th class="text-left px-6 py-3.5 font-semibold text-slate-600">Estado</th>
+            <th class="text-right px-6 py-3.5 font-semibold text-slate-600">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="st-tbody" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <Dialog id="dlg-create" title="Nuevo tipo de servicio">
+    <div id="create-error" class="hidden mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2.5 text-sm"></div>
+    <form id="form-create" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5" for="c-name">
+          Nombre <span class="text-red-500">*</span>
+        </label>
+        <input id="c-name" name="name" type="text" required placeholder="Ej. Transporte de Pasajeros"
+          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+      </div>
+      <div class="flex items-center gap-3">
+        <input id="c-status" name="status" type="checkbox" checked
+          class="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
+        <label for="c-status" class="text-sm font-medium text-slate-700">Activo</label>
+      </div>
+      <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+        <button type="button" onclick="document.getElementById('dlg-create').close()"
+          class="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">Cancelar</button>
+        <button type="submit"
+          class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+          Crear tipo
+        </button>
+      </div>
+    </form>
+  </Dialog>
+
+  <Dialog id="dlg-edit" title="Editar tipo de servicio">
+    <div id="edit-error" class="hidden mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2.5 text-sm"></div>
+    <form id="form-edit" class="space-y-4">
+      <input type="hidden" name="id" id="edit-id" />
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5" for="e-name">
+          Nombre <span class="text-red-500">*</span>
+        </label>
+        <input id="e-name" name="name" type="text" required
+          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+      </div>
+      <div class="flex items-center gap-3">
+        <input id="e-status" name="status" type="checkbox"
+          class="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
+        <label for="e-status" class="text-sm font-medium text-slate-700">Activo</label>
+      </div>
+      <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+        <button type="button" onclick="document.getElementById('dlg-edit').close()"
+          class="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">Cancelar</button>
+        <button type="submit"
+          class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+          Guardar cambios
+        </button>
+      </div>
+    </form>
+  </Dialog>
+
+  <Dialog id="dlg-delete" title="Eliminar tipo de servicio" size="sm">
+    <input type="hidden" id="delete-id" />
+    <div class="flex items-start gap-4 mb-6">
+      <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-medium text-slate-800">¿Eliminar este tipo de servicio?</p>
+        <p class="text-sm text-slate-500 mt-1">
+          Se eliminará <strong id="delete-name" class="text-slate-700"></strong>. Esta acción no se puede deshacer.
+        </p>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-3">
+      <button type="button" onclick="document.getElementById('dlg-delete').close()"
+        class="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors px-4 py-2">Cancelar</button>
+      <button type="button" id="btn-delete-confirm"
+        class="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+        Sí, eliminar
+      </button>
+    </div>
+  </Dialog>
+</AdminLayout>
+
+<script is:inline>
+  (function () {
+    function esc(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    }
+
+    function showFlash(msg, type) {
+      var el = document.getElementById('st-flash');
+      if (!msg) {
+        el.classList.add('hidden');
+        return;
+      }
+      el.classList.remove('hidden');
+      el.className =
+        'mb-5 flex items-center gap-3 rounded-xl px-4 py-3 text-sm border ' +
+        (type === 'error'
+          ? 'bg-red-50 border-red-200 text-red-700'
+          : 'bg-green-50 border-green-200 text-green-700');
+      el.textContent = msg;
+    }
+
+    function setLoading(btn, isLoading, text) {
+      if (isLoading) {
+        if (!document.getElementById('_bspin')) {
+          var s = document.createElement('style');
+          s.id = '_bspin';
+          s.textContent = '@keyframes _bspin{to{transform:rotate(360deg)}}';
+          document.head.appendChild(s);
+        }
+        btn._origHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+        btn.style.cursor = 'not-allowed';
+        btn.innerHTML =
+          '<svg style="display:inline-block;width:1rem;height:1rem;margin-right:0.4rem;vertical-align:-0.175em;animation:_bspin 1s linear infinite" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>' +
+          (text || 'Procesando…');
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.style.cursor = '';
+        if (btn._origHTML !== undefined) btn.innerHTML = btn._origHTML;
+      }
+    }
+
+    function renderRows(list) {
+      var tbody = document.getElementById('st-tbody');
+      var empty = document.getElementById('st-empty');
+      var wrap = document.getElementById('st-table-wrap');
+      var count = document.getElementById('st-count');
+
+      count.textContent = list.length + ' tipo' + (list.length !== 1 ? 's' : '') + ' en total';
+
+      if (list.length === 0) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        tbody.innerHTML = '';
+        return;
+      }
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+
+      tbody.innerHTML = list
+        .map(function (st) {
+          var active = !!st.status;
+          var stCls = active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500';
+          var dot = active ? 'bg-green-500' : 'bg-slate-400';
+          var label = active ? 'Activo' : 'Inactivo';
+          return (
+            '<tr class="hover:bg-slate-50/50 transition-colors">' +
+            '<td class="px-6 py-4 font-medium text-slate-800">' +
+            esc(st.name) +
+            '</td>' +
+            '<td class="px-6 py-4">' +
+            '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ' +
+            stCls +
+            '">' +
+            '<span class="w-1.5 h-1.5 rounded-full ' +
+            dot +
+            '"></span>' +
+            label +
+            '</span></td>' +
+            '<td class="px-6 py-4"><div class="flex items-center justify-end gap-2">' +
+            '<button type="button" class="text-xs px-3 py-1.5 rounded-lg border border-primary-200 text-primary-600 hover:bg-primary-50 transition-colors" ' +
+            'data-id="' +
+            st.id +
+            '" data-name="' +
+            esc(st.name) +
+            '" data-status="' +
+            String(st.status) +
+            '" onclick="openEditDialog(this)">Editar</button>' +
+            '<button type="button" class="text-xs px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors" ' +
+            'data-id="' +
+            st.id +
+            '" data-name="' +
+            esc(st.name) +
+            '" onclick="openDeleteDialog(this)">Eliminar</button>' +
+            '</div></td></tr>'
+          );
+        })
+        .join('');
+    }
+
+    window.loadServiceTypes = function () {
+      return window
+        .barmarAuthFetch('/api/admin/service-types')
+        .then(function (r) {
+          return r.json().then(function (j) {
+            return { ok: r.ok, data: j.data || [] };
+          });
+        })
+        .then(function (x) {
+          if (!x.ok) throw new Error('fail');
+          renderRows(x.data);
+          return x.data;
+        });
+    };
+
+    window.openEditDialog = function (btn) {
+      var d = document.getElementById('dlg-edit');
+      document.getElementById('edit-id').value = btn.dataset.id;
+      d.querySelector('[name="name"]').value = btn.dataset.name;
+      d.querySelector('[name="status"]').checked = btn.dataset.status === 'true';
+      document.getElementById('edit-error').classList.add('hidden');
+      d.showModal();
+    };
+
+    window.openDeleteDialog = function (btn) {
+      document.getElementById('delete-id').value = btn.dataset.id;
+      document.getElementById('delete-name').textContent = btn.dataset.name;
+      document.getElementById('dlg-delete').showModal();
+    };
+
+    function init() {
+      document.getElementById('form-create').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var err = document.getElementById('create-error');
+        err.classList.add('hidden');
+        var btn = e.currentTarget.querySelector('[type="submit"]');
+        var name = document.getElementById('c-name').value;
+        var status = document.getElementById('c-status').checked;
+        setLoading(btn, true, 'Creando…');
+        window
+          .barmarAuthFetch('/api/admin/service-types', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, status: status }),
+          })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (x) {
+            setLoading(btn, false);
+            if (!x.ok) {
+              err.textContent = x.data.message || 'No se pudo crear el tipo de servicio.';
+              err.classList.remove('hidden');
+              return;
+            }
+            document.getElementById('dlg-create').close();
+            document.getElementById('form-create').reset();
+            document.getElementById('c-status').checked = true;
+            showFlash('Tipo creado correctamente.', 'success');
+            return window.loadServiceTypes();
+          })
+          .catch(function () {
+            setLoading(btn, false);
+            err.textContent = 'Error de red.';
+            err.classList.remove('hidden');
+          });
+      });
+
+      document.getElementById('form-edit').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var err = document.getElementById('edit-error');
+        err.classList.add('hidden');
+        var btn = e.currentTarget.querySelector('[type="submit"]');
+        var id = document.getElementById('edit-id').value;
+        var name = document.getElementById('e-name').value;
+        var status = document.getElementById('e-status').checked;
+        setLoading(btn, true, 'Guardando…');
+        window
+          .barmarAuthFetch('/api/admin/service-types/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, status: status }),
+          })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (x) {
+            setLoading(btn, false);
+            if (!x.ok) {
+              err.textContent = x.data.message || 'No se pudo actualizar el tipo de servicio.';
+              err.classList.remove('hidden');
+              return;
+            }
+            document.getElementById('dlg-edit').close();
+            showFlash('Tipo actualizado.', 'success');
+            return window.loadServiceTypes();
+          })
+          .catch(function () {
+            setLoading(btn, false);
+            err.textContent = 'Error de red.';
+            err.classList.remove('hidden');
+          });
+      });
+
+      document.getElementById('btn-delete-confirm').addEventListener('click', function () {
+        var id = document.getElementById('delete-id').value;
+        window
+          .barmarAuthFetch('/api/admin/service-types/' + id, { method: 'DELETE' })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (x) {
+            document.getElementById('dlg-delete').close();
+            if (!x.ok) {
+              showFlash(x.data.message || 'No se pudo eliminar.', 'error');
+              return;
+            }
+            showFlash('Tipo de servicio eliminado correctamente.', 'success');
+            return window.loadServiceTypes();
+          })
+          .catch(function () {
+            showFlash('Error de red.', 'error');
+          });
+      });
+
+      window
+        .loadServiceTypes()
+        .catch(function () {
+          document.getElementById('st-count').textContent = 'No se pudieron cargar los tipos';
+          showFlash('No se pudo conectar con el backend.', 'error');
+        });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+</script>

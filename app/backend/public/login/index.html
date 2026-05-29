@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Iniciar sesión — VARMAR Admin</title><link rel="stylesheet" href="/_astro/index.D7YHtQZJ.css">
+<style>:root{--scrollbar-thumb: #fb923c;--scrollbar-thumb-hover: #f97316;--scrollbar-track: #f1f5f9}html{scroll-behavior:smooth}*{scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track)}*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track{background:var(--scrollbar-track);border-radius:9999px}*::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:9999px;border:2px solid var(--scrollbar-track)}*::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}*::-webkit-scrollbar-corner{background:var(--scrollbar-track)}
+</style></head> <body class="min-h-screen bg-slate-900 flex items-center justify-center p-4 antialiased"> <div class="w-full max-w-sm"> <!-- Logo --> <div class="text-center mb-8"> <div class="inline-flex items-center justify-center w-14 h-14 bg-primary-600 rounded-2xl mb-4"> <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m0 0h3l3 4v3h-3m-3 0H8m0 0a2 2 0 100 4 2 2 0 000-4zm9 0a2 2 0 100 4 2 2 0 000-4z"></path> </svg> </div> <h1 class="text-2xl font-bold text-white">VARMAR</h1> <p class="text-slate-400 text-sm mt-1">Panel Administrativo</p> </div> <!-- Card --> <div class="bg-white rounded-2xl shadow-xl p-8"> <h2 class="text-lg font-semibold text-slate-800 mb-6">Iniciar sesión</h2> <div id="login-error" class="mb-5 hidden items-start gap-3 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path> </svg> <span id="login-error-text"></span> </div> <form id="login-form" class="space-y-5"> <div> <label class="block text-sm font-medium text-slate-700 mb-1.5" for="email">
+Correo electrónico
+</label> <input id="email" name="email" type="email" required autocomplete="email" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition" placeholder="admin@barmar.com"> </div> <div> <label class="block text-sm font-medium text-slate-700 mb-1.5" for="password">
+Contraseña
+</label> <input id="password" name="password" type="password" required autocomplete="current-password" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition" placeholder="••••••••"> </div> <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+Entrar
+</button> </form> </div> </div> <script>(function(){const API_URL = "https://app.varmarsac.com";
+
+    const token = localStorage.getItem('barmar_token');
+    if (token) {
+      window.location.href = '/dashboard';
+    }
+
+    const form = document.getElementById('login-form');
+    const errorWrap = document.getElementById('login-error');
+    const errorText = document.getElementById('login-error-text');
+
+    const showError = (msg) => {
+      if (errorWrap && errorText) {
+        errorText.textContent = msg;
+        errorWrap.classList.remove('hidden');
+        errorWrap.classList.add('flex');
+      }
+    };
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email')?.value ?? '';
+      const password = document.getElementById('password')?.value ?? '';
+
+      try {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showError(data?.message ?? 'Credenciales inválidas');
+          return;
+        }
+        if (data?.user?.role !== 'admin') {
+          showError('Acceso denegado. Solo administradores.');
+          return;
+        }
+
+        localStorage.setItem('barmar_token', data.token);
+        window.location.href = '/dashboard';
+      } catch {
+        showError('No se pudo conectar con el servidor.');
+      }
+    });
+  })();</script> </body> </html>
