@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, FileText, RefreshCw } from "lucide-react";
-import hero from "@/assets/hero-construction.jpg";
-import fallbackImage from "@/assets/truck.jpg";
+import hero from "@/assets/hero-construction.avif";
+import fallbackImage from "@/assets/truck.avif";
 import {
   cleanRenderedText,
   fetchBlogPosts,

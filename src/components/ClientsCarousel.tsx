@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import mmg from "@/assets/clients/mmg.png";
-import lasbambas from "@/assets/clients/lasbambas.png";
-import bechtel from "@/assets/clients/bechtel.png";
-import flsmidth from "@/assets/clients/flsmidth.png";
-import ausenco from "@/assets/clients/ausenco.png";
-import limagas from "@/assets/clients/limagas.png";
-import mctransportes from "@/assets/clients/mctransportes.png";
-import prosegur from "@/assets/clients/prosegur.png";
-import ransa from "@/assets/clients/ransa.png";
+import mmg from "@/assets/clients/mmg.avif";
+import lasbambas from "@/assets/clients/lasbambas.avif";
+import bechtel from "@/assets/clients/bechtel.avif";
+import flsmidth from "@/assets/clients/flsmidth.avif";
+import ausenco from "@/assets/clients/ausenco.avif";
+import limagas from "@/assets/clients/limagas.avif";
+import mctransportes from "@/assets/clients/mctransportes.avif";
+import prosegur from "@/assets/clients/prosegur.avif";
+import ransa from "@/assets/clients/ransa.avif";
 
 const clients = [
   { src: mmg, alt: "MMG" },

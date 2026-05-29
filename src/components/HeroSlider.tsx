@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import s1 from "@/assets/slide-1.png";
-import s2 from "@/assets/slide-2.png";
-import s3 from "@/assets/slide-3.png";
-import s4 from "@/assets/slide-4.png";
+import s1 from "@/assets/slide-1.avif";
+import s2 from "@/assets/slide-2.avif";
+import s3 from "@/assets/slide-3.avif";
+import s4 from "@/assets/slide-4.avif";
 
 const images = [s1, s2, s3, s4];
 
