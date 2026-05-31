@@ -20,7 +20,10 @@ export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
       { title: "Blog - VARMAR Contratistas Generales" },
-      { name: "description", content: "Noticias, novedades y perspectivas de VARMAR Contratistas Generales." },
+      {
+        name: "description",
+        content: "Noticias, novedades y perspectivas de VARMAR Contratistas Generales.",
+      },
     ],
   }),
   component: BlogPage,
@@ -80,17 +83,27 @@ function BlogPage() {
 
   return (
     <div className="bg-background">
-      <section className="relative overflow-hidden bg-brand-blue-dark py-20 text-white md:py-24">
-        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: `url(${hero})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-dark via-brand-blue-dark/90 to-brand-blue/70" />
+      <section className="relative bg-brand-blue-dark py-20 text-white">
+        <div
+          className="absolute inset-0 opacity-20 bg-bottom"
+          style={{
+            backgroundImage: `url(${hero})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="absolute inset-0 bg-linear-to-r from-brand-blue-dark via-brand-blue-dark/5 to-brand-blue-dark/5" />
         <div className="relative mx-auto max-w-7xl px-4 md:px-8">
           <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-sky-400">
             <FileText className="h-4 w-4" />
             VARMAR Blog
           </span>
-          <h1 className="mt-4 text-4xl font-extrabold uppercase tracking-tight text-white md:text-6xl">Noticias</h1>
+          <h1 className="mt-4 text-4xl font-extrabold uppercase tracking-tight text-white md:text-6xl">
+            Noticias
+          </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/80 md:text-lg">
-            Novedades, anuncios y perspectivas para seguir de cerca el trabajo de VARMAR en transporte, operaciones y servicios integrales.
+            Novedades, anuncios y perspectivas para seguir de cerca el trabajo de VARMAR en
+            transporte, operaciones y servicios integrales.
           </p>
         </div>
       </section>
@@ -99,8 +112,12 @@ function BlogPage() {
         <div className="mx-auto max-w-7xl px-4 md:px-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">Actualidad</span>
-              <h2 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-5xl">Últimas noticias</h2>
+              <span className="text-sm font-bold uppercase tracking-widest text-brand-blue">
+                Actualidad
+              </span>
+              <h2 className="mt-3 text-3xl font-extrabold text-brand-blue-dark md:text-5xl">
+                Últimas noticias
+              </h2>
               <p className="mt-3 text-sm font-medium text-foreground/70">
                 Mostrando {posts.length} de {total} publicaciones.
               </p>
@@ -120,7 +137,10 @@ function BlogPage() {
           {isLoading ? (
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: POSTS_PER_PAGE }).map((_, index) => (
-                <div key={index} className="overflow-hidden rounded-sm bg-white shadow-[var(--shadow-card)]">
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-sm bg-white shadow-[var(--shadow-card)]"
+                >
                   <div className="aspect-[4/3] animate-pulse bg-slate-200" />
                   <div className="space-y-4 p-6">
                     <div className="h-4 w-28 animate-pulse rounded bg-slate-200" />
@@ -133,8 +153,12 @@ function BlogPage() {
             </div>
           ) : isError ? (
             <div className="mt-10 rounded-sm border border-brand-red/20 bg-white p-8 text-center shadow-[var(--shadow-card)]">
-              <h3 className="text-xl font-extrabold text-brand-blue-dark">No pudimos cargar las noticias</h3>
-              <p className="mx-auto mt-3 max-w-xl text-sm text-foreground/70">Intenta nuevamente en unos segundos.</p>
+              <h3 className="text-xl font-extrabold text-brand-blue-dark">
+                No pudimos cargar las noticias
+              </h3>
+              <p className="mx-auto mt-3 max-w-xl text-sm text-foreground/70">
+                Intenta nuevamente en unos segundos.
+              </p>
               <button
                 type="button"
                 onClick={() => refetch()}
@@ -168,8 +192,12 @@ function BlogPage() {
                             {getPrimaryCategory(post)}
                           </div>
                           <div className="absolute bottom-0 left-5 grid min-h-16 min-w-16 place-items-center bg-brand-red px-3 py-2 text-center text-white shadow-lg">
-                            <span className="text-xs font-bold uppercase leading-none">{date.month}</span>
-                            <span className="mt-1 text-2xl font-extrabold leading-none">{date.day}</span>
+                            <span className="text-xs font-bold uppercase leading-none">
+                              {date.month}
+                            </span>
+                            <span className="mt-1 text-2xl font-extrabold leading-none">
+                              {date.day}
+                            </span>
                           </div>
                         </div>
                       </a>
@@ -180,11 +208,20 @@ function BlogPage() {
                           <span>{formatPostDate(post.date)}</span>
                         </div>
                         <h3 className="text-lg font-extrabold uppercase leading-snug text-brand-blue-dark">
-                          <a href={post.link} target="_blank" rel="noreferrer" className="transition hover:text-brand-blue">
+                          <a
+                            href={post.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="transition hover:text-brand-blue"
+                          >
                             {title}
                           </a>
                         </h3>
-                        {excerpt ? <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-foreground/70">{excerpt}</p> : null}
+                        {excerpt ? (
+                          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-foreground/70">
+                            {excerpt}
+                          </p>
+                        ) : null}
                         <a
                           href={post.link}
                           target="_blank"
@@ -219,13 +256,18 @@ function BlogPage() {
                       disabled={isFetching}
                       className={
                         "h-11 min-w-11 rounded-sm px-4 text-sm font-extrabold transition disabled:cursor-not-allowed disabled:opacity-60 " +
-                        (item === page ? "bg-brand-red text-white shadow-md" : "border border-border bg-white text-brand-blue-dark hover:border-brand-blue hover:text-brand-blue")
+                        (item === page
+                          ? "bg-brand-red text-white shadow-md"
+                          : "border border-border bg-white text-brand-blue-dark hover:border-brand-blue hover:text-brand-blue")
                       }
                     >
                       {item}
                     </button>
                   ) : (
-                    <span key={item} className="grid h-11 min-w-8 place-items-center text-sm font-bold text-muted-foreground">
+                    <span
+                      key={item}
+                      className="grid h-11 min-w-8 place-items-center text-sm font-bold text-muted-foreground"
+                    >
                       ...
                     </span>
                   ),
@@ -244,8 +286,12 @@ function BlogPage() {
             </>
           ) : (
             <div className="mt-10 rounded-sm border border-border bg-white p-8 text-center shadow-[var(--shadow-card)]">
-              <h3 className="text-xl font-extrabold text-brand-blue-dark">Aún no hay noticias disponibles</h3>
-              <p className="mx-auto mt-3 max-w-xl text-sm text-foreground/70">Cuando se publiquen nuevas entradas en WordPress aparecerán aquí automáticamente.</p>
+              <h3 className="text-xl font-extrabold text-brand-blue-dark">
+                Aún no hay noticias disponibles
+              </h3>
+              <p className="mx-auto mt-3 max-w-xl text-sm text-foreground/70">
+                Cuando se publiquen nuevas entradas en WordPress aparecerán aquí automáticamente.
+              </p>
             </div>
           )}
         </div>

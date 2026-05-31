@@ -43,29 +43,25 @@ export function HeroSlider() {
               className={`relative ml-0 h-full w-full px-6 py-10 transition-all duration-700 sm:px-10 md:py-12 lg:px-16 ${
                 idx === i ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"
               }`}
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.85) 45%, rgba(255,255,255,0.5) 75%, rgba(255,255,255,0) 100%)",
-              }}
             >
               <div className="flex h-full max-w-xl flex-col justify-center [text-shadow:0_1px_2px_rgba(255,255,255,0.6)]">
-                <h1 className="text-3xl font-light leading-tight text-brand-blue-dark sm:text-4xl md:text-5xl lg:text-6xl">
+                <h1 className="text-3xl font-medium leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl [ -webkit-text-stroke:1px_black ] [text-shadow:0_2px_6px_rgba(0,0,0,2)]">
                   {s.pre}
                   <br />
                   <span className="font-extrabold text-brand-blue">{s.bold}</span>
                   <br />
-                  <span className="font-light">{s.post}</span>
+                  <span className="font-medium text-white">{s.post}</span>
                 </h1>
 
                 <div className="mt-5 flex items-center gap-2">
-                  <span className="h-1 w-12 bg-brand-blue" />
+                  <span className="h-1 w-12 bg-brand-red" />
                   <span className="h-1 w-20 bg-brand-red" />
                 </div>
 
                 <div className="mt-8">
                   <Link
                     to="/flota"
-                    className="inline-flex items-center gap-2 bg-orange-500 px-7 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-orange-600"
+                    className="inline-flex items-center gap-2 bg-blue-500 px-7 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-orange-600"
                   >
                     {t("hero.cta")} <ArrowRight className="h-4 w-4" />
                   </Link>
