@@ -39,6 +39,17 @@ async function update(req, res) {
   try {
     const c = await Conductor.findByPk(req.params.id);
     if (!c) return res.status(404).json({ message: 'Conductor no encontrado.' });
+
+    if (req.body.numero_documento !== undefined) {
+      const { Op } = require('sequelize');
+      const exists = await Conductor.findOne({
+        where: { numero_documento: req.body.numero_documento, id: { [Op.ne]: req.params.id } }
+      });
+      if (exists) {
+        return res.status(409).json({ message: 'El N° de documento ya se encuentra registrado por otro conductor.' });
+      }
+    }
+
     const updates = {};
     if (req.body.nombre_completo !== undefined) updates.nombre_completo = req.body.nombre_completo;
     if (req.body.numero_documento !== undefined) updates.numero_documento = req.body.numero_documento;
@@ -48,6 +59,16 @@ async function update(req, res) {
       data: { id: c.id, nombre_completo: c.nombre_completo, numero_documento: c.numero_documento, celular: c.celular, createdAt: c.createdAt },
     });
   } catch (err) {
+    if (err.name === 'SequelizeUniqueConstraintError' || err.name === 'SequelizeValidationError') {
+      const isDocumento = err.errors && err.errors.some(e =>
+        e.path === 'numero_documento' || e.validatorKey === 'not_unique'
+      );
+      return res.status(409).json({
+        message: isDocumento
+          ? 'El N° de documento ya se encuentra registrado por otro conductor.'
+          : 'Ya existe un registro con esos datos.',
+      });
+    }
     res.status(500).json({ message: err.message });
   }
 }

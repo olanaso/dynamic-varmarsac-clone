@@ -26,7 +26,7 @@ async function create(req, res) {
   try {
     const { name, description } = req.body;
     const exists = await Category.findOne({ where: { name } });
-    if (exists) return res.status(409).json({ message: 'Category already exists' });
+    if (exists) return res.status(409).json({ message: 'Ya existe una categoría con ese nombre' });
 
     const category = await Category.create({ name, description });
     res.status(201).json({ data: category });
@@ -38,7 +38,7 @@ async function create(req, res) {
 async function update(req, res) {
   try {
     const category = await Category.findByPk(req.params.id);
-    if (!category) return res.status(404).json({ message: 'Category not found' });
+    if (!category) return res.status(404).json({ message: 'Categoría no encontrada' });
     await category.update(req.body);
     res.json({ data: category });
   } catch (err) {

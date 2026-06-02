@@ -15,6 +15,7 @@ const sizeClass = {
 ---
 <dialog
   id={id}
+  oncancel="event.preventDefault()"
   class:list={[
     'w-full rounded-2xl border border-slate-200 shadow-2xl p-0',
     'backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm',
@@ -62,11 +63,4 @@ const sizeClass = {
   }
 </style>
 
-<!-- Runs once: backdrop click closes the dialog -->
-<script>
-  document.addEventListener('click', (e) => {
-    if (e.target instanceof HTMLDialogElement) {
-      e.target.close();
-    }
-  });
-</script>
+

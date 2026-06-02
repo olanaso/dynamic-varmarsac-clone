@@ -571,6 +571,17 @@ const vehClientCfg = getVehicleClientConfig();
         <p id="vd-km-status-text" class="text-xs text-slate-500"></p>
       </div>
 
+      <!-- In-modal error banner -->
+      <div
+        id="vd-error"
+        class="hidden flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2.5 text-sm"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+        </svg>
+        <span id="vd-error-msg"></span>
+      </div>
+
       <!-- Actions -->
       <div class="flex items-center gap-3 pt-1 border-t border-slate-100">
         <button
@@ -596,10 +607,9 @@ const vehClientCfg = getVehicleClientConfig();
       <!-- Image banner -->
       <div
         id="vv-img-wrap"
-        class="hidden w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-200"
-        style="height:150px"
+        class="hidden w-full rounded-xl overflow-hidden bg-slate-50 border border-slate-200"
       >
-        <img id="vv-image" src="" alt="" class="w-full h-full object-cover" />
+        <img id="vv-image" src="" alt="" class="w-full h-auto max-h-[350px] object-contain" />
       </div>
 
       <!-- Identity + status -->
@@ -2064,7 +2074,7 @@ const vehClientCfg = getVehicleClientConfig();
         types.slice(0, 2).forEach(function (st) {
           var sp = document.createElement("span");
           sp.className =
-            "inline-block px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 text-xs font-medium";
+            "inline-block px-2 py-0.5 rounded-full text-xs font-medium";
           sp.textContent = st.name;
           stWrap.appendChild(sp);
         });
@@ -2145,19 +2155,7 @@ const vehClientCfg = getVehicleClientConfig();
         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></button>' +
         '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Ver detalle</span></span>';
 
-      if (!v.is_approved) {
-        var appr = document.createElement("span");
-        appr.className = "relative inline-flex group";
-        appr.innerHTML =
-          '<button type="button" class="veh-btn-approve inline-flex items-center justify-center rounded-lg border border-green-200 p-2 text-green-700 hover:bg-green-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1" data-id="' +
-          vehEsc(String(v.id)) +
-          '" aria-label="Aprobar vehículo">' +
-          '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
-          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button>' +
-          '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Aprobar</span>';
-        actionsWrap.appendChild(appr);
-      }
-
+      
       var editSpan = document.createElement("span");
       editSpan.className = "relative inline-flex group";
       editSpan.innerHTML =
@@ -2166,7 +2164,7 @@ const vehClientCfg = getVehicleClientConfig();
         '" onclick="openVehicleDialog(this)" class="inline-flex items-center justify-center rounded-lg border border-primary-200 p-2 text-primary-600 hover:bg-primary-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1" aria-label="Editar vehículo en modal">' +
         '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">' +
         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>' +
-        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Editar (modal)</span>';
+        '<span class="pointer-events-none absolute left-1/2 top-full z-20 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[11px] font-medium text-white shadow-md opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">Editar</span>';
       actionsWrap.appendChild(editSpan);
 
       var histSpan = document.createElement("span");
@@ -2289,6 +2287,24 @@ const vehClientCfg = getVehicleClientConfig();
           ev.preventDefault();
           var btn = vdForm.querySelector('[type="submit"]');
           var id = document.getElementById("vd-f-id").value;
+
+          // ── In-modal KM validation ──────────────────────────────────────
+          var vdErrEl = document.getElementById("vd-error");
+          var vdErrMsg = document.getElementById("vd-error-msg");
+          var kmCurrentVal = parseFloat(document.getElementById("vd-f-km-current").value);
+          var kmMaintRaw = document.getElementById("vd-f-km-maint").value;
+          var kmMaintVal = kmMaintRaw !== "" ? parseFloat(kmMaintRaw) : null;
+          if (vdErrEl) vdErrEl.classList.add("hidden");
+          if (kmMaintVal !== null && !isNaN(kmCurrentVal) && !isNaN(kmMaintVal) && kmCurrentVal > kmMaintVal) {
+            if (vdErrEl && vdErrMsg) {
+              vdErrMsg.textContent =
+                "El KM actual (" + kmCurrentVal.toLocaleString() + " km) no puede superar al KM de mantenimiento (" + kmMaintVal.toLocaleString() + " km). Corrija los valores antes de guardar.";
+              vdErrEl.classList.remove("hidden");
+              vdErrEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+            return;
+          }
+
           var fd = new FormData(vdForm);
           fd.delete("id");
           fd.set(

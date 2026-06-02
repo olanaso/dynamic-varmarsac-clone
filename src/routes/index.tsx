@@ -96,7 +96,16 @@ function Index() {
   });
   const homeFleetSlides = homeFleetVehicles
     .filter((v) => typeof v.image === "string" && v.image.length > 0)
-    .map((v) => ({ id: v.id, name: v.name ?? "Vehículo", image: v.image as string }));
+    .map((v) => {
+      let imageUrl = v.image as string;
+      if (imageUrl && imageUrl.trim() !== "") {
+        if (!imageUrl.startsWith("http://") && !imageUrl.startsWith("https://") && !imageUrl.startsWith("data:")) {
+          const base = resolveApiBase();
+          imageUrl = `${base}/uploads/${imageUrl}`;
+        }
+      }
+      return { id: v.id, name: v.name ?? "Vehículo", image: imageUrl };
+    });
   const marqueeFleet = homeFleetSlides.length > 0 ? [...homeFleetSlides, ...homeFleetSlides] : [];
 
   return (

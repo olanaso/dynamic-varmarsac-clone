@@ -4,7 +4,7 @@ const { User } = require('../models');
 async function authenticate(req, res, next) {
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No token provided' });
+    return res.status(401).json({ message: 'No se proporciona ningún token' });
   }
 
   const token = header.split(' ')[1];
@@ -14,18 +14,18 @@ async function authenticate(req, res, next) {
       attributes: ['id', 'email', 'nombre_completo', 'role', 'is_active'],
     });
     if (!user || !user.is_active) {
-      return res.status(401).json({ message: 'Invalid or inactive user' });
+      return res.status(401).json({ message: 'Usuario inválido o inactivo' });
     }
     req.user = user;
     next();
   } catch {
-    res.status(401).json({ message: 'Invalid or expired token' });
+    res.status(401).json({ message: 'Token inválido o expirado' });
   }
 }
 
 function requireAdmin(req, res, next) {
   if (req.user?.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access required' });
+    return res.status(403).json({ message: 'Se requiere acceso de administrador' });
   }
   next();
 }
