@@ -135,7 +135,7 @@ const getVehicleImage = (v: BackendVehicle): string => {
   // Fallback premium local assets mapping
   const cat = (v.category?.name || "").toLowerCase();
   const name = (v.name || "").toLowerCase();
-  
+
   if (cat.includes("pickup") || cat.includes("truck") || name.includes("hilux") || name.includes("ranger") || name.includes("l200")) {
     if (name.includes("ranger")) return ranger;
     return hilux;
@@ -154,24 +154,24 @@ const getVehicleImage = (v: BackendVehicle): string => {
 const mapBackendVehicleToFrontend = (v: BackendVehicle): Vehiculo => {
   const make = v.make || "";
   const name = v.name || "";
-  const nombre = name.toLowerCase().startsWith(make.toLowerCase()) 
-    ? name 
+  const nombre = name.toLowerCase().startsWith(make.toLowerCase())
+    ? name
     : `${make} ${name}`;
-    
+
   const modelPart = name.toLowerCase().includes(make.toLowerCase())
     ? name
     : `${make} ${name}`;
   const modelo = `${modelPart} · ${v.year}`;
-  
+
   const stateMap: Record<string, Estado> = {
     AVAILABLE: "Disponible",
     RENTED: "Rentado",
     MAINTENANCE: "Mantenimiento"
   };
   const estado = stateMap[v.status] || "Disponible";
-  
+
   const transmision = v.tipo_transmision === "AUTOMATICA" ? "Automática" : "Manual";
-  
+
   const combustibleMap: Record<string, string> = {
     GASOLINA: "Gasolina",
     DIESEL: "Diesel",
@@ -181,7 +181,7 @@ const mapBackendVehicleToFrontend = (v: BackendVehicle): Vehiculo => {
     GLP: "GLP"
   };
   const combustible = combustibleMap[v.tipo_combustible] || v.tipo_combustible || "Gasolina";
-  
+
   const traccionMap: Record<string, string> = {
     DELANTERA: "Delantera",
     TRASERA: "Trasera",
@@ -190,7 +190,7 @@ const mapBackendVehicleToFrontend = (v: BackendVehicle): Vehiculo => {
     "4X2": "4x2"
   };
   const traccion = traccionMap[v.tipo_traccion] || v.tipo_traccion || "4x2";
-  
+
   let equipamiento: string[] = [];
   if (Array.isArray(v.equipamiento)) {
     equipamiento = v.equipamiento;
@@ -249,7 +249,7 @@ function FlotaPage() {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [homo, setHomo] = useState<"todos" | "si" | "no">("todos");
-  
+
   const [detalle, setDetalle] = useState<Vehiculo | null>(null);
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
@@ -614,11 +614,6 @@ function FlotaPage() {
                         </button>
                       </div>
                       <div className="mt-2 flex items-center justify-between">
-                        <div className="flex items-center rounded-md border border-sky-200">
-                          <button onClick={() => setQty(v.id, qty - 1)} className="grid h-7 w-7 place-items-center hover:bg-sky-50 hover:cursor-pointer"><Minus className="h-3 w-3" /></button>
-                          <span className="w-7 text-center text-sm font-semibold">{qty}</span>
-                          <button onClick={() => setQty(v.id, qty + 1)} className="grid h-7 w-7 place-items-center hover:bg-sky-50 hover:cursor-pointer"><Plus className="h-3 w-3" /></button>
-                        </div>
                         <span className="text-sm font-bold text-sky-600">S/ {v.diario * qty}</span>
                       </div>
                     </div>
