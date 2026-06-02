@@ -614,7 +614,10 @@ function FlotaPage() {
                         </button>
                       </div>
                       <div className="mt-2 flex items-center justify-between">
-                        <span className="text-sm font-bold text-sky-600">S/ {v.diario * qty}</span>
+                        <span className="text-sm font-bold text-sky-600">Diario: S/ {v.diario}</span>
+                      </div>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-sm font-bold text-sky-600">Mensual: S/ {v.mensual}</span>
                       </div>
                     </div>
                   </li>
