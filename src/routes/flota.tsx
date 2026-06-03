@@ -12,12 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import hilux from "@/assets/flota-1.png";
-import fortuner from "@/assets/flota-2.png";
-import van from "@/assets/flota-3.png";
-import ranger from "@/assets/flota-4.png";
-import patrol from "@/assets/flota-5.png";
-import landcruiser from "@/assets/flota-6.png";
+import hilux from "@/assets/flota-1.avif";
+import fortuner from "@/assets/flota-2.avif";
+import van from "@/assets/flota-3.avif";
+import ranger from "@/assets/flota-4.avif";
+import patrol from "@/assets/flota-5.avif";
+import landcruiser from "@/assets/flota-6.avif";
 import heroBg from "@/assets/about-fleet.jpg";
 
 export const Route = createFileRoute("/flota")({
