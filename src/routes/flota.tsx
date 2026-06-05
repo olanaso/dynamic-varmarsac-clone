@@ -1,7 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Info, Users, Settings2, Fuel, Gauge, Check, MessageCircle, ShoppingCart, Trash2, Plus, Minus, X, RotateCcw } from "lucide-react";
+import {
+  Info,
+  Users,
+  Settings2,
+  Fuel,
+  Gauge,
+  Check,
+  MessageCircle,
+  ShoppingCart,
+  Trash2,
+  Plus,
+  Minus,
+  X,
+  RotateCcw,
+  Search,
+  Car,
+  ShieldCheck,
+  Tag,
+  Calendar,
+  FileText,
+  Maximize2,
+} from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+import jsPDF from "jspdf";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { openWhatsApp } from "@/lib/whatsapp";
@@ -246,27 +275,34 @@ function FlotaPage() {
     return backendVehicles.map(mapBackendVehicleToFrontend);
   }, [backendVehicles]);
 
+  const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [homo, setHomo] = useState<"todos" | "si" | "no">("todos");
 
   const [detalle, setDetalle] = useState<Vehiculo | null>(null);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [cart, setCart] = useState<Record<string, number>>({});
+  const [rateTypes, setRateTypes] = useState<Record<string, "diario" | "mensual">>({});
   const [cartOpen, setCartOpen] = useState(false);
+  const [itemDates, setItemDates] = useState<Record<string, { inicio?: Date, fin?: Date }>>({});
 
   const toggle = <T,>(arr: T[], v: T): T[] => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
-  const filtrados = useMemo(
-    () =>
-      vehicles.filter((v) => {
-        if (selectedCategories.length && !selectedCategories.includes(v.category_id)) return false;
-        if (selectedServices.length && !selectedServices.some((sId) => v.serviceTypeIds.includes(sId))) return false;
-        if (homo === "si" && !v.homologada) return false;
-        if (homo === "no" && v.homologada) return false;
-        return true;
-      }),
-    [vehicles, selectedCategories, selectedServices, homo],
-  );
+  const filtrados = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return vehicles.filter((v) => {
+      if (selectedCategories.length && !selectedCategories.includes(v.category_id)) return false;
+      if (selectedServices.length && !selectedServices.some((sId) => v.serviceTypeIds.includes(sId))) return false;
+      if (homo === "si" && !v.homologada) return false;
+      if (homo === "no" && v.homologada) return false;
+      if (q) {
+        const haystack = `${v.nombre} ${v.modelo} ${v.categoria} ${v.servicios.join(" ")}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [vehicles, search, selectedCategories, selectedServices, homo]);
 
   const addToCart = (id: string) => {
     setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
@@ -281,23 +317,148 @@ function FlotaPage() {
     });
   };
   const cartItems = Object.entries(cart)
-    .map(([id, qty]) => ({ v: vehicles.find((x) => x.id === id)!, qty }))
-    .filter((x) => x.v);
+    .map(([id, qty]) => {
+      const v = vehicles.find((x) => x.id === id)!;
+      if (!v) return null;
+
+      const rateType = rateTypes[id] || "diario";
+      const dates = itemDates[id] || {};
+
+      let dias = 0;
+      if (dates.inicio && dates.fin) {
+        dias = Math.max(1, Math.ceil((dates.fin.getTime() - dates.inicio.getTime()) / (1000 * 60 * 60 * 24)));
+      }
+
+      let subtotal = 0;
+      if (dias > 0) {
+        if (rateType === "mensual") {
+          const meses = Math.max(1, Math.ceil(dias / 30));
+          subtotal = v.mensual * qty * meses;
+        } else {
+          subtotal = v.diario * qty * dias;
+        }
+      } else {
+        subtotal = (rateType === "mensual" ? v.mensual : v.diario) * qty;
+      }
+
+      return { v, qty, rateType, dates, dias, subtotal };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null);
+
   const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
-  const cartTotal = cartItems.reduce((sum, i) => sum + i.v.diario * i.qty, 0);
+  const cartTotal = cartItems.reduce((sum, i) => sum + (i.rateType === "mensual" ? i.v.mensual : i.v.diario) * i.qty, 0);
+  const totalConFechas = cartItems.reduce((sum, i) => sum + i.subtotal, 0);
+
+  const fmt = (n: number) =>
+    n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   const quoteLabel = (v: Vehiculo) => {
     const year = v.modelo.match(/\b20\d{2}\b/)?.[0];
     const displayName = v.modelo.includes("Prado") ? "Toyota Land Cruiser Prado" : v.nombre;
     return year ? `${displayName} (${year})` : `${displayName} (${v.modelo})`;
   };
 
+  const fmtDate = (d: Date) =>
+    d.toLocaleDateString("es-PE", { day: "2-digit", month: "short", year: "numeric" });
+
   const sendCartWA = () => {
     if (!cartItems.length) return;
     const lines = cartItems.map(
-      (i) => `• ${quoteLabel(i.v)} x${i.qty} — S/${i.v.diario * i.qty}/día`,
+      (i) => {
+        const rateLabel = i.rateType === "mensual" ? "/mes" : "/día";
+        const datesStr = i.dias > 0
+          ? `\n  - Fechas: ${fmtDate(i.dates.inicio!)} al ${fmtDate(i.dates.fin!)} (${i.dias} días)`
+          : "";
+        return `• ${quoteLabel(i.v)} x${i.qty} — S/ ${fmt(i.subtotal)}${datesStr}`;
+      }
     );
-    const text = `Hola, quiero cotizar los siguientes vehículos según la cotización en la sección flota\n\n${lines.join("\n")}\n\nTotal referencial diario: S/${cartTotal}`;
+    const hasAnyDates = cartItems.some(i => i.dias > 0);
+    const totalStr = hasAnyDates
+      ? `\n\nTotal estimado: S/ ${fmt(totalConFechas)}`
+      : `\n\nTotal referencial: S/ ${fmt(cartTotal)}`;
+    const text = `Hola, quiero cotizar los siguientes vehículos según la cotización en la sección flota:\n\n${lines.join("\n")}${totalStr}`;
     openWhatsApp(text);
+  };
+
+  const generarPDF = () => {
+    if (!cartItems.length) return;
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    let y = 20;
+
+    // Header
+    doc.setFillColor(14, 86, 147);
+    doc.rect(0, 0, pageW, 30, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("VARMAR Contratistas Generales", 15, 13);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text("Cotización de Flota Vehicular", 15, 21);
+    doc.text(`Generado: ${new Date().toLocaleDateString("es-PE")}`, pageW - 15, 21, { align: "right" });
+    y = 40;
+
+    // Tabla de vehículos
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    doc.setFillColor(14, 120, 190);
+    doc.rect(15, y, pageW - 30, 8, "F");
+    doc.text("Vehículo", 18, y + 5.5);
+    doc.text("Cant.", pageW - 80, y + 5.5, { align: "center" });
+    doc.text("Tarifa", pageW - 45, y + 5.5, { align: "right" });
+    doc.text("Subtotal", pageW - 18, y + 5.5, { align: "right" });
+    y += 10;
+
+    cartItems.forEach(({ v, qty, rateType, dias, subtotal, dates }, idx) => {
+      const rowHeight = dias > 0 ? 14 : 9;
+      if (idx % 2 === 0) {
+        doc.setFillColor(240, 248, 255);
+        doc.rect(15, y - 1, pageW - 30, rowHeight, "F");
+      }
+      doc.setTextColor(30, 30, 30);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      const label = quoteLabel(v);
+      doc.text(label.length > 50 ? label.substring(0, 47) + "..." : label, 18, y + 5);
+      doc.text(String(qty), pageW - 80, y + 5, { align: "center" });
+
+      const baseRate = rateType === "mensual" ? v.mensual : v.diario;
+      const rateLabel = rateType === "mensual" ? " /mes" : " /día";
+      doc.text(`S/ ${fmt(baseRate)}${rateLabel}`, pageW - 45, y + 5, { align: "right" });
+      doc.text(`S/ ${fmt(subtotal)}`, pageW - 18, y + 5, { align: "right" });
+
+      if (dias > 0 && dates.inicio && dates.fin) {
+        doc.setFontSize(7.5);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Período: ${fmtDate(dates.inicio)} al ${fmtDate(dates.fin)} (${dias} días)`, 18, y + 10);
+      }
+
+      y += rowHeight;
+    });
+
+    // Total
+    y += 4;
+    doc.setDrawColor(14, 86, 147);
+    doc.line(15, y, pageW - 15, y);
+    y += 6;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(14, 86, 147);
+    const hasAnyDates = cartItems.some(i => i.dias > 0);
+    const label = hasAnyDates ? `TOTAL ESTIMADO` : "TOTAL REFERENCIAL";
+    doc.text(label, 15, y);
+    doc.text(`S/ ${fmt(totalConFechas)}`, pageW - 15, y, { align: "right" });
+    y += 12;
+
+    // Nota
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text("* Cotización referencial. Los precios finales se confirmarán con el asesor.", 15, y);
+
+    doc.save(`cotizacion-varmar-${Date.now()}.pdf`);
   };
 
   const hasError = categoriesError || servicesError || vehiclesError;
@@ -335,13 +496,13 @@ function FlotaPage() {
         </div>
       </section>
 
-      <section className="bg-brand-soft py-12 md:py-16">
+      <section className="bg-brand-soft py-12 md:py-6">
         <div className="mx-auto grid max-w-7xl gap-6 px-4 md:px-8 lg:grid-cols-[280px_1fr]">
           {/* Sidebar */}
           <aside className="h-fit rounded-xl border border-border bg-card p-6 lg:sticky lg:top-28">
             <h2 className="mb-4 text-lg font-bold uppercase">Filtros</h2>
 
-            <Accordion type="multiple" defaultValue={["categories", "services", "homo"]} className="w-full mb-5">
+            <Accordion type="multiple" defaultValue={[]} className="w-full mb-5">
               <AccordionItem value="categories" className="border-b border-border py-1">
                 <AccordionTrigger className="hover:no-underline font-bold text-xs uppercase tracking-widest text-muted-foreground pt-0 pb-3">
                   Tipo de Vehículo
@@ -434,131 +595,303 @@ function FlotaPage() {
           </aside>
 
           {/* Grid */}
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {vehiclesLoading ? (
-              Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
-                  <div className="aspect-[4/3] w-full animate-pulse bg-muted/60" />
-                  <div className="flex-1 p-5 space-y-4">
-                    <div className="h-5 w-2/3 animate-pulse rounded bg-muted/60" />
-                    <div className="h-3 w-1/3 animate-pulse rounded bg-muted/60" />
-                    <div className="flex gap-2">
-                      <div className="h-5 w-16 animate-pulse rounded-full bg-muted/60" />
-                      <div className="h-5 w-20 animate-pulse rounded-full bg-muted/60" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 pt-2">
-                      <div className="h-4 w-full animate-pulse rounded bg-muted/60" />
-                      <div className="h-4 w-full animate-pulse rounded bg-muted/60" />
-                    </div>
-                    <div className="border-t border-border pt-3 space-y-2">
-                      <div className="h-4 w-1/2 animate-pulse rounded bg-muted/60" />
-                      <div className="h-4 w-1/3 animate-pulse rounded bg-muted/60" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 pt-2">
-                      <div className="h-10 w-full animate-pulse rounded bg-muted/60" />
-                      <div className="h-10 w-full animate-pulse rounded bg-muted/60" />
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : filtrados.length === 0 ? (
-              <p className="col-span-full py-20 text-center text-muted-foreground">No se encontraron vehículos con esos filtros.</p>
-            ) : (
-              filtrados.map((v) => (
-                <article key={v.id} className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-white">
-                    <img src={v.imagen} alt={v.nombre} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <span className={`absolute left-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${v.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}>
-                      {v.homologada ? "✓ Homologada" : "No Homologada"}
-                    </span>
-                    <span className={`absolute right-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[v.estado]}`}>{v.estado}</span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3 className="text-lg font-bold">{v.nombre}</h3>
-                    <p className="text-xs text-muted-foreground">{v.modelo}</p>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {v.servicios.map((s) => (
-                        <span key={s} className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">{s}</span>
-                      ))}
-                      <span className="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-semibold text-secondary-foreground">{v.categoria}</span>
-                    </div>
-                    <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center gap-1.5"><Users className="size-3.5 text-primary" />{v.pasajeros} pasajeros</div>
-                      <div className="flex items-center gap-1.5"><Settings2 className="size-3.5 text-primary" />{v.transmision}</div>
-                      <div className="flex items-center gap-1.5"><Fuel className="size-3.5 text-primary" />{v.combustible}</div>
-                      <div className="flex items-center gap-1.5"><Gauge className="size-3.5 text-primary" />{v.traccion}</div>
-                    </div>
-                    <div className="mt-4 space-y-1 border-t border-border pt-3 text-sm">
-                      <div className="flex justify-between"><span className="text-muted-foreground">Diario:</span><span className="font-bold">S/ {v.diario}</span></div>
-                      <div className="flex justify-between"><span className="text-muted-foreground">Mensual:</span><span className="font-bold">S/ {v.mensual}</span></div>
-                    </div>
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <button onClick={() => setDetalle(v)} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 py-2.5 text-sm font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
-                        <Info className="size-4" /> Detalles
-                      </button>
-                      <button onClick={() => addToCart(v.id)} className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
-                        <ShoppingCart className="size-4" /> Cotizar
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))
+          <div>
+            {/* Buscador */}
+            <div className="mb-6 relative flex items-center">
+              <Search className="absolute left-3.5 size-4 text-muted-foreground pointer-events-none" />
+              <input
+                id="flota-search"
+                type="text"
+                placeholder="Buscar por marca, modelo, categoría o tipo de servicio..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-border bg-background pl-10 pr-10 py-3 text-sm shadow-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  aria-label="Limpiar búsqueda"
+                  className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Resultado info */}
+            {search && !vehiclesLoading && (
+              <p className="mb-4 text-xs text-muted-foreground">
+                {filtrados.length === 0
+                  ? "Sin resultados para "
+                  : `${filtrados.length} vehículo${filtrados.length !== 1 ? "s" : ""} encontrado${filtrados.length !== 1 ? "s" : ""} para `}
+                <span className="font-semibold text-foreground">"{search}"</span>
+              </p>
             )}
+
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {vehiclesLoading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+                    <div className="aspect-[4/3] w-full animate-pulse bg-muted/60" />
+                    <div className="flex-1 p-5 space-y-4">
+                      <div className="h-5 w-2/3 animate-pulse rounded bg-muted/60" />
+                      <div className="h-3 w-1/3 animate-pulse rounded bg-muted/60" />
+                      <div className="flex gap-2">
+                        <div className="h-5 w-16 animate-pulse rounded-full bg-muted/60" />
+                        <div className="h-5 w-20 animate-pulse rounded-full bg-muted/60" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-2">
+                        <div className="h-4 w-full animate-pulse rounded bg-muted/60" />
+                        <div className="h-4 w-full animate-pulse rounded bg-muted/60" />
+                      </div>
+                      <div className="border-t border-border pt-3 space-y-2">
+                        <div className="h-4 w-1/2 animate-pulse rounded bg-muted/60" />
+                        <div className="h-4 w-1/3 animate-pulse rounded bg-muted/60" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-2">
+                        <div className="h-10 w-full animate-pulse rounded bg-muted/60" />
+                        <div className="h-10 w-full animate-pulse rounded bg-muted/60" />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : filtrados.length === 0 ? (
+                <p className="col-span-full py-20 text-center text-muted-foreground">No se encontraron vehículos con esos filtros.</p>
+              ) : (
+                filtrados.map((v) => (
+                  <article key={v.id} className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-white">
+                      <img src={v.imagen} alt={v.nombre} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <span className={`absolute left-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${v.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}>
+                        {v.homologada ? "✓ Homologada" : "No Homologada"}
+                      </span>
+                      <span className={`absolute right-2 top-2 rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[v.estado]}`}>{v.estado}</span>
+                    </div>
+                    <div className="flex flex-1 flex-col p-5">
+                      <h3 className="text-lg font-bold">{v.nombre}</h3>
+                      <p className="text-xs text-muted-foreground">{v.modelo}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {v.servicios.map((s) => (
+                          <span key={s} className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">{s}</span>
+                        ))}
+                        <span className="rounded-full bg-secondary/20 px-2 py-0.5 text-[10px] font-semibold text-secondary-foreground">{v.categoria}</span>
+                      </div>
+                      <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                        <div className="flex items-center gap-1.5"><Users className="size-3.5 text-primary" />{v.pasajeros} pasajeros</div>
+                        <div className="flex items-center gap-1.5"><Settings2 className="size-3.5 text-primary" />{v.transmision}</div>
+                        <div className="flex items-center gap-1.5"><Fuel className="size-3.5 text-primary" />{v.combustible}</div>
+                        <div className="flex items-center gap-1.5"><Gauge className="size-3.5 text-primary" />{v.traccion}</div>
+                      </div>
+                      <div className="mt-auto pt-4">
+                        <div className="space-y-1 border-t border-border pt-3 text-sm">
+                          <div className="flex justify-between"><span className="font-bold">
+                            Diario: S/ {Number(v.diario).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </span></div>
+                          <div className="flex justify-between"><span className="font-bold">
+                            Mensual: S/ {Number(v.mensual).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </span></div>
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-2">
+                          <button onClick={() => setDetalle(v)} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-primary px-3 py-2.5 text-sm font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+                            <Info className="size-4" /> Detalles
+                          </button>
+                          <button onClick={() => addToCart(v.id)} className="inline-flex items-center justify-center gap-1.5 rounded-md bg-sky-500 px-3 py-2.5 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
+                            <ShoppingCart className="size-4" /> Cotizar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </section>
 
       <Dialog open={!!detalle} onOpenChange={(o) => !o && setDetalle(null)}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden max-h-[90vh] overflow-y-auto">
+        <DialogContent
+          className="
+      max-w-2xl
+      p-0
+      overflow-hidden
+
+      [&>button]:top-4
+      [&>button]:right-4
+      [&>button]:z-50
+      [&>button]:rounded-full
+      [&>button]:bg-white/90
+      [&>button]:p-2
+      [&>button]:text-black
+      [&>button]:shadow-md
+      [&>button]:hover:bg-white
+    "
+        >
           {detalle && (
-            <>
-              <div className="aspect-video w-full overflow-hidden bg-white">
-                <img src={detalle.imagen} alt={detalle.nombre} className="h-full w-full object-cover" />
+            <div className="flex max-h-[90vh] flex-col">
+
+              {/* Imagen */}
+              <div className="relative h-80 shrink-0 overflow-hidden">
+                <img
+                  src={detalle.imagen}
+                  alt={detalle.nombre}
+                  className="h-full w-full object-cover"
+                />
               </div>
-              <div className="p-6">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl uppercase">{detalle.nombre}</DialogTitle>
-                  <DialogDescription>{detalle.modelo}</DialogDescription>
-                </DialogHeader>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  <span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${detalle.homologada ? "bg-primary text-primary-foreground" : "bg-foreground/70 text-background"}`}>
-                    {detalle.homologada ? "✓ Homologada" : "No Homologada"}
-                  </span>
-                  <span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${ESTADO_CLS[detalle.estado]}`}>{detalle.estado}</span>
-                  <span className="rounded-full bg-secondary/20 px-2 py-1 text-[10px] font-semibold text-secondary-foreground">{detalle.categoria}</span>
-                  {detalle.servicios.map((s) => (
-                    <span key={s} className="rounded-full bg-accent px-2 py-1 text-[10px] font-semibold text-accent-foreground">{s}</span>
-                  ))}
+
+              {/* Contenido con scroll */}
+              <div className="flex-1 overflow-y-auto p-4">
+
+                {/* Cabecera */}
+                <div className="mb-5 flex items-center gap-2 flex-wrap">
+                  <DialogTitle className="text-lg font-medium">
+                    {detalle.nombre}
+                  </DialogTitle>
+
+                  <DialogDescription className="m-0 text-sm text-muted-foreground">
+                    {detalle.modelo}
+                  </DialogDescription>
                 </div>
-                <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
-                  <div className="flex items-center gap-2"><Users className="size-4 text-primary" />{detalle.pasajeros} pasajeros</div>
-                  <div className="flex items-center gap-2"><Settings2 className="size-4 text-primary" />{detalle.transmision}</div>
-                  <div className="flex items-center gap-2"><Fuel className="size-4 text-primary" />{detalle.combustible}</div>
-                  <div className="flex items-center gap-2"><Gauge className="size-4 text-primary" />{detalle.traccion}</div>
+
+                {/* Datos generales */}
+                <div className="mb-6">
+                  <div className="flex flex-wrap gap-2 text-sm">
+
+                    <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+                      <Users className="h-4 w-4 text-sky-500" />
+                      <span>{detalle.pasajeros} pasajeros</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+                      <Fuel className="h-4 w-4 text-sky-500" />
+                      <span>{detalle.combustible}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+                      <Settings2 className="h-4 w-4 text-sky-500" />
+                      <span>{detalle.transmision}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+                      <Gauge className="h-4 w-4 text-sky-500" />
+                      <span>{detalle.traccion}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+                      <Tag className="h-4 w-4 text-sky-500" />
+                      <span>{detalle.categoria}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5">
+                      <ShieldCheck className="h-4 w-4 text-sky-500" />
+                      <span>
+                        {detalle.homologada ? "Homologada" : "No homologada"}
+                      </span>
+                    </div>
+
+                  </div>
                 </div>
-                <div className="mt-5">
-                  <h4 className="mb-2 text-sm font-bold uppercase">Equipamiento</h4>
-                  <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-                    {detalle.equipamiento.map((e) => (
-                      <li key={e} className="flex items-center gap-2 text-sm"><Check className="size-4 text-primary" />{e}</li>
+
+                {/* Servicios */}
+                {detalle.servicios?.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="mb-2 text-sm text-muted-foreground">
+                      Servicios
+                    </h3>
+
+                    <div className="flex flex-wrap gap-2">
+                      {detalle.servicios.map((s) => (
+                        <span
+                          key={s}
+                          className="rounded-full bg-muted px-3 py-1 text-xs"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Equipamiento */}
+                <div className="flex flex-wrap gap-1">
+                  <div className="mb-6">
+                    <h3 className="mb-2 text-sm text-muted-foreground">
+                      Equipamiento
+                    </h3>
+                    {detalle.equipamiento.map((item) => (
+                      <span
+                        key={item}
+                        className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm"
+                      >
+                        <Check className="h-3.5 w-3.5 text-sky-500" />
+                        {item}
+                      </span>
                     ))}
-                  </ul>
-                </div>
-                <div className="mt-5 rounded-lg bg-muted p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Tarifa Diaria</span>
-                    <span className="text-2xl font-bold text-primary">S/ {detalle.diario}</span>
                   </div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Tarifa Mensual</span>
-                    <span className="text-2xl font-bold text-primary">S/ {detalle.mensual}</span>
+
+                </div>
+
+                {/* Tarifas */}
+                <div className="mb-6">
+
+                  <div className="grid grid-cols-2 gap-3">
+
+                    <div className="rounded-lg border bg-muted/30 p-3 ">
+                      <div className="text-xs text-muted-foreground font-bold text-[15px] text-center">
+                        Tarifa diaria
+                      </div>
+
+                      <div className="mt-2 text-center">
+                        <span className="text-sm font-bold text-sky-600 text-center">
+                          S/ {Number(detalle.diario).toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg border bg-muted/30 p-3">
+                      <div className="text-xs text-muted-foreground font-bold text-[15px] text-center">
+                        Tarifa mensual
+                      </div>
+
+                      <div className="mt-2 text-center">
+                        <span className="text-sm font-bold text-sky-600 text-center">
+                          S/ {Number(detalle.mensual).toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-                <button onClick={() => { addToCart(detalle.id); setDetalle(null); }} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-opacity hover:opacity-90">
-                  <ShoppingCart className="size-5" /> Agregar a cotización
+
+              </div>
+
+              {/* Footer fijo */}
+              <div className="shrink-0 border-t bg-background p-4">
+                <button
+                  onClick={() => {
+                    addToCart(detalle.id);
+                    setDetalle(null);
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-sky-500 py-3 text-sm font-bold uppercase text-white transition hover:bg-sky-600"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Agregar a cotización
                 </button>
               </div>
-            </>
+
+            </div>
           )}
         </DialogContent>
       </Dialog>
@@ -585,8 +918,8 @@ function FlotaPage() {
               <ShoppingCart className="h-5 w-5 text-sky-600" /> Mi Cotización
             </SheetTitle>
             {cartItems.length > 0 && (
-              <button onClick={() => setCart({})} className="flex items-center gap-1 text-xs font-semibold text-sky-700 hover:opacity-80 hover:cursor-pointer">
-                <Trash2 className="h-3.5 w-3.5" /> Limpiar
+              <button onClick={() => setCart({})} className="flex items-center gap-1 text-xs font-semibold text-sky-700 text-[16px] hover:opacity-80 hover:cursor-pointer">
+                <Trash2 className="h-4 w-4" /> Limpiar
               </button>
             )}
           </SheetHeader>
@@ -600,24 +933,100 @@ function FlotaPage() {
               </div>
             ) : (
               <ul className="space-y-3">
-                {cartItems.map(({ v, qty }) => (
-                  <li key={v.id} className="flex gap-3 rounded-lg border border-sky-100 bg-card p-3">
-                    <img src={v.imagen} alt={v.nombre} className="h-16 w-20 shrink-0 rounded object-cover" />
-                    <div className="flex flex-1 flex-col">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-bold leading-tight">{v.nombre}</p>
-                          <p className="text-[11px] text-muted-foreground">CÓD: {v.id.toUpperCase()}</p>
+                {cartItems.map(({ v, qty, rateType, dates, dias }) => (
+                  <li key={v.id} className="flex flex-col gap-2 rounded-lg border border-sky-100 bg-card p-3">
+                    <div className="flex gap-3">
+                      <img src={v.imagen} alt={v.nombre} className="h-16 w-20 shrink-0 rounded object-cover" />
+                      <div className="flex flex-1 flex-col">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-[16px] font-bold leading-tight">{v.nombre}</p>
+                          </div>
+                          <button onClick={() => setQty(v.id, 0)} aria-label="Eliminar" className="text-muted-foreground hover:text-sky-600 hover:cursor-pointer">
+                            <X className="h-4 w-4" />
+                          </button>
                         </div>
-                        <button onClick={() => setQty(v.id, 0)} aria-label="Eliminar" className="text-muted-foreground hover:text-sky-600 hover:cursor-pointer">
-                          <X className="h-4 w-4" />
-                        </button>
+
+                        {/* Checkboxes para tipo de tarifa */}
+                        <div className="mt-2 flex flex-col gap-1.5">
+                          <label className="flex items-center gap-2 text-xs text-foreground/80 cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`rate-${v.id}`}
+                              checked={rateType === "diario"}
+                              onChange={() => setRateTypes(r => ({ ...r, [v.id]: "diario" }))}
+                              className="text-sky-500 focus:ring-sky-500"
+                            />
+                            <span className={rateType === "diario" ? "font-bold text-sky-700 text-[16px]" : "text-[16px]"}>
+                              Diario: S/ {fmt(v.diario)}
+                            </span>
+                          </label>
+                          <label className="flex items-center gap-2 text-xs text-foreground/80 cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`rate-${v.id}`}
+                              checked={rateType === "mensual"}
+                              onChange={() => {
+                                setRateTypes(r => ({ ...r, [v.id]: "mensual" }));
+                                const start = new Date();
+                                const end = new Date();
+                                end.setDate(start.getDate() + 30);
+                                setItemDates(prev => ({ ...prev, [v.id]: { inicio: start, fin: end } }));
+                              }}
+                              className="text-sky-500 focus:ring-sky-500"
+                            />
+                            <span className={rateType === "mensual" ? "font-bold text-sky-700 text-[16px]" : "text-[16px]"}>
+                              Mensual: S/ {fmt(v.mensual)}
+                            </span>
+                          </label>
+
+                        </div>
+
                       </div>
-                      <div className="mt-2 flex items-center justify-between">
-                        <span className="text-sm font-bold text-sky-600">Diario: S/ {v.diario}</span>
-                      </div>
-                      <div className="mt-2 flex items-center justify-between">
-                        <span className="text-sm font-bold text-sky-600">Mensual: S/ {v.mensual}</span>
+                    </div>
+
+                    {/* Selector de fechas por vehículo */}
+                    <div className="mt-2 border-t pt-2 border-sky-50">
+                      <p className="mb-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Período de alquiler</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button className="flex w-full items-center gap-2 rounded-lg border px-2 py-1.5 text-left text-xs hover:border-sky-300">
+                              <Calendar className="size-3.5 shrink-0" />
+                              <span className="truncate">{dates.inicio ? fmtDate(dates.inicio) : "Fecha inicio"}</span>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent align="start" className="w-auto p-0">
+                            <DayPicker
+                              mode="single"
+                              selected={dates.inicio}
+                              onSelect={(d) => {
+                                setItemDates(prev => {
+                                  const current = prev[v.id] || {};
+                                  return { ...prev, [v.id]: { ...current, inicio: d, fin: (d && current.fin && d >= current.fin) ? undefined : current.fin } };
+                                });
+                              }}
+                              disabled={{ before: new Date() }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button className="flex w-full items-center gap-2 rounded-lg border px-2 py-1.5 text-left text-xs hover:border-sky-300">
+                              <Calendar className="size-3.5 shrink-0" />
+                              <span className="truncate">{dates.fin ? fmtDate(dates.fin) : "Fecha fin"}</span>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent align="start" className="w-auto p-0">
+                            <DayPicker
+                              mode="single"
+                              selected={dates.fin}
+                              onSelect={(d) => setItemDates(prev => ({ ...prev, [v.id]: { ...(prev[v.id] || {}), fin: d } }))}
+                              disabled={dates.inicio ? { before: dates.inicio } : { before: new Date() }}
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
                   </li>
@@ -627,21 +1036,29 @@ function FlotaPage() {
           </div>
 
           {cartItems.length > 0 && (
-            <div className="border-t border-sky-100 bg-white p-5">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total referencial / día</span>
-                <span className="text-xl font-bold text-sky-700">S/ {cartTotal}</span>
+            <div className="shrink-0 border-t border-sky-100 bg-white">
+              {/* Totales y acciones */}
+              <div className="p-5">
+                <div className="mb-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[15px] font-bold uppercase tracking-wider text-muted-foreground">
+                      {cartItems.some(i => i.dias > 0) ? `Total estimado` : "Total referencial"}
+                    </span>
+                    <span className="text-xl font-bold text-sky-700">S/ {fmt(totalConFechas)}</span>
+                  </div>
+                </div>
+
+                <button onClick={sendCartWA} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-colors hover:bg-sky-600">
+                  <MessageCircle className="h-4 w-4" /> Enviar por WhatsApp
+                </button>
+                <button onClick={generarPDF} className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-sky-500 px-4 py-2.5 text-xs font-bold uppercase text-sky-600 transition-colors hover:bg-sky-500 hover:text-white">
+                  <FileText className="h-3.5 w-3.5" /> Descargar Cotización (PDF)
+                </button>
               </div>
-              <button onClick={sendCartWA} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-3 text-sm font-bold uppercase text-white transition-colors hover:bg-sky-600">
-                <MessageCircle className="h-4 w-4" /> Enviar Cotización
-              </button>
-              <button onClick={() => setCart({})} className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-sky-500 px-4 py-2.5 text-xs font-bold uppercase text-sky-600 transition-colors hover:bg-sky-500 hover:text-white hover:cursor-pointer">
-                <RotateCcw className="h-3.5 w-3.5" /> Reiniciar
-              </button>
-              <p className="mt-3 text-center text-[11px] text-muted-foreground">Cotización referencial — se confirma por WhatsApp.</p>
             </div>
           )}
         </SheetContent>
+
       </Sheet>
     </>
   );
